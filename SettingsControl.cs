@@ -100,7 +100,7 @@ namespace DTwoMFTimerHelper
             this.tabPageHotkeys.Location = new System.Drawing.Point(4, 24);
             this.tabPageHotkeys.Name = "tabPageHotkeys";
             this.tabPageHotkeys.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageHotkeys.Size = new System.Drawing.Size(323, 282);
+            this.tabPageHotkeys.Size = new System.Drawing.Size(333, 282);
             this.tabPageHotkeys.TabIndex = 1;
             this.tabPageHotkeys.Text = "快捷键";
             this.tabPageHotkeys.UseVisualStyleBackColor = true;
@@ -200,7 +200,7 @@ namespace DTwoMFTimerHelper
             this.groupBoxPosition.Controls.Add(this.radioBottomRight);
             this.groupBoxPosition.Location = new System.Drawing.Point(8, 8);
             this.groupBoxPosition.Name = "groupBoxPosition";
-            this.groupBoxPosition.Size = new System.Drawing.Size(307, 110);
+            this.groupBoxPosition.Size = new System.Drawing.Size(317, 110);
             this.groupBoxPosition.TabIndex = 0;
             this.groupBoxPosition.TabStop = false;
             this.groupBoxPosition.Text = "窗口位置";
@@ -234,7 +234,7 @@ namespace DTwoMFTimerHelper
             this.groupBoxLanguage.Controls.Add(this.englishRadioButton);
             this.groupBoxLanguage.Location = new System.Drawing.Point(8, 124);
             this.groupBoxLanguage.Name = "groupBoxLanguage";
-            this.groupBoxLanguage.Size = new System.Drawing.Size(307, 70);
+            this.groupBoxLanguage.Size = new System.Drawing.Size(317, 70);
             this.groupBoxLanguage.TabIndex = 1;
             this.groupBoxLanguage.TabStop = false;
             this.groupBoxLanguage.Text = "语言";
@@ -270,7 +270,7 @@ namespace DTwoMFTimerHelper
             this.labelPauseHotkey.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelPauseHotkey.Location = new System.Drawing.Point(70, 70);
             this.labelPauseHotkey.Name = "labelPauseHotkey";
-            this.labelPauseHotkey.Size = new System.Drawing.Size(227, 23);
+            this.labelPauseHotkey.Size = new System.Drawing.Size(237, 23);
             this.labelPauseHotkey.TabIndex = 3;
             this.labelPauseHotkey.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.labelPauseHotkey.Click += new System.EventHandler(this.btnSetPauseHotkey_Click);
@@ -281,7 +281,7 @@ namespace DTwoMFTimerHelper
             this.labelStartStopHotkey.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelStartStopHotkey.Location = new System.Drawing.Point(70, 30);
             this.labelStartStopHotkey.Name = "labelStartStopHotkey";
-            this.labelStartStopHotkey.Size = new System.Drawing.Size(227, 23);
+            this.labelStartStopHotkey.Size = new System.Drawing.Size(237, 23);
             this.labelStartStopHotkey.TabIndex = 2;
             this.labelStartStopHotkey.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.labelStartStopHotkey.Click += new System.EventHandler(this.btnSetStartStopHotkey_Click);
@@ -312,7 +312,7 @@ namespace DTwoMFTimerHelper
             this.groupBoxHotkeys.Controls.Add(this.labelHotkeyStartStop);
             this.groupBoxHotkeys.Location = new System.Drawing.Point(8, 8);
             this.groupBoxHotkeys.Name = "groupBoxHotkeys";
-            this.groupBoxHotkeys.Size = new System.Drawing.Size(307, 110);
+            this.groupBoxHotkeys.Size = new System.Drawing.Size(317, 110);
             this.groupBoxHotkeys.TabIndex = 0;
             this.groupBoxHotkeys.TabStop = false;
             this.groupBoxHotkeys.Text = "Hotkey Settings"; // 将在UpdateUI中通过LanguageManager更新

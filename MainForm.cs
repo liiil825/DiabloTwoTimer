@@ -1,6 +1,8 @@
 using System;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Windows.Input;
+using System.Runtime.InteropServices;
 using DTwoMFTimerHelper.Resources;
 using AntdUI;
 using DTwoMFTimerHelper.Settings;
@@ -165,6 +167,26 @@ namespace DTwoMFTimerHelper
             ResumeLayout(false);
         }
 
+        // 全局热键相关常量和方法
+        private const int WM_HOTKEY = 0x0312;
+        private const int MOD_ALT = 0x0001;
+        private const int MOD_CONTROL = 0x0002;
+        private const int MOD_SHIFT = 0x0004;
+        private const int MOD_WIN = 0x0008;
+        
+        private const int HOTKEY_ID_STARTSTOP = 1;
+        private const int HOTKEY_ID_PAUSE = 2;
+        
+        [DllImport("user32.dll")]
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vk);
+        
+        [DllImport("user32.dll")]
+        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+        
+        // 当前注册的快捷键
+        private Keys currentStartStopHotkey = Keys.Q | Keys.Alt;
+        private Keys currentPauseHotkey = Keys.Space | Keys.Control;
+
         private void InitializeControls()
         {
             // 初始化各个功能控件
@@ -204,6 +226,71 @@ namespace DTwoMFTimerHelper
                 settingsControl.WindowPositionChanged += OnWindowPositionChanged;
                 settingsControl.LanguageChanged += OnLanguageChanged;
                 settingsControl.AlwaysOnTopChanged += OnAlwaysOnTopChanged;
+                settingsControl.StartStopHotkeyChanged += OnStartStopHotkeyChanged;
+                settingsControl.PauseHotkeyChanged += OnPauseHotkeyChanged;
+            }
+            
+            // 注册默认快捷键
+            RegisterHotkeys();
+        }
+        
+        private void RegisterHotkeys()
+        {
+            // 先注销可能存在的热键
+            UnregisterHotKeys();
+            
+            // 注册开始/停止热键
+            RegisterHotKey(currentStartStopHotkey, HOTKEY_ID_STARTSTOP);
+            
+            // 注册暂停热键
+            RegisterHotKey(currentPauseHotkey, HOTKEY_ID_PAUSE);
+        }
+        
+        private void UnregisterHotKeys()
+        {
+            UnregisterHotKey(this.Handle, HOTKEY_ID_STARTSTOP);
+            UnregisterHotKey(this.Handle, HOTKEY_ID_PAUSE);
+        }
+        
+        private void RegisterHotKey(Keys keys, int id)
+        {
+            int modifiers = 0;
+            int keyCode = 0;
+            
+            // 提取修饰键
+            if ((keys & Keys.Alt) == Keys.Alt)
+                modifiers |= MOD_ALT;
+            if ((keys & Keys.Control) == Keys.Control)
+                modifiers |= MOD_CONTROL;
+            if ((keys & Keys.Shift) == Keys.Shift)
+                modifiers |= MOD_SHIFT;
+            
+            // 提取主按键
+            keyCode = (int)(keys & Keys.KeyCode);
+            
+            // 注册热键
+            RegisterHotKey(this.Handle, id, modifiers, keyCode);
+        }
+        
+        protected override void WndProc(ref System.Windows.Forms.Message m)
+        {
+            base.WndProc(ref m);
+            
+            if (m.Msg == WM_HOTKEY)
+            {
+                int id = m.WParam.ToInt32();
+                
+                switch (id)
+                {
+                    case HOTKEY_ID_STARTSTOP:
+                        // 触发计时器开始/停止
+                        timerControl?.ToggleTimer();
+                        break;
+                    case HOTKEY_ID_PAUSE:
+                        // 触发计时器暂停
+                        timerControl?.TogglePause();
+                        break;
+                }
             }
         }
         
@@ -305,6 +392,20 @@ namespace DTwoMFTimerHelper
             }
         }
         
+        private void OnStartStopHotkeyChanged(object? sender, SettingsControl.HotkeyChangedEventArgs e)
+        {
+            // 更新并重新注册开始/停止快捷键
+            currentStartStopHotkey = e.Hotkey;
+            RegisterHotkeys();
+        }
+        
+        private void OnPauseHotkeyChanged(object? sender, SettingsControl.HotkeyChangedEventArgs e)
+        {
+            // 更新并重新注册暂停快捷键
+            currentPauseHotkey = e.Hotkey;
+            RegisterHotkeys();
+        }
+        
         private void OnWindowPositionChanged(object? sender, SettingsControl.WindowPositionChangedEventArgs e)
         {
             // 窗口位置改变时的处理
@@ -330,5 +431,12 @@ namespace DTwoMFTimerHelper
         private System.Windows.Forms.TabPage? tabTimerPage;
         private System.Windows.Forms.TabPage? tabPomodoroPage;
         private System.Windows.Forms.TabPage? tabSettingsPage;
+        
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            // 程序关闭时注销热键
+            UnregisterHotKeys();
+            base.OnFormClosing(e);
+        }
     }
 }

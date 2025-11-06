@@ -32,55 +32,45 @@ namespace DTwoMFTimerHelper
             // 主要计时显示标签
             lblTimeDisplay = new Label();
             
-            // 控制按钮
-            btnStartStop = new Button();
-            btnReset = new Button();
-            
             // 信息显示标签
             lblCurrentProfile = new Label();
             
+            // 提示标签
+            lblHint = new Label();
+            
             SuspendLayout();
             // 
-            // lblTimeDisplay - 大型计时器显示
+            // lblTimeDisplay - 计时显示
             // 
             lblTimeDisplay.AutoSize = true;
-            lblTimeDisplay.Font = new System.Drawing.Font("Microsoft YaHei UI", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            lblTimeDisplay.Location = new System.Drawing.Point(40, 40);
+            lblTimeDisplay.Font = new System.Drawing.Font("Microsoft YaHei UI", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            lblTimeDisplay.Location = new System.Drawing.Point(20, 30);
             lblTimeDisplay.Name = "lblTimeDisplay";
-            lblTimeDisplay.Size = new System.Drawing.Size(360, 86);
+            lblTimeDisplay.Size = new System.Drawing.Size(288, 64);
             lblTimeDisplay.TabIndex = 0;
             lblTimeDisplay.Text = "00:00:00";
-            
-            // 
-            // btnStartStop - 启动/停止按钮
-            // 
-            btnStartStop.Location = new System.Drawing.Point(40, 200);
-            btnStartStop.Name = "btnStartStop";
-            btnStartStop.Size = new System.Drawing.Size(100, 50);
-            btnStartStop.TabIndex = 1;
-            btnStartStop.Text = "开始";
-            btnStartStop.UseVisualStyleBackColor = true;
-            btnStartStop.Click += btnStartStop_Click;
-            
-            // 
-            // btnReset - 重置按钮
-            // 
-            btnReset.Location = new System.Drawing.Point(280, 200);
-            btnReset.Name = "btnReset";
-            btnReset.Size = new System.Drawing.Size(100, 50);
-            btnReset.TabIndex = 2;
-            btnReset.Text = "重置";
-            btnReset.UseVisualStyleBackColor = true;
-            btnReset.Click += btnReset_Click;
             
             // 
             // lblCurrentProfile - 当前角色显示
             // 
             lblCurrentProfile.AutoSize = true;
-            lblCurrentProfile.Location = new System.Drawing.Point(40, 140);
+            lblCurrentProfile.Font = new System.Drawing.Font("Microsoft YaHei UI", 10.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            lblCurrentProfile.Location = new System.Drawing.Point(20, 110);
             lblCurrentProfile.Name = "lblCurrentProfile";
             lblCurrentProfile.Size = new System.Drawing.Size(120, 20);
-            lblCurrentProfile.TabIndex = 3;
+            lblCurrentProfile.TabIndex = 1;
+            
+            // 
+            // lblHint - 使用提示
+            // 
+            lblHint.AutoSize = true;
+            lblHint.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            lblHint.ForeColor = System.Drawing.Color.Gray;
+            lblHint.Location = new System.Drawing.Point(20, 150);
+            lblHint.Name = "lblHint";
+            lblHint.Size = new System.Drawing.Size(220, 17);
+            lblHint.TabIndex = 2;
+            lblHint.Text = "使用快捷键开始/结束计时（默认Alt+Q）";
             
             // 
             // TimerControl - 主控件设置
@@ -88,11 +78,10 @@ namespace DTwoMFTimerHelper
             AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             Controls.Add(lblTimeDisplay);
-            Controls.Add(btnStartStop);
-            Controls.Add(btnReset);
             Controls.Add(lblCurrentProfile);
+            Controls.Add(lblHint);
             Name = "TimerControl";
-            Size = new System.Drawing.Size(420, 320);
+            Size = new System.Drawing.Size(340, 200);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -106,9 +95,6 @@ namespace DTwoMFTimerHelper
 
         public void UpdateUI()
         {
-            // 更新按钮文本
-            if (btnStartStop != null) btnStartStop.Text = isTimerRunning ? "停止" : "开始";
-            
             // 更新当前角色显示
             if (currentProfile != null)
             {
@@ -122,13 +108,50 @@ namespace DTwoMFTimerHelper
             // 更新时间显示
             if (isTimerRunning && startTime != DateTime.MinValue)
             {
-                TimeSpan elapsed = DateTime.Now - startTime;
+                TimeSpan elapsed;
+                
+                if (isPaused && pauseStartTime != DateTime.MinValue)
+                {
+                    // 暂停状态，计算到暂停开始时的时间
+                    elapsed = pauseStartTime - startTime - pausedDuration;
+                }
+                else
+                {
+                    // 运行状态，计算实际经过时间（扣除暂停时间）
+                    elapsed = DateTime.Now - startTime - pausedDuration;
+                }
+                
                 string formattedTime = string.Format("{0:00}:{1:00}:{2:00}", elapsed.Hours, elapsed.Minutes, elapsed.Seconds);
-                if (lblTimeDisplay != null) lblTimeDisplay.Text = formattedTime;
+                if (lblTimeDisplay != null) 
+                {
+                    // 根据时间长度调整字体大小确保显示完整
+                    if (elapsed.Hours > 9)
+                    {
+                        lblTimeDisplay.Font = new System.Drawing.Font("Microsoft YaHei UI", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+                    }
+                    else
+                    {
+                        lblTimeDisplay.Font = new System.Drawing.Font("Microsoft YaHei UI", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+                    }
+                    
+                    // 暂停时显示不同的样式
+                    if (isPaused)
+                    {
+                        lblTimeDisplay.Text = $"暂停 - {formattedTime}";
+                    }
+                    else
+                    {
+                        lblTimeDisplay.Text = formattedTime;
+                    }
+                }
             }
             else
             {
-                if (lblTimeDisplay != null) lblTimeDisplay.Text = "00:00:00";
+                if (lblTimeDisplay != null) 
+                {
+                    lblTimeDisplay.Font = new System.Drawing.Font("Microsoft YaHei UI", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+                    lblTimeDisplay.Text = "00:00:00";
+                }
             }
         }
 
@@ -137,7 +160,8 @@ namespace DTwoMFTimerHelper
             UpdateUI();
         }
 
-        private void btnStartStop_Click(object? sender, EventArgs e)
+        // 提供给外部调用的开始/停止方法，用于快捷键触发
+        public void ToggleTimer()
         {
             if (!isTimerRunning)
             {
@@ -148,16 +172,57 @@ namespace DTwoMFTimerHelper
                 StopTimer();
             }
         }
-
-        private void btnReset_Click(object? sender, EventArgs e)
+        
+        // 提供给外部调用的暂停方法，用于快捷键触发
+        public void TogglePause()
+        {
+            if (isTimerRunning)
+            {
+                if (isPaused)
+                {
+                    ResumeTimer();
+                }
+                else
+                {
+                    PauseTimer();
+                }
+            }
+        }
+        
+        private void PauseTimer()
+        {
+            if (isTimerRunning && !isPaused)
+            {
+                isPaused = true;
+                pauseStartTime = DateTime.Now;
+                UpdateUI();
+            }
+        }
+        
+        private void ResumeTimer()
+        {
+            if (isTimerRunning && isPaused && pauseStartTime != DateTime.MinValue)
+            {
+                pausedDuration += DateTime.Now - pauseStartTime;
+                isPaused = false;
+                pauseStartTime = DateTime.MinValue;
+                UpdateUI();
+            }
+        }
+        
+        // 提供给外部调用的重置方法
+        public void ResetTimerExternally()
         {
             ResetTimer();
         }
 
         private void StartTimer()
         {
-            startTime = DateTime.Now;
             isTimerRunning = true;
+            isPaused = false;
+            startTime = DateTime.Now;
+            pausedDuration = TimeSpan.Zero;
+            pauseStartTime = DateTime.MinValue;
             timer?.Start();
             
             UpdateUI();
@@ -167,6 +232,7 @@ namespace DTwoMFTimerHelper
         private void StopTimer()
         {
             isTimerRunning = false;
+            isPaused = false;
             timer?.Stop();
             UpdateUI();
             TimerStateChanged?.Invoke(this, EventArgs.Empty);
@@ -181,6 +247,8 @@ namespace DTwoMFTimerHelper
         private void ResetTimerDisplay()
         {
             startTime = DateTime.MinValue;
+            pausedDuration = TimeSpan.Zero;
+            pauseStartTime = DateTime.MinValue;
             UpdateUI();
         }
 
@@ -193,8 +261,13 @@ namespace DTwoMFTimerHelper
         // 私有字段定义
         // 控件字段定义
         private Label? lblTimeDisplay;
-        private Button? btnStartStop;
-        private Button? btnReset;
         private Label? lblCurrentProfile;
+        private Label? lblHint;
+        // 已移除按钮，改为使用快捷键控制
+        
+        // 计时器状态字段
+        private bool isPaused = false;
+        private TimeSpan pausedDuration = TimeSpan.Zero;
+        private DateTime pauseStartTime = DateTime.MinValue;
     }
 }

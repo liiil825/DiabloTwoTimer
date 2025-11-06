@@ -531,9 +531,17 @@ namespace DTwoMFTimerHelper
 
             // 保存快捷键
             if (currentHotkeySetting == "StartStop")
+            {
                 startStopHotkey = newHotkey;
+                // 触发开始/停止快捷键变更事件
+                StartStopHotkeyChanged?.Invoke(this, new HotkeyChangedEventArgs(newHotkey));
+            }
             else
+            {
                 pauseHotkey = newHotkey;
+                // 触发暂停快捷键变更事件
+                PauseHotkeyChanged?.Invoke(this, new HotkeyChangedEventArgs(newHotkey));
+            }
 
             // 重置状态
             isSettingHotkey = false;

@@ -485,12 +485,12 @@ namespace DTwoMFTimerHelper
             return text;
         }
 
-        private void btnSetStartStopHotkey_Click(object sender, EventArgs e)
+        private void btnSetStartStopHotkey_Click(object? sender, EventArgs e)
         {
             StartHotkeySetup("StartStop");
         }
 
-        private void btnSetPauseHotkey_Click(object sender, EventArgs e)
+        private void btnSetPauseHotkey_Click(object? sender, EventArgs e)
         {
             StartHotkeySetup("Pause");
         }
@@ -512,7 +512,7 @@ namespace DTwoMFTimerHelper
             this.KeyDown += new KeyEventHandler(OnKeyDownWhileSettingHotkey);
         }
 
-        private void OnKeyDownWhileSettingHotkey(object sender, KeyEventArgs e)
+        private void OnKeyDownWhileSettingHotkey(object? sender, KeyEventArgs e)
         {
             if (!isSettingHotkey) return;
 

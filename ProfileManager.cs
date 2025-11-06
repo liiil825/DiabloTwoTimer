@@ -2,7 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
+using System.Linq;
 using DTwoMFTimerHelper.Data;
+using DTwoMFTimerHelper.Settings;
 
 namespace DTwoMFTimerHelper
 {
@@ -449,6 +451,11 @@ namespace DTwoMFTimerHelper
                         
                         Console.WriteLine($"角色创建成功: {currentProfile.Name}");
 
+                        // 更新上次使用的角色档案设置
+                        var settings = SettingsManager.LoadSettings();
+                        settings.LastUsedProfile = currentProfile.Name;
+                        SettingsManager.SaveSettings(settings);
+
                         // 清除当前记录并更新UI
                         currentRecord = null;
                         UpdateUI();
@@ -492,6 +499,11 @@ namespace DTwoMFTimerHelper
                         // 由于我们已经修改了CharacterProfile的命名空间，现在应该可以直接使用
                         currentProfile = selectedProfile;
                         currentRecord = null;
+                        
+                        // 更新上次使用的角色档案设置
+                        var settings = SettingsManager.LoadSettings();
+                        settings.LastUsedProfile = currentProfile.Name;
+                        SettingsManager.SaveSettings(settings);
                         
                         Console.WriteLine($"成功切换到角色: {currentProfile.Name}");
                         
@@ -607,10 +619,52 @@ namespace DTwoMFTimerHelper
         }
 
         private void ResetTimer()
-        {
-            StopTimer();
+        {            StopTimer();
             currentRecord = null;
             UpdateUI();
+        }
+
+        /// <summary>
+        /// 加载上次使用的角色档案
+        /// </summary>
+        public void LoadLastUsedProfile()
+        {
+            try
+            {
+                // 加载设置并获取上次使用的角色档案名称
+                var settings = SettingsManager.LoadSettings();
+                string lastUsedProfileName = settings.LastUsedProfile;
+                
+                if (!string.IsNullOrWhiteSpace(lastUsedProfileName))
+                {
+                    Console.WriteLine($"尝试加载上次使用的角色档案: {lastUsedProfileName}");
+                    
+                    // 加载所有角色档案
+                    var allProfiles = DataManager.LoadAllProfiles(false);
+                    
+                    // 查找上次使用的角色档案
+                    var profile = allProfiles.FirstOrDefault(p => p.Name == lastUsedProfileName);
+                    if (profile != null)
+                    {
+                        currentProfile = profile;
+                        currentRecord = null;
+                        UpdateUI();
+                        Console.WriteLine($"成功加载上次使用的角色档案: {lastUsedProfileName}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"未找到上次使用的角色档案: {lastUsedProfileName}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("没有保存的上次使用角色档案");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"加载上次使用角色档案失败: {ex.Message}");
+            }
         }
 
         // 控件字段 - 标记为可为null以修复CS8618警告

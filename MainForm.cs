@@ -42,6 +42,9 @@ namespace DTwoMFTimerHelper
             
             this.ShowInTaskbar = true;
             this.Visible = true;
+            
+            // 加载上次使用的角色档案
+            profileManager?.LoadLastUsedProfile();
         }
         
         private void LoadSettings()

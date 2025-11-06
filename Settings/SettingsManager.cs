@@ -13,6 +13,9 @@ namespace DTwoMFTimerHelper.Settings
         public bool AlwaysOnTop { get; set; } = true;
         public string Language { get; set; } = "Chinese";
         
+        // 角色档案设置
+        public string LastUsedProfile { get; set; } = "";
+        
         // 番茄时钟设置
         public int WorkTimeMinutes { get; set; } = 25;
         public int WorkTimeSeconds { get; set; } = 0;

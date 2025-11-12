@@ -10,7 +10,7 @@ namespace DTwoMFTimerHelper.Services
     {
         #region Singleton Implementation
         private static readonly Lazy<TimerService> _instance = 
-            new Lazy<TimerService>(() => new TimerService());
+            new(() => new TimerService());
         
         public static TimerService Instance => _instance.Value;
         
@@ -22,11 +22,11 @@ namespace DTwoMFTimerHelper.Services
         #endregion
 
         #region Events for UI Communication
-        public event Action<string> TimeUpdated;
-        public event Action<bool> TimerRunningStateChanged;
-        public event Action<bool> TimerPauseStateChanged;
-        public event Action TimerReset;
-        public event Action<TimeSpan> RunCompleted;
+        public event Action<string>? TimeUpdated;
+        public event Action<bool>? TimerRunningStateChanged;
+        public event Action<bool>? TimerPauseStateChanged;
+        public event Action? TimerReset;
+        public event Action<TimeSpan>? RunCompleted;
         #endregion
 
         private readonly Timer _timer;
@@ -44,7 +44,7 @@ namespace DTwoMFTimerHelper.Services
         public DateTime PauseStartTime => _pauseStartTime;
 
         // 外部数据
-        public CharacterProfile CurrentProfile { get; set; }
+        public CharacterProfile? CurrentProfile { get; set; }
         public string CurrentCharacter { get; set; } = "";
         public string CurrentScene { get; set; } = "";
 
@@ -256,7 +256,7 @@ namespace DTwoMFTimerHelper.Services
 
         #region Private Methods
 
-        private void OnTimerElapsed(object sender, ElapsedEventArgs e)
+        private void OnTimerElapsed(object? sender, ElapsedEventArgs e)
         {
             UpdateTimeDisplay();
         }
@@ -459,7 +459,7 @@ namespace DTwoMFTimerHelper.Services
         /// <summary>
         /// 查找未完成记录
         /// </summary>
-        private MFRecord FindIncompleteRecordForCurrentScene(CharacterProfile profile, string scene, GameDifficulty difficulty)
+        private static MFRecord? FindIncompleteRecordForCurrentScene(CharacterProfile? profile, string scene, GameDifficulty difficulty)
         {
             if (profile == null || string.IsNullOrEmpty(scene))
                 return null;
@@ -498,7 +498,7 @@ namespace DTwoMFTimerHelper.Services
         /// <summary>
         /// 清除计时状态
         /// </summary>
-        private void ClearTimerState()
+        private static void ClearTimerState()
         {
             try
             {

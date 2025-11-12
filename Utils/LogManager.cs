@@ -41,7 +41,7 @@ namespace DTwoMFTimerHelper.Utils
         /// </summary>
         /// <param name="className">调用类名</param>
         /// <param name="message">日志消息</param>
-        public static void WriteErrorLog(string className, string message, Exception ex = null)
+        public static void WriteErrorLog(string className, string message, Exception? ex = null)
         {
             try
             {
@@ -50,7 +50,7 @@ namespace DTwoMFTimerHelper.Utils
                 // 错误日志：记录文件路径和当前时间
                 Console.WriteLine($"[错误] 日志文件路径: {errorLogPath}, 当前时间: {DateTime.Now}");
                 using StreamWriter writer = new StreamWriter(errorLogPath, true);
-                writer.WriteLine($"[{DateTime.Now}] [{className}] {message} {ex?.Message}");
+                writer.WriteLine($"[{DateTime.Now}] [{className}] {message} {ex?.Message ?? string.Empty}");
             }
             catch (Exception logEx)
             {

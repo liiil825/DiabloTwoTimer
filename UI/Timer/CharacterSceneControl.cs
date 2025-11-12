@@ -99,41 +99,10 @@ namespace DTwoMFTimerHelper.UI.Timer
         }
         
         /// <summary>
-        /// 设置角色和场景信息
-        /// </summary>
-        /// <param name="character">角色名称</param>
-        /// <param name="scene">场景名称</param>
-        public void SetCharacterAndScene(string character, string scene)
-        {            Utils.LogManager.WriteDebugLog("CharacterSceneControl", $"SetCharacterAndScene 调用: 角色={character}, 原始场景={scene}");
-            
-            // 通过ProfileService更新场景
-            ProfileService.Instance.CurrentScene = scene;
-            
-            // 尝试根据角色名称查找对应的角色档案并切换
-            if (!string.IsNullOrEmpty(character))
-            {                try
-                {                    Utils.LogManager.WriteDebugLog("CharacterSceneControl", $"尝试根据角色名称 '{character}' 查找对应的角色档案");
-                    var profile = ProfileService.Instance.FindProfileByName(character);
-                    if (profile != null)
-                    {                        ProfileService.Instance.SwitchCharacter(profile);
-                        Utils.LogManager.WriteDebugLog("CharacterSceneControl", $"已关联角色档案: {character}, 档案名称={profile.Name}");
-                    }                    else
-                    {                        Utils.LogManager.WriteDebugLog("CharacterSceneControl", $"未找到角色档案: {character}");
-                    }                }
-                catch (Exception ex)
-                {                    Utils.LogManager.WriteDebugLog("CharacterSceneControl", $"查找角色档案失败: {ex.Message}");
-                }            }
-            
-            UpdateUI();
-        }
-        
-        /// <summary>
         /// 保存角色和场景设置
         /// </summary>
         /// <param name="character">角色名称</param>
         /// <param name="scene">场景名称</param>
-        // 不再需要SaveCharacterSceneSettings方法，因为ProfileService会自动保存设置
-
         public void UpdateUI()
         {            // 更新角色显示
             if (lblCharacterDisplay != null)
@@ -157,7 +126,7 @@ namespace DTwoMFTimerHelper.UI.Timer
                 {                    // 获取本地化的场景名称
                     string localizedSceneName = Utils.LanguageManager.GetString(currentScene);
                     // 获取本地化的难度名称
-                    string localizedDifficultyName = Utils.LanguageManager.GetString(ProfileService.Instance.CurrentDifficulty.ToString());
+                    string localizedDifficultyName = ProfileService.Instance.CurrentDifficultyLocalized;
 
                     // 在场景名称前添加难度
                     lblSceneDisplay.Text = $"{localizedDifficultyName} {localizedSceneName}";

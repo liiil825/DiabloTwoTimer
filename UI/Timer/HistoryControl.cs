@@ -13,7 +13,7 @@ namespace DTwoMFTimerHelper.UI.Timer
         private ListBox? lstRunHistory;
 
         // 历史记录数据
-        public List<TimeSpan> RunHistory { get; set; } = new List<TimeSpan>();
+        public List<TimeSpan> RunHistory { get; set; } = [];
 
         // 历史记录统计信息
         public int RunCount { get; private set; } = 0;
@@ -63,12 +63,13 @@ namespace DTwoMFTimerHelper.UI.Timer
                     // 日志记录当前匹配的场景名称
                     LogManager.WriteDebugLog("HistoryControl", $"匹配场景名称: '{pureEnglishSceneName}'");
                     
-                    // 修改过滤条件，处理记录场景名称可能为空的情况，或使用配置中的sceneName
+                    // 修改过滤条件，处理记录场景名称可能为空的情况，或使用配置中的sceneName，并添加难度匹配
                     var sceneRecords = profile.Records.Where(r => 
                         (string.IsNullOrEmpty(r.SceneName) || 
                          r.SceneName.Equals(pureEnglishSceneName, StringComparison.OrdinalIgnoreCase) ||
                          r.SceneName.Trim('"', '\'').Equals(pureEnglishSceneName, StringComparison.OrdinalIgnoreCase)) && 
-                        r.IsCompleted).ToList();
+                        r.IsCompleted &&
+                        r.Difficulty == difficulty).ToList();
                     
                     LogManager.WriteDebugLog("HistoryControl", $"从角色档案中加载了 {sceneRecords.Count} 条记录: {characterName} - {pureEnglishSceneName}, 难度: {difficulty}");
                     Console.WriteLine($"从角色档案中加载了 {sceneRecords.Count} 条记录: {characterName} - {pureEnglishSceneName}, 难度: {difficulty}");

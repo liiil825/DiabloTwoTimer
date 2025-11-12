@@ -591,8 +591,29 @@ namespace DTwoMFTimerHelper.UI.Profiles
         
         private void CmbDifficulty_SelectedIndexChanged(object? sender, EventArgs e)
         {            
-            // 当难度改变时，更新按钮文本，检查是否有未完成记录
-            UpdateUI();
+            // 当难度改变时，更新ProfileService中的CurrentDifficulty
+            if (currentProfile != null && cmbDifficulty != null && cmbDifficulty.SelectedIndex >= 0)
+            {
+                // 使用SelectedIndex而不是SelectedItem来获取难度值
+                int selectedIndex = cmbDifficulty.SelectedIndex;
+                string selectedDifficultyText = cmbDifficulty.SelectedItem?.ToString() ?? "未知";
+                WriteDebugLog($"难度索引已变更为: {selectedIndex}，显示文本: {selectedDifficultyText}");
+                
+                // 使用SceneManager中的GetDifficultyByIndex方法获取对应的GameDifficulty枚举值
+                Models.GameDifficulty difficulty = Services.SceneManager.GetDifficultyByIndex(selectedIndex);
+                
+                // 更新ProfileService中的CurrentDifficulty
+                if (Services.ProfileService.Instance != null)
+                {
+                    Services.ProfileService.Instance.CurrentDifficulty = difficulty;
+                    
+                    // 同步更新TimerControl
+                    SyncTimerControl();
+                    
+                    // 更新UI
+                    UpdateUI();
+                }
+            }
         }
         
         /// <summary>

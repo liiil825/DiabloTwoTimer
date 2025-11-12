@@ -95,6 +95,9 @@ namespace DTwoMFTimerHelper.Services
             }
         }
 
+        public string CurrentDifficultyLocalized => 
+             Utils.LanguageManager.GetString($"Difficulty{_currentDifficulty}");
+
         public List<FarmingScene> FarmingScenes { get; private set; } = new List<FarmingScene>();
         #endregion
 

@@ -140,18 +140,6 @@ namespace DTwoMFTimerHelper.UI.Timer
 
         #region Public Methods
         /// <summary>
-        /// 设置角色和场景信息
-        /// </summary>
-        public void SetCharacterAndScene(string character, string scene)
-        {
-            _timerService.CurrentCharacter = character;
-            _timerService.CurrentScene = scene;
-            
-            characterSceneControl?.SetCharacterAndScene(character, scene);
-            UpdateUI();
-        }
-
-        /// <summary>
         /// 通过快捷键触发开始/停止计时
         /// </summary>
         public void ToggleTimer()
@@ -291,6 +279,13 @@ namespace DTwoMFTimerHelper.UI.Timer
                     CurrentProfile = profileManager.CurrentProfile;
                     _timerService.CurrentCharacter = profileManager.CurrentProfile.Name;
                     _timerService.CurrentScene = profileManager.CurrentScene;
+                    
+                    // 从ProfileService获取并同步最新的难度信息
+                    var currentDifficulty = ProfileService.Instance.CurrentDifficulty;
+                    LogManager.WriteDebugLog("TimerControl", $"同步难度信息: {currentDifficulty}");
+                    
+                    // 确保角色场景控件也更新难度显示
+                    UpdateCharacterSceneInfo();
                 }
                 else
                 {

@@ -218,23 +218,7 @@ namespace DTwoMFTimerHelper.Services
                 (int)(elapsed.Milliseconds / 100));
         }
 
-        /// <summary>
-        /// 获取当前游戏难度
-        /// </summary>
-        public GameDifficulty GetCurrentDifficulty()
-        {
-            try
-            {
-                // 这里需要根据您的实际实现来获取难度
-                // 暂时返回默认值
-                return GameDifficulty.Hell;
-            }
-            catch (Exception ex)
-            {
-                LogManager.WriteDebugLog("TimerService", $"获取难度信息失败: {ex.Message}");
-                return GameDifficulty.Hell;
-            }
-        }
+
 
         /// <summary>
         /// 在应用程序关闭时保存状态
@@ -279,7 +263,7 @@ namespace DTwoMFTimerHelper.Services
             {
                 int actValue = SceneManager.GetSceneActValue(CurrentScene);
                 string pureEnglishSceneName = LanguageManager.GetPureEnglishSceneName(CurrentScene);
-                var difficulty = GetCurrentDifficulty();
+                var difficulty = ProfileService.Instance.CurrentDifficulty;
 
                 if (string.IsNullOrEmpty(pureEnglishSceneName))
                 {
@@ -322,7 +306,7 @@ namespace DTwoMFTimerHelper.Services
             if (CurrentProfile == null)
                 return;
 
-            var record = FindIncompleteRecordForCurrentScene(CurrentProfile, CurrentScene, GetCurrentDifficulty());
+            var record = FindIncompleteRecordForCurrentScene(CurrentProfile, CurrentScene, ProfileService.Instance.CurrentDifficulty);
             if (record == null)
                 return;
 
@@ -376,7 +360,7 @@ namespace DTwoMFTimerHelper.Services
         {
             if (CurrentProfile != null)
             {
-                var record = FindIncompleteRecordForCurrentScene(CurrentProfile, CurrentScene, GetCurrentDifficulty());
+                var record = FindIncompleteRecordForCurrentScene(CurrentProfile, CurrentScene, ProfileService.Instance.CurrentDifficulty);
                 if (record != null)
                 {
                     record.LatestTime = DateTime.Now;
@@ -398,7 +382,7 @@ namespace DTwoMFTimerHelper.Services
             try
             {
                 int actValue = SceneManager.GetSceneActValue(CurrentScene);
-                var difficulty = GetCurrentDifficulty();
+                var difficulty = ProfileService.Instance.CurrentDifficulty;
 
                 // 计算实际持续时间
                 TimeSpan actualDuration = DateTime.Now - _startTime - _pausedDuration;

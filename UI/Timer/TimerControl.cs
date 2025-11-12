@@ -44,7 +44,7 @@ namespace DTwoMFTimerHelper.UI.Timer
         public Models.CharacterProfile? CurrentProfile 
         { 
             get => _timerService.CurrentProfile;
-            set => _timerService.CurrentProfile = value;
+            set => _timerService.CurrentProfile = value; // value可以为null，因为_timerService.CurrentProfile现在是可空类型
         }
         #endregion
 
@@ -182,7 +182,7 @@ namespace DTwoMFTimerHelper.UI.Timer
         public void SyncWithProfileManager()
         {
             TryGetProfileInfoFromMainForm();
-            historyControl?.LoadProfileHistoryData(CurrentProfile, _timerService.CurrentScene, _timerService.CurrentCharacter, _timerService.GetCurrentDifficulty());
+            historyControl?.LoadProfileHistoryData(CurrentProfile, _timerService.CurrentScene, _timerService.CurrentCharacter, ProfileService.Instance.CurrentDifficulty);
             UpdateUI();
             LogManager.WriteDebugLog("TimerControl", $"已同步角色和场景信息: {_timerService.CurrentCharacter} - {_timerService.CurrentScene}");
         }
@@ -211,7 +211,7 @@ namespace DTwoMFTimerHelper.UI.Timer
             UpdateUI();
         }
 
-        public void UpdateUI()
+        private void UpdateUI()
         {
             // 更新状态指示按钮颜色
             if (btnStatusIndicator != null)
@@ -301,7 +301,7 @@ namespace DTwoMFTimerHelper.UI.Timer
 
         private string GetCurrentDifficultyText()
         {
-            var difficulty = _timerService.GetCurrentDifficulty();
+            var difficulty = ProfileService.Instance.CurrentDifficulty;
             return SceneManager.GetLocalizedDifficultyName(difficulty);
         }
         #endregion

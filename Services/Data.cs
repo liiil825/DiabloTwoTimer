@@ -249,8 +249,6 @@ namespace DTwoMFTimerHelper.Services
             return SceneService.GetEnglishSceneName(sceneName);
         }
 
-
-
         // 根据名称查找角色档案
         public static CharacterProfile? FindProfileByName(string name, bool includeHidden = false)
         {

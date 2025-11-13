@@ -21,7 +21,7 @@ namespace DTwoMFTimerHelper.UI.Pomodoro
         // 事件
         public event EventHandler? BreakSkipped;
 
-        private System.Windows.Forms.Timer breakTimer;
+        private readonly System.Windows.Forms.Timer breakTimer;
 
         public BreakForm(int breakDurationMinutes, BreakType breakType)
         {

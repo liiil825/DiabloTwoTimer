@@ -78,9 +78,9 @@ namespace DTwoMFTimerHelper.UI.Profiles
                 
                 lstCharacters!.Items.Clear();
                 LogManager.WriteDebugLog("SwitchCharacterForm", "[详细调试] 已清空角色列表");
-                
+
                 LogManager.WriteDebugLog("SwitchCharacterForm", $"[详细调试] 找到 {profiles.Count} 个角色档案");
-                
+
                 // 显示每个角色的详细信息
                 foreach (var profile in profiles)
                 {

@@ -183,7 +183,9 @@ namespace DTwoMFTimerHelper.Services
 
                 CurrentProfile = profile;
                 LogManager.WriteDebugLog("ProfileService", $"成功切换到角色: {profile.Name}");
-                
+
+                // 同步未完成记录到定时器
+                CheckIncompleteRecord();
                 return true;
             }
             catch (Exception ex)
@@ -210,10 +212,11 @@ namespace DTwoMFTimerHelper.Services
                 {
                     CurrentProfile = null;
                 }
-                
+
                 ProfileListChanged?.Invoke();
+                SyncResetToTimer();
                 LogManager.WriteDebugLog("ProfileService", $"成功删除角色: {profile.Name}");
-                
+
                 return true;
             }
             catch (Exception ex)
@@ -226,7 +229,7 @@ namespace DTwoMFTimerHelper.Services
         /// <summary>
         /// 获取所有角色档案
         /// </summary>
-        public List<CharacterProfile> GetAllProfiles()
+        public static List<CharacterProfile> GetAllProfiles()
         {
             return DataService.LoadAllProfiles(false);
         }
@@ -234,7 +237,7 @@ namespace DTwoMFTimerHelper.Services
         /// <summary>
         /// 根据名称查找角色档案
         /// </summary>
-        public CharacterProfile? FindProfileByName(string name)
+        public static CharacterProfile? FindProfileByName(string name)
         {
             return DataService.FindProfileByName(name);
         }
@@ -257,10 +260,6 @@ namespace DTwoMFTimerHelper.Services
                 // 获取场景的纯英文名称（与记录存储格式一致）
                 string pureEnglishSceneName = LanguageManager.GetPureEnglishSceneName(CurrentScene);
                 LogManager.WriteDebugLog("ProfileService", $"纯英文场景名称: {pureEnglishSceneName}");
-
-                // 记录当前配置文件中的记录数量
-                LogManager.WriteDebugLog("ProfileService", $"当前角色记录数量: {CurrentProfile.Records.Count}");
-
                 // 查找同场景、同难度、未完成的记录
                 bool hasIncompleteRecord = CurrentProfile.Records.Any(r =>
                     r.SceneName == pureEnglishSceneName &&
@@ -268,18 +267,6 @@ namespace DTwoMFTimerHelper.Services
                     !r.IsCompleted);
 
                 LogManager.WriteDebugLog("ProfileService", $"是否存在未完成记录: {hasIncompleteRecord}");
-
-                // 记录第一条匹配场景和难度的记录详细信息（用于调试）
-                var matchingRecord = CurrentProfile.Records.FirstOrDefault(r =>
-                    r.SceneName == pureEnglishSceneName &&
-                    r.Difficulty == CurrentDifficulty);
-                
-                if (matchingRecord != null)
-                {
-                    LogManager.WriteDebugLog("ProfileService", 
-                        $"找到匹配记录 - 场景: {matchingRecord.SceneName}, 难度: {matchingRecord.Difficulty}, 完成状态: {matchingRecord.IsCompleted}");
-                }
-
                 return hasIncompleteRecord;
             }
             catch (Exception ex)
@@ -418,6 +405,53 @@ namespace DTwoMFTimerHelper.Services
         {
             bool hasIncompleteRecord = HasIncompleteRecord();
             HasIncompleteRecordChanged?.Invoke(hasIncompleteRecord);
+            SyncResetToTimer();
+            // 如果存在未完成记录，同步到TimerService
+            if (hasIncompleteRecord)
+            {
+                SyncIncompleteRecordToTimer();
+            }
+        }
+        
+        /// <summary>
+        /// 将未完成记录同步到TimerService
+        /// </summary>
+        private void SyncIncompleteRecordToTimer()
+        {
+            try
+            {
+                if (CurrentProfile == null || string.IsNullOrEmpty(CurrentScene))
+                    return;
+                
+                // 获取纯英文场景名称以匹配记录
+                string pureEnglishSceneName = LanguageManager.GetPureEnglishSceneName(CurrentScene);
+                
+                // 查找未完成记录
+                var incompleteRecord = CurrentProfile.Records.FirstOrDefault(r =>
+                    r.SceneName == pureEnglishSceneName &&
+                    r.Difficulty == CurrentDifficulty &&
+                    !r.IsCompleted);
+                
+                if (incompleteRecord != null)
+                {
+                    LogManager.WriteDebugLog("ProfileService", $"同步未完成记录到Timer: 场景={pureEnglishSceneName}, 开始时间={incompleteRecord.StartTime}");
+                    
+                    // 使用TimerService提供的公共方法来恢复状态，避免使用反射
+                    var timerService = TimerService.Instance;
+                    timerService.RestoreFromIncompleteRecord(incompleteRecord.StartTime, incompleteRecord.ElapsedTime ?? 0);
+                    
+                    LogManager.WriteDebugLog("ProfileService", "未完成记录已成功同步到TimerService");
+                }
+            }
+            catch (Exception ex)
+            {
+                LogManager.WriteDebugLog("ProfileService", $"同步未完成记录到Timer失败: {ex.Message}, 堆栈: {ex.StackTrace}");
+            }
+        }
+        private static void SyncResetToTimer()
+        {
+            TimerService.Instance.Reset();
+            TimerHistoryService.Instance.ResetHistoryData();
         }
         #endregion
     }

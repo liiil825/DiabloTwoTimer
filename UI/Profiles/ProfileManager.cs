@@ -61,9 +61,9 @@ namespace DTwoMFTimerHelper.UI.Profiles
             btnCreateCharacter = new Button
             {
                 Location = new System.Drawing.Point(30, 30),
-                Margin = new Padding(6),
+                Margin = new Padding(4),
                 Name = "btnCreateCharacter",
-                Size = new System.Drawing.Size(140, 40),
+                Size = new System.Drawing.Size(120, 40),
                 TabIndex = 0,
                 UseVisualStyleBackColor = true
             };
@@ -72,9 +72,9 @@ namespace DTwoMFTimerHelper.UI.Profiles
             btnSwitchCharacter = new Button
             {
                 Location = new System.Drawing.Point(190, 30),
-                Margin = new Padding(6),
+                Margin = new Padding(4),
                 Name = "btnSwitchCharacter",
-                Size = new System.Drawing.Size(140, 40),
+                Size = new System.Drawing.Size(120, 40),
                 TabIndex = 1,
                 UseVisualStyleBackColor = true
             };
@@ -83,9 +83,9 @@ namespace DTwoMFTimerHelper.UI.Profiles
             btnDeleteCharacter = new Button
             {
                 Location = new System.Drawing.Point(350, 30),
-                Margin = new Padding(6),
+                Margin = new Padding(4),
                 Name = "btnDeleteCharacter",
-                Size = new System.Drawing.Size(140, 40),
+                Size = new System.Drawing.Size(120, 40),
                 TabIndex = 2,
                 UseVisualStyleBackColor = true,
                 Enabled = false
@@ -188,7 +188,7 @@ namespace DTwoMFTimerHelper.UI.Profiles
             // ProfileManager
             AutoScaleDimensions = new System.Drawing.SizeF(13F, 28F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.AddRange(new Control[] {
+            Controls.AddRange([
                 btnCreateCharacter,
                 btnSwitchCharacter,
                 btnDeleteCharacter,
@@ -200,7 +200,7 @@ namespace DTwoMFTimerHelper.UI.Profiles
                 lblCurrentProfile,
                 lblTime,
                 lblStats
-            });
+            ]);
             Margin = new Padding(6);
             Name = "ProfileManager";
             Size = new System.Drawing.Size(542, 450);
@@ -239,7 +239,6 @@ namespace DTwoMFTimerHelper.UI.Profiles
             try
             {
                 var settings = Services.SettingsManager.LoadSettings();
-                
                 // 加载上次使用的场景
                 if (!string.IsNullOrEmpty(settings.LastUsedScene) && cmbScene != null)
                 {
@@ -344,7 +343,7 @@ namespace DTwoMFTimerHelper.UI.Profiles
             {
                 // 添加日志记录开始检查过程
                 WriteDebugLog("开始检查未完成记录");
-                
+
                 // 检查是否有未完成记录
                 bool hasIncompleteRecord = false;
                 if (currentProfile != null)
@@ -356,11 +355,11 @@ namespace DTwoMFTimerHelper.UI.Profiles
                     {
                         var difficulty = GetSelectedDifficulty();
                         WriteDebugLog($"选中难度: {difficulty}");
-                        
+
                         // 获取场景的纯英文名称（与记录存储格式一致）
                         string sceneDisplayName = SceneService.GetSceneDisplayName(selectedScene);
                         WriteDebugLog($"场景显示名称: {sceneDisplayName}");
-                        
+
                         string pureSceneName = sceneDisplayName;
                         if (sceneDisplayName.StartsWith("ACT ") || sceneDisplayName.StartsWith("Act ") || sceneDisplayName.StartsWith("act "))
                         {
@@ -371,10 +370,10 @@ namespace DTwoMFTimerHelper.UI.Profiles
                                 WriteDebugLog($"提取纯场景名称: {pureSceneName}");
                             }
                         }
-                        
+
                         string pureEnglishSceneName = DTwoMFTimerHelper.Utils.LanguageManager.GetPureEnglishSceneName(sceneDisplayName);
                         WriteDebugLog($"获取纯英文场景名称: {pureEnglishSceneName}");
-                        
+
                         // 记录当前配置文件中的记录数量
                         WriteDebugLog($"当前角色记录数量: {currentProfile.Records.Count}");
                               
@@ -408,27 +407,27 @@ namespace DTwoMFTimerHelper.UI.Profiles
                 // 根据是否有未完成记录设置按钮文本
                 if (hasIncompleteRecord)
                 {
-                    btnStartStop.Text = DTwoMFTimerHelper.Utils.LanguageManager.GetString("ContinueFarm");
+                    btnStartStop.Text = LanguageManager.GetString("ContinueFarm");
                     WriteDebugLog("设置按钮文本为: ContinueFarm");
                 }
                 else
                 {
-                    btnStartStop.Text = DTwoMFTimerHelper.Utils.LanguageManager.GetString("StartTimer");
+                    btnStartStop.Text = LanguageManager.GetString("StartTimer");
                     WriteDebugLog("设置按钮文本为: StartTimer");
                 }
             }
-            if (lblScene != null) lblScene.Text = DTwoMFTimerHelper.Utils.LanguageManager.GetString("SelectScene");
-            if (lblDifficulty != null) lblDifficulty.Text = DTwoMFTimerHelper.Utils.LanguageManager.GetString("DifficultyLabel");
+            if (lblScene != null) lblScene.Text = LanguageManager.GetString("SelectScene");
+            if (lblDifficulty != null) lblDifficulty.Text = LanguageManager.GetString("DifficultyLabel");
             
             // 更新当前角色显示
             if (currentProfile != null)
             {
-                string className = Utils.LanguageManager.GetLocalizedClassName(currentProfile.Class);
-                if (lblCurrentProfile != null) lblCurrentProfile.Text = Utils.LanguageManager.GetString("CurrentCharacter", currentProfile.Name, className);
+                string className = LanguageManager.GetLocalizedClassName(currentProfile.Class);
+                if (lblCurrentProfile != null) lblCurrentProfile.Text = LanguageManager.GetString("CurrentCharacter", currentProfile.Name, className);
             }
             else
             {
-                if (lblCurrentProfile != null) lblCurrentProfile.Text = Utils.LanguageManager.GetString("CurrentCharacterNotSelected");
+                if (lblCurrentProfile != null) lblCurrentProfile.Text = LanguageManager.GetString("CurrentCharacterNotSelected");
             }
             
             // 隐藏时间和统计信息标签，去掉红色标注
@@ -508,25 +507,25 @@ namespace DTwoMFTimerHelper.UI.Profiles
         }
 
         private void BtnSwitchCharacter_Click(object? sender, EventArgs e)
-{
-    using var form = new SwitchCharacterForm();
-    if (form.ShowDialog() == DialogResult.OK && form.SelectedProfile != null)
-    {
-        try
         {
-            WriteDebugLog("开始切换角色...");
-            
-            var selectedProfile = form.SelectedProfile;
-
-            // 验证角色数据
-            if (selectedProfile == null || string.IsNullOrWhiteSpace(selectedProfile.Name))
+            using var form = new SwitchCharacterForm();
+            if (form.ShowDialog() == DialogResult.OK && form.SelectedProfile != null)
             {
-                throw new InvalidOperationException("无效的角色数据");
-            }
+                try
+                {
+                    WriteDebugLog("开始切换角色...");
+                    
+                    var selectedProfile = form.SelectedProfile;
 
-            // 使用 ProfileService 的单例来统一管理角色切换
-            bool switchResult = ProfileService.Instance.SwitchCharacter(selectedProfile);
-            
+                    // 验证角色数据
+                    if (selectedProfile == null || string.IsNullOrWhiteSpace(selectedProfile.Name))
+                    {
+                        throw new InvalidOperationException("无效的角色数据");
+                    }
+
+                    // 使用 ProfileService 的单例来统一管理角色切换
+                    bool switchResult = ProfileService.Instance.SwitchCharacter(selectedProfile);
+                    
             if (switchResult)
             {
                 // 更新本地引用
@@ -580,7 +579,7 @@ namespace DTwoMFTimerHelper.UI.Profiles
         
         // 场景选择变更事件处理
         private void CmbScene_SelectedIndexChanged(object? sender, EventArgs e)
-        {            
+        {
             // 当场景改变时，更新UI和ProfileService
             if (cmbScene != null)
             {
@@ -660,16 +659,15 @@ namespace DTwoMFTimerHelper.UI.Profiles
                 var settings = SettingsManager.LoadSettings();
                 string lastUsedProfileName = settings.LastUsedProfile;
                 WriteDebugLog($"从配置文件加载设置: LastUsedProfile={lastUsedProfileName}");
-                
+
                 if (!string.IsNullOrWhiteSpace(lastUsedProfileName))
                 {
                     WriteDebugLog($"尝试加载上次使用的角色档案: {lastUsedProfileName}");
-                    Console.WriteLine($"尝试加载上次使用的角色档案: {lastUsedProfileName}");
-                    
+
                     // 加载所有角色档案
                     var allProfiles = Services.DataService.LoadAllProfiles(false);
                     WriteDebugLog($"已加载所有角色档案，数量: {allProfiles.Count}");
-                    
+
                     // 查找上次使用的角色档案
                     var profile = allProfiles.FirstOrDefault(p => p.Name == lastUsedProfileName);
                     if (profile != null)
@@ -678,24 +676,20 @@ namespace DTwoMFTimerHelper.UI.Profiles
                         currentRecord = null;
                         UpdateUI();
                         WriteDebugLog($"成功加载上次使用的角色档案: {lastUsedProfileName}, profile.Name={profile.Name}");
-                        Console.WriteLine($"成功加载上次使用的角色档案: {lastUsedProfileName}");
                     }
                     else
                     {
                         WriteDebugLog($"未找到上次使用的角色档案: {lastUsedProfileName}");
-                        Console.WriteLine($"未找到上次使用的角色档案: {lastUsedProfileName}");
                     }
                 }
                 else
                 {
                     WriteDebugLog("没有保存的上次使用角色档案");
-                    Console.WriteLine("没有保存的上次使用角色档案");
                 }
             }
             catch (Exception ex)
             {
                 WriteDebugLog($"加载上次使用角色档案失败: {ex.Message}, 堆栈: {ex.StackTrace}");
-                Console.WriteLine($"加载上次使用角色档案失败: {ex.Message}");
             }
         }
     }

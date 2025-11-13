@@ -73,7 +73,6 @@ namespace DTwoMFTimerHelper.Services
                         r.Difficulty == difficulty).ToList();
 
                     LogManager.WriteDebugLog("TimerHistoryService", $"从角色档案中加载了 {sceneRecords.Count} 条记录: {characterName} - {pureEnglishSceneName}, 难度: {difficulty}");
-                    Console.WriteLine($"从角色档案中加载了 {sceneRecords.Count} 条记录: {characterName} - {pureEnglishSceneName}, 难度: {difficulty}");
 
                     // 如果有记录，更新统计数据
                     if (sceneRecords.Count > 0)
@@ -83,48 +82,49 @@ namespace DTwoMFTimerHelper.Services
                         // 用于计算平均时间的总和
                         double totalSeconds = 0;
 
+                        // 先按StartTime升序排序原始记录，确保按时间从旧到新排列
+                        var sortedRecords = sceneRecords.OrderBy(r => r.StartTime).ToList();
+                        LogManager.WriteDebugLog("TimerHistoryService", $"按StartTime升序排序后的记录数: {sortedRecords.Count}");
+
                         // 转换为TimeSpan并添加到历史记录
-                        foreach (var record in sceneRecords)
+                        for (int i = 0; i < sortedRecords.Count; i++)
                         {
+                            var record = sortedRecords[i];
                             // 添加详细的初始值日志，记录record对象在赋值前的状态
                             LogManager.WriteDebugLog("TimerHistoryService", $"[加载记录前状态] ID: {record.GetHashCode()}, StartTime: {record.StartTime}, EndTime: {(record.EndTime.HasValue ? record.EndTime.Value.ToString() : "null")}, LatestTime: {(record.LatestTime.HasValue ? record.LatestTime.Value.ToString() : "null")}, ElapsedTime: {(record.ElapsedTime.HasValue ? record.ElapsedTime.Value.ToString() : "null")}, SceneName: {record.SceneName}");
 
-                            // 添加详细的调试日志
-                            Console.WriteLine($"[调试] 加载记录 - StartTime: {record.StartTime}, EndTime: {record.EndTime}, LatestTime: {record.LatestTime}, ElapsedTime: {record.ElapsedTime}");
-
                             // 手动计算正确的持续时间
                             double correctDuration;
-                            int recordIndex = sceneRecords.IndexOf(record);
-                            LogManager.WriteDebugLog("TimerHistoryService", $"[加载记录 #{recordIndex + 1}] 开始计算持续时间");
-                            LogManager.WriteDebugLog("TimerHistoryService", $"[加载记录 #{recordIndex + 1}] StartTime: {record.StartTime}, EndTime: {record.EndTime}, LatestTime: {record.LatestTime}, ElapsedTime: {record.ElapsedTime}");
+                            LogManager.WriteDebugLog("TimerHistoryService", $"[加载记录 #{i + 1}] 开始计算持续时间");
+                            LogManager.WriteDebugLog("TimerHistoryService", $"[加载记录 #{i + 1}] StartTime: {record.StartTime}, EndTime: {record.EndTime}, LatestTime: {record.LatestTime}, ElapsedTime: {record.ElapsedTime}");
 
                             if (record.ElapsedTime.HasValue && record.ElapsedTime.Value > 0 && record.LatestTime.HasValue && record.EndTime.HasValue)
                             {
                                 double latestToEnd = (record.EndTime.Value - record.LatestTime.Value).TotalSeconds;
                                 correctDuration = record.ElapsedTime.Value + latestToEnd;
-                                LogManager.WriteDebugLog("TimerHistoryService", $"[加载记录 #{recordIndex + 1}] 计算路径: ElapsedTime + (EndTime - LatestTime) = {record.ElapsedTime.Value} + {latestToEnd} = {correctDuration}秒");
+                                LogManager.WriteDebugLog("TimerHistoryService", $"[加载记录 #{i + 1}] 计算路径: ElapsedTime + (EndTime - LatestTime) = {record.ElapsedTime.Value} + {latestToEnd} = {correctDuration}秒");
                             }
                             else if (record.EndTime.HasValue)
                             {
                                 correctDuration = (record.EndTime.Value - record.StartTime).TotalSeconds;
-                                LogManager.WriteDebugLog("TimerHistoryService", $"[加载记录 #{recordIndex + 1}] 计算路径: EndTime - StartTime = {correctDuration}秒");
+                                LogManager.WriteDebugLog("TimerHistoryService", $"[加载记录 #{i + 1}] 计算路径: EndTime - StartTime = {correctDuration}秒");
                             }
                             else
                             {
                                 correctDuration = 0;
-                                LogManager.WriteDebugLog("TimerHistoryService", $"[加载记录 #{recordIndex + 1}] 计算路径: 持续时间为0");
+                                LogManager.WriteDebugLog("TimerHistoryService", $"[加载记录 #{i + 1}] 计算路径: 持续时间为0");
                             }
 
                             TimeSpan duration = TimeSpan.FromSeconds(correctDuration);
                             RunHistory.Add(duration);
                             totalSeconds += correctDuration;
-                            LogManager.WriteDebugLog("TimerHistoryService", $"[加载记录 #{recordIndex + 1}] 成功添加到RunHistory: {duration}");
+                            LogManager.WriteDebugLog("TimerHistoryService", $"[加载记录 #{i + 1}] 成功添加到RunHistory: {duration}");
 
                             // 更新最快时间
                             if (duration < FastestTime)
                             {
                                 FastestTime = duration;
-                                LogManager.WriteDebugLog("TimerHistoryService", $"[加载记录 #{recordIndex + 1}] 更新最快时间为: {FastestTime}");
+                                LogManager.WriteDebugLog("TimerHistoryService", $"[加载记录 #{i + 1}] 更新最快时间为: {FastestTime}");
                             }
                         }
 
@@ -134,24 +134,14 @@ namespace DTwoMFTimerHelper.Services
                             AverageTime = TimeSpan.FromSeconds(totalSeconds / RunCount);
                         }
 
-                        // 按时间从旧到新排序，让时间靠前的记录排在前面
-                        RunHistory.Sort((a, b) => a.CompareTo(b));
-
                         LogManager.WriteDebugLog("TimerHistoryService", "[加载完成] RunHistory排序后内容:");
-                        for (int i = 0; i < RunHistory.Count; i++)
-                        {
-                            LogManager.WriteDebugLog("TimerHistoryService", $"[加载完成] 记录 #{i + 1}: {RunHistory[i]}");
-                        }
                         LogManager.WriteDebugLog("TimerHistoryService", $"[加载完成] 运行次数: {RunCount}, 最快时间: {FastestTime}, 平均时间: {AverageTime}");
-                        Console.WriteLine($"加载完成，运行次数: {RunCount}, 最快时间: {FastestTime}, 平均时间: {AverageTime}");
-
                         return true;
                     }
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"加载历史数据失败: {ex.Message}");
-                    LogManager.WriteDebugLog("TimerHistoryService", $"加载历史数据异常: {ex.Message}, 堆栈: {ex.StackTrace}");
+                    LogManager.WriteErrorLog("TimerHistoryService", $"加载历史数据异常", ex);
                 }
             }
             return false;

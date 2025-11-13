@@ -10,7 +10,7 @@ namespace DTwoMFTimerHelper
         /// 应用程序的主入口点。
         /// </summary>
         [STAThread]
-        static void Main()
+        static void Main(string[] args)
         {
             // 添加全局异常处理
             Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
@@ -20,7 +20,11 @@ namespace DTwoMFTimerHelper
             Application.SetHighDpiMode(HighDpiMode.SystemAware);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            
+            // 检查命令行参数
+            if (args.Length > 0 && args[0].Equals("--debug", StringComparison.CurrentCultureIgnoreCase))
+            {
+                Utils.LogManager.IsDebugEnabled = true;
+            }
             try
             {
                 Application.Run(new UI.MainForm());

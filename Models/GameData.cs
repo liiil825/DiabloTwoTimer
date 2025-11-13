@@ -122,13 +122,9 @@ namespace DTwoMFTimerHelper.Models
                 }
                 catch (Exception ex)
                 {
-                    try
-                    {
-                        LogManager.WriteDebugLog("GameData", $"[DurationSeconds] 计算异常: {ex.Message}");
-                        LogManager.WriteDebugLog("GameData", $"[DurationSeconds] 异常堆栈: {ex.StackTrace}");
-                    }
-                    catch {}
-                    
+                   
+                    LogManager.WriteErrorLog("GameData", "[DurationSeconds] 计算异常", ex);
+
                     // 原始计算逻辑作为备用
                     if (!EndTime.HasValue)
                         return 0;

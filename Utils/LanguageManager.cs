@@ -70,7 +70,7 @@ namespace DTwoMFTimerHelper.Utils
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error loading translations: {ex.Message}");
+                    LogManager.WriteErrorLog("LanguageManager", $"Error loading translations: {ex.Message}");
                 }
             }
             

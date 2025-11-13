@@ -10,18 +10,24 @@ namespace DTwoMFTimerHelper.Utils
     public static class LogManager
     {
         /// <summary>
-        /// 写入调试日志
+        /// 控制是否启用调试日志记录
+        /// </summary>
+        public static bool IsDebugEnabled { get; set; } = false;
+
+        /// <summary>
+        /// 写入调试日志（仅在调试模式启用时记录）
         /// </summary>
         /// <param name="className">调用类名</param>
         /// <param name="message">日志消息</param>
         public static void WriteDebugLog(string className, string message)
         {
+            // 只有在调试模式启用时才记录调试日志
+            if (!IsDebugEnabled) return;
+            
             try
             {
                 // 调试日志路径
                 string debugLogPath = Path.Combine(Environment.CurrentDirectory, "debug_log.txt");
-                // 调试日志：记录文件路径和当前时间
-                Console.WriteLine($"[调试] 日志文件路径: {debugLogPath}, 当前时间: {DateTime.Now}");
                 using StreamWriter writer = new StreamWriter(debugLogPath, true);
                 writer.WriteLine($"[{DateTime.Now}] [{className}] {message}");
             }
@@ -37,10 +43,11 @@ namespace DTwoMFTimerHelper.Utils
             throw new NotImplementedException();
         }
         /// <summary>
-        /// 写入调试日志
+        /// 写入错误日志
         /// </summary>
         /// <param name="className">调用类名</param>
         /// <param name="message">日志消息</param>
+        /// <param name="ex">异常对象</param>
         public static void WriteErrorLog(string className, string message, Exception? ex = null)
         {
             try
@@ -48,9 +55,13 @@ namespace DTwoMFTimerHelper.Utils
                 // 错误日志路径
                 string errorLogPath = Path.Combine(Environment.CurrentDirectory, "error_log.txt");
                 // 错误日志：记录文件路径和当前时间
-                Console.WriteLine($"[错误] 日志文件路径: {errorLogPath}, 当前时间: {DateTime.Now}");
                 using StreamWriter writer = new StreamWriter(errorLogPath, true);
-                writer.WriteLine($"[{DateTime.Now}] [{className}] {message} {ex?.Message ?? string.Empty}");
+                writer.WriteLine($"[{DateTime.Now}] [{className}] {message}");
+                if (ex != null)
+                {
+                    writer.WriteLine($"[{DateTime.Now}] [{className}] 异常消息: {ex.Message}");
+                    writer.WriteLine($"[{DateTime.Now}] [{className}] 异常堆栈: {ex.StackTrace}");
+                }
             }
             catch (Exception logEx)
             {

@@ -75,36 +75,36 @@ namespace DTwoMFTimerHelper.Services
                 // 验证profile对象不为null
                 if (profile == null)
                 {
-                    Console.WriteLine("保存失败: profile对象为null");
+                    LogManager.WriteDebugLog("DataService", "保存失败: profile对象为null");
                     throw new ArgumentNullException(nameof(profile), "保存失败: profile对象为null");
                 }
 
-                Console.WriteLine($"开始保存角色: {profile.Name}");
+                LogManager.WriteDebugLog("DataService", $"开始保存角色: {profile.Name}");
 
                 // 确保目录存在
                 try
                 {
                     if (!Directory.Exists(ProfilesDirectory))
                     {
-                        Console.WriteLine($"创建目录: {ProfilesDirectory}");
+                        LogManager.WriteDebugLog("DataService", $"创建目录: {ProfilesDirectory}");
                         Directory.CreateDirectory(ProfilesDirectory);
                         // 验证目录是否创建成功
                         if (!Directory.Exists(ProfilesDirectory))
                         {
                             throw new IOException($"无法创建目录: {ProfilesDirectory}");
                         }
-                        Console.WriteLine($"目录创建成功: {ProfilesDirectory}");
+                        LogManager.WriteDebugLog("DataService", $"目录创建成功: {ProfilesDirectory}");
                     }
                 }
                 catch (Exception dirEx)
                 {
-                    Console.WriteLine($"创建目录失败: {dirEx.Message}");
+                    LogManager.WriteErrorLog("DataService", $"创建目录失败: {dirEx.Message}", dirEx);
                     throw new IOException($"创建配置文件目录失败: {dirEx.Message}", dirEx);
                 }
 
                 // 使用统一的方法获取文件路径
                 var filePath = GetProfileFilePath(profile.Name);
-                Console.WriteLine($"准备保存到文件: {filePath}");
+                LogManager.WriteDebugLog("DataService", $"准备保存到文件: {filePath}");
 
                 // 序列化数据
                 var yaml = serializer.Serialize(profile);
@@ -112,7 +112,7 @@ namespace DTwoMFTimerHelper.Services
                 {
                     throw new InvalidOperationException("序列化失败，生成了空的YAML数据");
                 }
-                Console.WriteLine($"序列化成功，数据长度: {yaml.Length} 字符");
+                LogManager.WriteDebugLog($"序列化成功，数据长度: {yaml.Length} 字符");
 
                 // 使用try-finally确保文件流正确关闭
                 bool saveSuccess = false;
@@ -129,7 +129,7 @@ namespace DTwoMFTimerHelper.Services
                             streamWriter.Write(yaml);
                             streamWriter.Flush();
                             FileInfo fileInfo = new FileInfo(filePath);
-                            Console.WriteLine($"文件保存成功，大小: {fileInfo.Length} 字节");
+                            LogManager.WriteDebugLog($"文件保存成功，大小: {fileInfo.Length} 字节");
                             saveSuccess = true;
                         }
 
@@ -141,7 +141,7 @@ namespace DTwoMFTimerHelper.Services
                             {
                                 throw new IOException("文件已创建但内容为空");
                             }
-                            Console.WriteLine($"文件验证成功，实际大小: {fileInfo.Length} 字节");
+                            LogManager.WriteDebugLog("DataService", $"文件验证成功，实际大小: {fileInfo.Length} 字节");
                         }
                         else
                         {
@@ -151,7 +151,7 @@ namespace DTwoMFTimerHelper.Services
                     catch (IOException ex) when (retryCount < maxRetries - 1)
                     {
                         retryCount++;
-                        Console.WriteLine($"文件保存失败，正在重试 ({retryCount}/{maxRetries}): {ex.Message}");
+                        LogManager.WriteErrorLog("DataService", $"文件保存失败，正在重试 ({retryCount}/{maxRetries}): {ex.Message}", ex);
                         System.Threading.Thread.Sleep(100); // 短暂延迟后重试
                     }
                 }
@@ -161,12 +161,11 @@ namespace DTwoMFTimerHelper.Services
                     throw new IOException($"在{maxRetries}次尝试后仍无法保存文件");
                 }
 
-                Console.WriteLine($"角色 {profile.Name} 保存完成");
+                LogManager.WriteDebugLog($"角色 {profile.Name} 保存完成");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"保存角色档案失败: {ex.Message}");
-                Console.WriteLine($"异常堆栈: {ex.StackTrace}");
+                LogManager.WriteErrorLog("DataService", $"保存角色档案失败", ex);
 
                 // 在所有模式下都显示错误信息，确保用户知道保存失败
                 string errorMsg = $"保存角色档案失败: {ex.Message}\n文件路径: {ProfilesDirectory}";
@@ -186,19 +185,18 @@ namespace DTwoMFTimerHelper.Services
                 var filePath = GetProfileFilePath(profile.Name);
                 if (File.Exists(filePath))
                 {
-                    Console.WriteLine($"删除角色档案: {filePath}");
+                    LogManager.WriteDebugLog("DataService", $"删除角色档案: {filePath}");
                     File.Delete(filePath);
-                    Console.WriteLine($"角色档案删除成功: {profile.Name}");
+                    LogManager.WriteDebugLog("DataService", $"角色档案删除成功: {profile.Name}");
                 }
                 else
                 {
-                    Console.WriteLine($"文件不存在，无法删除: {filePath}");
+                    LogManager.WriteDebugLog("DataService", $"文件不存在，无法删除: {filePath}");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"删除角色档案失败: {ex.Message}");
-                Console.WriteLine($"异常堆栈: {ex.StackTrace}");
+                LogManager.WriteErrorLog("DataService", $"删除角色档案失败", ex);
 
                 // 在所有模式下都显示错误信息
                 string errorMsg = $"删除角色档案失败: {ex.Message}";

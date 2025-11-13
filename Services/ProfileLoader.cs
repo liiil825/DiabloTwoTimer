@@ -120,10 +120,7 @@ namespace DTwoMFTimerHelper.Services
                     }
                     catch (Exception ex)
                     {
-                        LogManager.WriteDebugLog("ProfileLoader", $"加载单个角色档案失败 ({file}): {ex.Message}");
-                        LogManager.WriteDebugLog("ProfileLoader", $"异常类型: {ex.GetType().Name}");
-                        LogManager.WriteDebugLog("ProfileLoader", $"异常堆栈: {ex.StackTrace}");
-                        // 继续处理其他文件，不中断整个加载过程
+                        LogManager.WriteErrorLog("ProfileLoader", $"加载单个角色档案失败 ({file})", ex);
                     }
                 }
                 
@@ -131,14 +128,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                LogManager.WriteDebugLog("ProfileLoader", $"加载角色档案失败: {ex.Message}");
-                LogManager.WriteDebugLog("ProfileLoader", $"异常类型: {ex.GetType().Name}");
-                LogManager.WriteDebugLog("ProfileLoader", $"异常堆栈: {ex.StackTrace}");
-                
-                // 在调试模式下显示错误信息
-#if DEBUG
-                MessageBox.Show($"加载角色档案失败: {ex.Message}\n目录: {ProfilesDirectory}", "加载错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-#endif
+                LogManager.WriteErrorLog("ProfileLoader", $"加载角色档案失败", ex);
             }
             
             return profiles;

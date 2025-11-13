@@ -286,11 +286,15 @@ namespace DTwoMFTimerHelper.Services
                     LogManager.WriteDebugLog("TimerService", $"已创建开始记录到角色档案: {currentCharacter} - {currentScene}, ACT: {actValue}, 开始时间: {_startTime}");
                 }
                 else
-                {                    LogManager.WriteDebugLog("TimerService", $"已创建临时记录但未保存到档案: {currentCharacter} - {currentScene}, ACT: {actValue}, 开始时间: {_startTime}");
-                }            }
+                {
+                    LogManager.WriteDebugLog("TimerService", $"已创建临时记录但未保存到档案: {currentCharacter} - {currentScene}, ACT: {actValue}, 开始时间: {_startTime}");
+                }
+            }
             catch (Exception ex)
-            {                LogManager.WriteDebugLog("TimerService", $"创建开始记录失败: {ex.Message}, 堆栈: {ex.StackTrace}");
-            }        }
+            {
+                LogManager.WriteErrorLog("TimerService", $"创建开始记录失败", ex);
+            }
+        }
 
         /// <summary>
         /// 更新未完成记录
@@ -344,7 +348,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                LogManager.WriteDebugLog("TimerService", $"更新未完成记录失败: {ex.Message}, 堆栈: {ex.StackTrace}");
+                LogManager.WriteErrorLog("TimerService", $"更新未完成记录失败", ex);
             }
         }
 
@@ -428,7 +432,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                LogManager.WriteDebugLog("TimerService", $"保存计时记录失败: {ex.Message}, 堆栈: {ex.StackTrace}");
+                LogManager.WriteErrorLog("TimerService", $"保存计时记录失败", ex);
             }
         }
 
@@ -466,7 +470,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                LogManager.WriteDebugLog("TimerService", $"保存计时状态失败: {ex.Message}");
+                LogManager.WriteErrorLog("TimerService", $"保存计时状态失败", ex);
             }
         }
 
@@ -490,7 +494,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                LogManager.WriteDebugLog("TimerService", $"清除计时状态失败: {ex.Message}");
+                LogManager.WriteErrorLog("TimerService", $"清除计时状态失败", ex);
             }
         }
 
@@ -522,7 +526,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                LogManager.WriteDebugLog("TimerService", $"恢复计时状态失败: {ex.Message}");
+                LogManager.WriteErrorLog("TimerService", $"恢复计时状态失败", ex);
             }
         }
         

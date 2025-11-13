@@ -128,7 +128,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                LogManager.WriteDebugLog("ProfileService", $"加载耕作场景失败: {ex.Message}");
+                LogManager.WriteErrorLog("ProfileService", $"加载耕作场景失败", ex);
             }
         }
 
@@ -159,8 +159,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                LogManager.WriteDebugLog("ProfileService", $"创建角色失败: {ex.Message}");
-                LogManager.WriteDebugLog("ProfileService", $"异常堆栈: {ex.StackTrace}");
+                LogManager.WriteErrorLog("ProfileService", $"创建角色失败", ex);
                 return null;
             }
         }
@@ -190,8 +189,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                LogManager.WriteDebugLog("ProfileService", $"切换角色失败: {ex.Message}");
-                LogManager.WriteDebugLog("ProfileService", $"异常堆栈: {ex.StackTrace}");
+                LogManager.WriteErrorLog("ProfileService", $"切换角色失败", ex);
                 return false;
             }
         }
@@ -221,7 +219,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                LogManager.WriteDebugLog("ProfileService", $"删除角色失败: {ex.Message}");
+                LogManager.WriteErrorLog("ProfileService", $"删除角色失败", ex);
                 return false;
             }
         }
@@ -271,7 +269,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                LogManager.WriteDebugLog("ProfileService", $"检查未完成记录时出错: {ex.Message}");
+                LogManager.WriteErrorLog("ProfileService", $"检查未完成记录时出错", ex);
                 return false;
             }
         }
@@ -368,7 +366,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                LogManager.WriteDebugLog("ProfileService", $"加载上次使用角色档案失败: {ex.Message}, 堆栈: {ex.StackTrace}");
+                LogManager.WriteErrorLog("ProfileService", $"加载上次使用角色档案失败", ex);
             }
         }
 
@@ -394,7 +392,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                LogManager.WriteDebugLog("ProfileService", $"加载上次使用场景失败: {ex.Message}");
+                LogManager.WriteErrorLog("ProfileService", $"加载上次使用场景失败", ex);
             }
         }
 
@@ -445,7 +443,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                LogManager.WriteDebugLog("ProfileService", $"同步未完成记录到Timer失败: {ex.Message}, 堆栈: {ex.StackTrace}");
+                LogManager.WriteErrorLog("ProfileService", $"同步未完成记录到Timer失败", ex);
             }
         }
         private static void SyncResetToTimer()

@@ -499,8 +499,7 @@ namespace DTwoMFTimerHelper.UI.Profiles
                 }
                 catch (Exception ex)
                 {
-                    WriteDebugLog($"创建角色失败: {ex.Message}");
-                    WriteDebugLog($"异常堆栈: {ex.StackTrace}");
+                    LogManager.WriteErrorLog("ProfileManager", $"创建角色失败", ex);
                     MessageBox.Show($"创建角色失败: {ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
@@ -550,8 +549,7 @@ namespace DTwoMFTimerHelper.UI.Profiles
         }
         catch (Exception ex)
         {
-            WriteDebugLog($"切换角色失败: {ex.Message}");
-            WriteDebugLog($"异常堆栈: {ex.StackTrace}");
+            LogManager.WriteErrorLog("ProfileManager", $"切换角色失败", ex);
             MessageBox.Show($"切换角色失败: {ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
@@ -643,8 +641,7 @@ namespace DTwoMFTimerHelper.UI.Profiles
             }
             catch (Exception ex)
             {                
-                WriteDebugLog($"同步TimerControl失败: {ex.Message}");
-                WriteDebugLog($"异常堆栈: {ex.StackTrace}");
+                LogManager.WriteErrorLog("ProfileManager", $"同步TimerControl失败", ex);
             }
         }
 
@@ -689,7 +686,7 @@ namespace DTwoMFTimerHelper.UI.Profiles
             }
             catch (Exception ex)
             {
-                WriteDebugLog($"加载上次使用角色档案失败: {ex.Message}, 堆栈: {ex.StackTrace}");
+                LogManager.WriteErrorLog("ProfileManager", $"加载上次使用角色档案失败", ex);
             }
         }
     }

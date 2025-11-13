@@ -1,7 +1,6 @@
 using System;
 using System.Windows.Forms;
 using System.Drawing;
-using System.Windows.Input;
 using System.Runtime.InteropServices;
 using DTwoMFTimerHelper.Utils; // Contains LanguageManager and LogManager
 using DTwoMFTimerHelper.Services;
@@ -9,7 +8,6 @@ using DTwoMFTimerHelper.UI.Timer;
 using DTwoMFTimerHelper.UI.Pomodoro;
 using DTwoMFTimerHelper.UI.Settings;
 using DTwoMFTimerHelper.UI.Profiles;
-using DTwoMFTimerHelper.Models;
 
 namespace DTwoMFTimerHelper.UI
 {
@@ -78,37 +76,30 @@ namespace DTwoMFTimerHelper.UI
         
         private static void LoadCharacterProfile()
          {
-             try
-             {
-                 Console.WriteLine("[启动测试] 开始加载角色档案...");
-                 // 调用DataService加载角色档案，分别测试includeHidden=true和false
-            Console.WriteLine("[启动测试] 测试1: 只加载非隐藏角色 (includeHidden=false)");
-            var profilesVisible = DTwoMFTimerHelper.Services.DataService.LoadAllProfiles(includeHidden: false);
-            Console.WriteLine($"[启动测试] 测试1结果: 找到 {profilesVisible.Count} 个非隐藏角色档案");
-            
-            Console.WriteLine("\n[启动测试] 测试2: 加载所有角色包括隐藏的 (includeHidden=true)");
-            var profilesAll = DTwoMFTimerHelper.Services.DataService.LoadAllProfiles(includeHidden: true);
-            Console.WriteLine($"[启动测试] 测试2结果: 找到 {profilesAll.Count} 个角色档案（包括隐藏的）");
-                 
+            try
+            {
+                LogManager.WriteDebugLog("MainForm", "[启动测试] 开始加载角色档案...");
+                // 调用DataService加载角色档案，分别测试includeHidden=true和false
+                LogManager.WriteDebugLog("MainForm", "[启动测试] 测试1: 只加载非隐藏角色 (includeHidden=false)");
+                var profilesVisible = DTwoMFTimerHelper.Services.DataService.LoadAllProfiles(includeHidden: false);
+                LogManager.WriteDebugLog("MainForm", $"[启动测试] 测试1结果: 找到 {profilesVisible.Count} 个非隐藏角色档案");
+                
+                LogManager.WriteDebugLog("MainForm", "\n[启动测试] 测试2: 加载所有角色包括隐藏的 (includeHidden=true)");
+                var profilesAll = DTwoMFTimerHelper.Services.DataService.LoadAllProfiles(includeHidden: true);
+                LogManager.WriteDebugLog("MainForm", $"[启动测试] 测试2结果: 找到 {profilesAll.Count} 个角色档案（包括隐藏的）");
+                    
                  // 显示每个角色的详细信息
-                 Console.WriteLine("\n[启动测试] 所有角色详细信息:");
-                 foreach (var profile in profilesAll)
-                 {
-                     Console.WriteLine($"[启动测试] - 角色: {profile.Name}, 职业: {profile.Class}, IsHidden: {profile.IsHidden}");
-                 }
+                LogManager.WriteDebugLog("MainForm", "\n[启动测试] 所有角色详细信息:");
+                foreach (var profile in profilesAll)
+                {
+                    LogManager.WriteDebugLog("MainForm", $"[启动测试] - 角色: {profile.Name}, 职业: {profile.Class}, IsHidden: {profile.IsHidden}");
+                }
                  
-                 Console.WriteLine("[启动测试] 角色档案加载完成");
+                LogManager.WriteDebugLog("MainForm", "[启动测试] 角色档案加载完成");
              }
             catch (Exception ex)
             {
-                Console.WriteLine("[启动测试] 加载角色档案失败: {0}", ex.Message);
-                Console.WriteLine("[启动测试] 异常堆栈: {0}", ex.StackTrace);
-                // 在调试模式下显示错误对话框
-#if DEBUG
-                MessageBox.Show("[启动测试] 加载角色档案失败: " + ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-#else
-                // 生产环境只记录日志，不显示错误
-#endif
+                LogManager.WriteErrorLog("MainForm", $"[启动测试] 加载角色档案失败", ex);
             }
         }
 

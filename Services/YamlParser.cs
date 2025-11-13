@@ -186,8 +186,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                LogManager.WriteDebugLog("YamlParser", $"手动解析失败: {ex.Message}");
-                LogManager.WriteDebugLog("YamlParser", $"异常堆栈: {ex.StackTrace}");
+                LogManager.WriteErrorLog("YamlParser", $"手动解析失败", ex);
                 return new CharacterProfile() { Name = "解析失败角色" };
             }
         }

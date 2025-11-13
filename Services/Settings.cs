@@ -1,9 +1,9 @@
 using System;
 using System.IO;
-using System.Windows.Forms;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 using DTwoMFTimerHelper.UI.Settings;
+using DTwoMFTimerHelper.Utils;
 
 namespace DTwoMFTimerHelper.Services
 {
@@ -72,7 +72,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"加载设置失败: {ex.Message}");
+                LogManager.WriteErrorLog("SettingsManager", $"加载设置失败", ex);
             }
             
             // 返回默认设置
@@ -96,7 +96,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"保存设置失败: {ex.Message}");
+                LogManager.WriteErrorLog("SettingsManager", $"保存设置失败", ex);
             }
         }
         

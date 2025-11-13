@@ -103,10 +103,10 @@ namespace DTwoMFTimerHelper.Services
                     int sceneCount = data.FarmingSpots.Count;
                     LogManager.WriteDebugLog("SceneService", $"反序列化成功，场景数量: {sceneCount}");
 
-                    // 只输出到控制台，不再显示弹窗
+                    // 只输出到日志，不再显示弹窗
                     int count = data.FarmingSpots != null ? data.FarmingSpots.Count : 0;
                     string keyInfo = $"文件路径: {FarmingSpotsPath}\n文件存在: {fileExists}\n场景数量: {count}";
-                    Console.WriteLine(keyInfo);
+                    LogManager.WriteDebugLog("SceneService", keyInfo);
 
                     // 更新缓存
                     _cachedFarmingSpots = data.FarmingSpots ?? [];
@@ -148,16 +148,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                LogManager.WriteDebugLog("SceneService", $"加载场景数据失败: {ex.Message}");
-                LogManager.WriteDebugLog("SceneService", $"异常类型: {ex.GetType().FullName}");
-                LogManager.WriteDebugLog("SceneService", $"异常堆栈: {ex.StackTrace}");
-                
-                // 如果有内部异常，也记录下来
-                if (ex.InnerException != null)
-                {
-                    LogManager.WriteDebugLog("SceneService", $"内部异常: {ex.InnerException.Message ?? "未知异常"}");
-                    LogManager.WriteDebugLog("SceneService", $"内部异常类型: {ex.InnerException.GetType().FullName ?? "未知类型"}");
-                }
+                LogManager.WriteErrorLog("SceneService", $"加载场景数据失败", ex);
             }
 
             return [];
@@ -274,7 +265,7 @@ namespace DTwoMFTimerHelper.Services
             }
             catch (Exception ex)
             {
-                LogManager.WriteDebugLog("SceneService", $"提取ACT值失败: {ex.Message}");
+                LogManager.WriteErrorLog("SceneService", $"提取ACT值失败", ex);
             }
             return 0; // 默认返回0
         }

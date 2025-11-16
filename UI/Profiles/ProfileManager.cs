@@ -571,25 +571,9 @@ namespace DTwoMFTimerHelper.UI.Profiles
 
         private void BtnStartStop_Click(object? sender, EventArgs e)
         {
-            try
-            {
-                WriteDebugLog("开始处理Farm按钮点击事件");
-                // 调用ProfileService的HandleStartFarm方法处理开始Farm逻辑
-                ProfileService.Instance.HandleStartFarm();
+            ProfileService.Instance.HandleStartFarm();
 
-                // 切换到计时Tab界面
-                if (this.FindForm() is MainForm mainForm && mainForm.TabControl != null)
-                {
-                    WriteDebugLog("切换到计时Tab界面");
-                    // 假设计时Tab是索引1
-                    mainForm.TabControl.SelectedIndex = 1;
-                }
-            }
-            catch (Exception ex)
-            {
-                LogManager.WriteErrorLog("ProfileManager", "处理Farm按钮点击事件失败", ex);
-                MessageBox.Show($"操作失败: {ex.Message}", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            MainServices.Instance.SetActiveTabPage(Models.TabPage.Timer);
         }
 
         // 场景选择变更事件处理

@@ -7,7 +7,29 @@ ProfileManager 选择时是中文，并且带有ACT前缀
 记录保存时，应该去掉ACT前缀并且只保存英文名称
 但查询时，应该把对应的名称转化为英文
 - [x] 加载未完成的时间显示逻辑不对
-- [ ] 去掉使用MainForm的引用
+- [x] 重构MainForm的UI和逻辑分离
+帮我重构下.net代码，将MainForm的UI和逻辑分离，新建一个MainServices类，负责所有的逻辑。并且新提供一个方法SetActiveTabPage，用于切换Tab标签。并新建一个枚举TabPage，用于表示Tab标签的索引。MainServices最好使用单例模式，类似```
+ public class TimerService : IDisposable
+    {
+        #region Singleton Implementation
+        private static readonly Lazy<TimerService> _instance =
+            new(() => new TimerService());
+
+        public static TimerService Instance => _instance.Value;
+
+        private TimerService()
+        {
+            _timer = new Timer(100); // 100毫秒间隔
+            _timer.Elapsed += OnTimerElapsed;
+
+            // 订阅ProfileService的事件
+            var profileService = ProfileService.Instance;
+            profileService.ResetTimerRequestedEvent += OnResetTimerRequested;
+            profileService.RestoreIncompleteRecordRequestedEvent += OnRestoreIncompleteRecordRequested;
+        }
+        #endregion
+    }```
+下面是代码:
 - [ ] 删除历史记录
 
 - [ ] 快捷键绑定界面没有做好

@@ -300,6 +300,7 @@ namespace DTwoMFTimerHelper.Services
                 // 触发恢复未完成记录事件
                 LogManager.WriteDebugLog("ProfileService", "触发RestoreIncompleteRecordRequestedEvent事件");
                 RestoreIncompleteRecordRequestedEvent?.Invoke();
+                TimerService.Instance.Resume();
             }
             else
             {

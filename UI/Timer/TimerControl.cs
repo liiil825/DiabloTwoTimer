@@ -213,10 +213,10 @@ namespace DTwoMFTimerHelper.UI.Timer
         /// </summary>
         public void HandleTabSelected()
         {
-            // 初始加载数据，之后依靠事件自动更新
+            _timerService.Reset();
+            _timerService.RestoreIncompleteRecord();
             LoadProfileHistoryData();
             UpdateUI();
-            LogManager.WriteDebugLog("TimerControl", "计时器Tab被选中，已自动加载角色档案数据");
         }
 
         /// <summary>

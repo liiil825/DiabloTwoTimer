@@ -245,6 +245,14 @@ namespace DTwoMFTimerHelper.Services
             }
         }
 
+        /// <summary>
+        /// 恢复未完成的计时记录
+        /// </summary>
+        public void RestoreIncompleteRecord()
+        {
+            OnRestoreIncompleteRecordRequested();
+        }
+
         #region Private Methods
         private void OnTimerElapsed(object? sender, ElapsedEventArgs e)
         {
@@ -462,13 +470,9 @@ namespace DTwoMFTimerHelper.Services
 
             _startTime = record.StartTime;
             _isRunning = true;
-            _isPaused = false;
-            _pausedDuration = TimeSpan.Zero;
-            // 正确的开始时间计算：当前时间 - 已运行时间 - 从LatestTime到现在的时间
-            _pauseStartTime = now - TimeSpan.FromSeconds(record.DurationSeconds);
+            _isPaused = true;
+            _pausedDuration = TimeSpan.FromSeconds(record.DurationSeconds);
 
-            // 启动计时器
-            _timer.Start();
             // 立即更新显示
             UpdateTimeDisplay();
 

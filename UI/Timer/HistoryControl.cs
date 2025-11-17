@@ -13,8 +13,6 @@ namespace DTwoMFTimerHelper.UI.Timer
     public partial class HistoryControl : UserControl
     {
         private ListBox? lstRunHistory;
-        private Button? btnLoadMore;
-        private Label? lblLoading;
 
         // 历史记录服务
         private readonly TimerHistoryService _historyService;
@@ -61,15 +59,18 @@ namespace DTwoMFTimerHelper.UI.Timer
         {
             // 设置加载状态
             _isLoading = true;
-            if (InvokeRequired)
+            if (_loadingIndicator != null)
             {
-                Invoke(new Action(() => {
+                if (InvokeRequired)
+                {
+                    Invoke(new Action(() => {
+                        _loadingIndicator.Visible = true;
+                    }));
+                }
+                else
+                {
                     _loadingIndicator.Visible = true;
-                }));
-            }
-            else
-            {
-                _loadingIndicator.Visible = true;
+                }
             }
             
             try
@@ -87,15 +88,18 @@ namespace DTwoMFTimerHelper.UI.Timer
             {
                 // 隐藏加载指示器
                 _isLoading = false;
-                if (InvokeRequired)
+                if (_loadingIndicator != null)
                 {
-                    Invoke(new Action(() => {
+                    if (InvokeRequired)
+                    {
+                        Invoke(new Action(() => {
+                            _loadingIndicator.Visible = false;
+                        }));
+                    }
+                    else
+                    {
                         _loadingIndicator.Visible = false;
-                    }));
-                }
-                else
-                {
-                    _loadingIndicator.Visible = false;
+                    }
                 }
             }
         }
@@ -120,21 +124,22 @@ namespace DTwoMFTimerHelper.UI.Timer
         /// </summary>
         private async Task UpdateUIAsync()
         {
-            if (lstRunHistory == null) return;
+            if (lstRunHistory == null || _historyService == null) return;
 
             // 清空当前列表
             lstRunHistory.Items.Clear();
             
             // 获取要显示的数据范围
-            int count = _historyService.RunHistory.Count;
-            int displayCount = Math.Min(count - _displayStartIndex, PageSize);
+            var currentHistory = _historyService.RunHistory;
+            if (currentHistory == null) return;
+            
+            int currentCount = currentHistory.Count;
+            int displayCount = Math.Min(currentCount - _displayStartIndex, PageSize);
             
             // 异步处理数据格式化，添加边界检查
             var itemsToAdd = await Task.Run(() =>
             {
                 var items = new List<string>(displayCount);
-                var currentHistory = _historyService.RunHistory;
-                int currentCount = currentHistory.Count;
                 
                 for (int i = _displayStartIndex; i < _displayStartIndex + displayCount; i++)
                 {
@@ -174,18 +179,17 @@ namespace DTwoMFTimerHelper.UI.Timer
         /// </summary>
         private void UpdateUI()
         {
-            if (lstRunHistory == null) return;
+            if (lstRunHistory == null || _historyService == null) return;
 
             // 清空当前列表
             lstRunHistory.Items.Clear();
             
             // 获取要显示的数据范围
-            int count = _historyService.RunHistory.Count;
-            int displayCount = Math.Min(count - _displayStartIndex, PageSize);
-            
-            // 添加记录到列表，添加边界检查
             var currentHistory = _historyService.RunHistory;
+            if (currentHistory == null) return;
+            
             int currentCount = currentHistory.Count;
+            int displayCount = Math.Min(currentCount - _displayStartIndex, PageSize);
             
             for (int i = _displayStartIndex; i < _displayStartIndex + displayCount; i++)
             {
@@ -215,22 +219,51 @@ namespace DTwoMFTimerHelper.UI.Timer
         /// <summary>
         /// 只更新UI显示，不重新加载数据
         /// </summary>
-        public void RefreshUI()
+        public async Task RefreshUIAsync()
+        {
+            if (lstRunHistory == null || _historyService == null) return;
+
+            await Task.Run(() =>
+            {
+                // 只更新现有项目的文本（用于语言切换等）
+                var currentHistory = _historyService.RunHistory;
+                if (currentHistory == null) return;
+                
+                if (InvokeRequired)
+                {
+                    Invoke(new Action(() =>
+                    {
+                        UpdateListItems(currentHistory);
+                    }));
+                }
+                else
+                {
+                    UpdateListItems(currentHistory);
+                }
+            });
+        }
+        
+        private void UpdateListItems(List<TimeSpan> currentHistory)
         {
             if (lstRunHistory == null) return;
-
-            // 只更新现有项目的文本（用于语言切换等）
+            
             for (int i = 0; i < lstRunHistory.Items.Count; i++)
             {
                 int actualIndex = _displayStartIndex + i;
-                if (actualIndex < _historyService.RunHistory.Count)
+                if (actualIndex < currentHistory.Count)
                 {
-                    var time = _historyService.RunHistory[actualIndex];
+                    var time = currentHistory[actualIndex];
                     string timeFormatted = FormatTime(time);
                     string runText = GetRunText(actualIndex + 1, timeFormatted);
                     lstRunHistory.Items[i] = runText;
                 }
             }
+        }
+        
+        // 保留原始方法以保持向后兼容性
+        public void RefreshUI()
+        {
+            _ = RefreshUIAsync();
         }
 
         /// <summary>
@@ -238,10 +271,13 @@ namespace DTwoMFTimerHelper.UI.Timer
         /// </summary>
         private void AddSingleRunRecord(TimeSpan runTime)
         {
-            if (lstRunHistory == null) return;
+            if (lstRunHistory == null || _historyService == null) return;
 
             // 获取新记录的索引
-            int newIndex = _historyService.RunHistory.Count - 1;
+            var currentHistory = _historyService.RunHistory;
+            if (currentHistory == null) return;
+            
+            int newIndex = currentHistory.Count - 1;
             
             // 确保显示最新的记录
             _displayStartIndex = Math.Max(0, newIndex - PageSize + 1);
@@ -267,13 +303,13 @@ namespace DTwoMFTimerHelper.UI.Timer
         /// <summary>
         /// 滚动事件处理，用于异步加载更多历史记录
         /// </summary>
-        private void lstRunHistory_MouseWheel(object sender, MouseEventArgs e)
+        private async void lstRunHistory_MouseWheel(object? sender, MouseEventArgs e)
         {
             // 检查是否需要加载更多历史记录
             // 当向上滚动（e.Delta > 0）并且接近列表顶部时加载更多
-            if (e.Delta > 0 && _displayStartIndex > 0 && !_isLoading && lstRunHistory.TopIndex < 5)
+            if (e != null && e.Delta > 0 && _displayStartIndex > 0 && !_isLoading && lstRunHistory != null && lstRunHistory.TopIndex < 5)
             {
-                LoadMoreHistoryAsync();
+                await LoadMoreHistoryAsync();
             }
         }
 
@@ -282,7 +318,7 @@ namespace DTwoMFTimerHelper.UI.Timer
         /// </summary>
         private async Task LoadMoreHistoryAsync()
         {
-            if (lstRunHistory == null || _displayStartIndex <= 0 || _isLoading) return;
+            if (lstRunHistory == null || _loadingIndicator == null || _displayStartIndex <= 0 || _isLoading || _historyService == null) return;
 
             _isLoading = true;
             
@@ -290,7 +326,7 @@ namespace DTwoMFTimerHelper.UI.Timer
             if (InvokeRequired)
             {
                 Invoke(new Action(() => {
-                    _loadingIndicator.Visible = true;
+                    if (_loadingIndicator != null) _loadingIndicator.Visible = true;
                 }));
             }
             else
@@ -305,14 +341,17 @@ namespace DTwoMFTimerHelper.UI.Timer
                 int addedCount = _displayStartIndex - newStartIndex;
                 
                 // 异步处理数据格式化
+                var currentHistory = _historyService.RunHistory;
+                if (currentHistory == null) return;
+                
                 var newItems = await Task.Run(() =>
                 {
                     var items = new List<string>(addedCount);
                     for (int i = newStartIndex; i < _displayStartIndex; i++)
                     {
-                        if (i < _historyService.RunHistory.Count)
+                        if (i < currentHistory.Count)
                         {
-                            var time = _historyService.RunHistory[i];
+                            var time = currentHistory[i];
                             string timeFormatted = FormatTime(time);
                             string runText = GetRunText(i + 1, timeFormatted);
                             items.Add(runText);
@@ -328,7 +367,8 @@ namespace DTwoMFTimerHelper.UI.Timer
                 var oldItems = new string[lstRunHistory.Items.Count];
                 for (int i = 0; i < lstRunHistory.Items.Count; i++)
                 {
-                    oldItems[i] = lstRunHistory.Items[i].ToString();
+                    var item = lstRunHistory.Items[i];
+                    oldItems[i] = item?.ToString() ?? string.Empty;
                 }
                 
                 // 清空列表并重新填充
@@ -389,12 +429,16 @@ namespace DTwoMFTimerHelper.UI.Timer
         /// </summary>
         private void OnHistoryDataChanged(object? sender, HistoryChangedEventArgs e)
         {
+            // 确保e不为null
+            if (e == null) return;
+            
             if (InvokeRequired)
             {
-                BeginInvoke(new Action(() =>
+                // 使用Action<T>确保参数传递正确
+                BeginInvoke(new Action<HistoryChangedEventArgs>(args =>
                 {
-                    ProcessHistoryChange(e);
-                }));
+                    ProcessHistoryChange(args);
+                }), e);
             }
             else
             {
@@ -407,6 +451,9 @@ namespace DTwoMFTimerHelper.UI.Timer
         /// </summary>
         private async void ProcessHistoryChange(HistoryChangedEventArgs e)
         {
+            // 确保e不为null
+            if (e == null) return;
+            
             switch (e.ChangeType)
             {
                 case HistoryChangeType.Add:
@@ -419,34 +466,43 @@ namespace DTwoMFTimerHelper.UI.Timer
                 case HistoryChangeType.FullRefresh:
                 default:
                     // 异步全量刷新UI，显示加载状态
-                    if (InvokeRequired)
+                    if (_loadingIndicator != null)
                     {
-                        Invoke(new Action(() => {
-                            _loadingIndicator.Visible = true;
-                        }));
-                    }
-                    else
-                    {
-                        _loadingIndicator.Visible = true;
-                    }
-                    
-                    try
-                    {
-                        _displayStartIndex = Math.Max(0, _historyService.RunHistory.Count - PageSize);
-                        await UpdateUIAsync();
-                    }
-                    finally
-                    {
-                        // 隐藏加载指示器
                         if (InvokeRequired)
                         {
                             Invoke(new Action(() => {
-                                _loadingIndicator.Visible = false;
+                                _loadingIndicator.Visible = true;
                             }));
                         }
                         else
                         {
-                            _loadingIndicator.Visible = false;
+                            _loadingIndicator.Visible = true;
+                        }
+                    }
+                    
+                    try
+                    {
+                        if (_historyService != null && _historyService.RunHistory != null)
+                        {
+                            _displayStartIndex = Math.Max(0, _historyService.RunHistory.Count - PageSize);
+                            await UpdateUIAsync();
+                        }
+                    }
+                    finally
+                    {
+                        // 隐藏加载指示器
+                        if (_loadingIndicator != null)
+                        {
+                            if (InvokeRequired)
+                            {
+                                Invoke(new Action(() => {
+                                    _loadingIndicator.Visible = false;
+                                }));
+                            }
+                            else
+                            {
+                                _loadingIndicator.Visible = false;
+                            }
                         }
                     }
                     break;
@@ -479,7 +535,10 @@ namespace DTwoMFTimerHelper.UI.Timer
             Controls.Add(_loadingIndicator);
             
             // 添加鼠标滚轮事件来检测滚动行为
-            lstRunHistory.MouseWheel += lstRunHistory_MouseWheel;
+            if (lstRunHistory != null)
+            {
+                lstRunHistory.MouseWheel += lstRunHistory_MouseWheel;
+            }
 
             // 添加到控件
             Controls.Add(lstRunHistory);
@@ -491,23 +550,36 @@ namespace DTwoMFTimerHelper.UI.Timer
             Name = "HistoryControl";
         }
 
-        private void LanguageManager_OnLanguageChanged(object? sender, EventArgs e)
+        private async void LanguageManager_OnLanguageChanged(object? sender, EventArgs e)
         {
-            RefreshUI(); // 只刷新显示文本，不重新加载数据
+            // 确保e不为null
+            if (e == null) return;
+            
+            await RefreshUIAsync(); // 只刷新显示文本，不重新加载数据
         }
 
         protected override void Dispose(bool disposing)
         {
             if (disposing)
             {
-                LanguageManager.OnLanguageChanged -= LanguageManager_OnLanguageChanged;
-                _historyService.HistoryDataChanged -= OnHistoryDataChanged;
+                // 安全地移除事件订阅
+                try
+                {
+                    LanguageManager.OnLanguageChanged -= LanguageManager_OnLanguageChanged;
+                }
+                catch { }
+                
+                try
+                {
+                    _historyService.HistoryDataChanged -= OnHistoryDataChanged;
+                }
+                catch { }
 
                 // 移除鼠标滚轮事件订阅
-            if (lstRunHistory != null)
-            {
-                lstRunHistory.MouseWheel -= lstRunHistory_MouseWheel;
-            }
+                if (lstRunHistory != null)
+                {
+                    lstRunHistory.MouseWheel -= lstRunHistory_MouseWheel;
+                }
             }
             base.Dispose(disposing);
         }

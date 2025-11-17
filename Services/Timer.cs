@@ -38,11 +38,6 @@ namespace DTwoMFTimerHelper.Services
         {
             _timer = new Timer(100); // 100毫秒间隔
             _timer.Elapsed += OnTimerElapsed;
-
-            // 订阅ProfileService的事件
-            var profileService = ProfileService.Instance;
-            profileService.ResetTimerRequestedEvent += OnResetTimerRequested;
-            profileService.RestoreIncompleteRecordRequestedEvent += OnRestoreIncompleteRecordRequested;
         }
         #endregion
 
@@ -63,6 +58,7 @@ namespace DTwoMFTimerHelper.Services
         // 当前状态属性
         public bool IsRunning => _status == TimerStatus.Running;
         public bool IsPaused => _status == TimerStatus.Paused;
+        public bool IsStopped => _status == TimerStatus.Stopped;
         public TimerStatus Status => _status;
         public DateTime StartTime => _startTime;
         public TimeSpan PausedDuration => _pausedDuration;
@@ -95,7 +91,7 @@ namespace DTwoMFTimerHelper.Services
         /// <param name="autoStartNext">是否自动开始下一场</param>
         public void Stop(bool autoStartNext = false)
         {
-            if (_status == TimerStatus.Stopped)
+            if (IsStopped)
                 return;
 
             if (_pauseStartTime != DateTime.MinValue)
@@ -135,7 +131,7 @@ namespace DTwoMFTimerHelper.Services
         /// </summary>
         public void StartOrRestart()
         {
-            if (_status == TimerStatus.Stopped || _status == TimerStatus.Paused)
+            if (IsStopped || IsPaused)
                 Start();
             else
                 Stop(true); // 停止并自动开始下一场
@@ -146,13 +142,10 @@ namespace DTwoMFTimerHelper.Services
         /// </summary>
         public void TogglePause()
         {
-            if (_status == TimerStatus.Running || _status == TimerStatus.Paused)
-            {
-                if (_status == TimerStatus.Paused)
-                    Resume();
-                else
-                    Pause();
-            }
+            if (IsRunning)
+                Pause();
+            else if (IsPaused)
+                Resume();
         }
 
         /// <summary>
@@ -160,25 +153,26 @@ namespace DTwoMFTimerHelper.Services
         /// </summary>
         public void Pause()
         {
-            if (_status == TimerStatus.Running)
-            {
-                _status = TimerStatus.Paused;
-                DateTime now = DateTime.Now;
+            if (!IsRunning)
+                return;
 
-                // 计算暂停期间的时间并累加
-                _pausedDuration += now - _pauseStartTime;
+            _status = TimerStatus.Paused;
+            DateTime now = DateTime.Now;
 
-                // 重置_pauseStartTime
-                _pauseStartTime = DateTime.MinValue;
+            // 计算暂停期间的时间并累加
+            _pausedDuration += now - _pauseStartTime;
 
-                // 停止计时器，避免继续累计
-                _timer.Stop();
+            // 重置_pauseStartTime
+            _pauseStartTime = DateTime.MinValue;
 
-                // 更新未完成记录 - 使用当前状态计算持续时间
-                UpdateIncompleteRecord();
-                UpdateTimeDisplay();
-                TimerPauseStateChangedEvent?.Invoke(true);
-            }
+            // 停止计时器，避免继续累计
+            _timer.Stop();
+
+            // 更新未完成记录 - 使用当前状态计算持续时间
+            UpdateIncompleteRecord();
+            UpdateTimeDisplay();
+            TimerPauseStateChangedEvent?.Invoke(true);
+
         }
 
         /// <summary>
@@ -186,19 +180,17 @@ namespace DTwoMFTimerHelper.Services
         /// </summary>
         public void Resume()
         {
-            if (_status == TimerStatus.Paused)
-            {
-                _status = TimerStatus.Running;
+            if (!IsPaused)
+                return;
 
-                // 设置_pauseStartTime = now
-                _pauseStartTime = DateTime.Now;
+            _status = TimerStatus.Running;
+            // 设置_pauseStartTime = now
+            _pauseStartTime = DateTime.Now;
+            // 重新启动计时器
+            _timer.Start();
 
-                // 重新启动计时器
-                _timer.Start();
-
-                TimerPauseStateChangedEvent?.Invoke(false);
-                UpdateTimeDisplay();
-            }
+            TimerPauseStateChangedEvent?.Invoke(false);
+            UpdateTimeDisplay();
         }
 
         /// <summary>
@@ -250,14 +242,10 @@ namespace DTwoMFTimerHelper.Services
         /// </summary>
         public void HandleApplicationClosing()
         {
-            if (_status == TimerStatus.Running || _status == TimerStatus.Paused)
+            // 如果计时器正在运行，更新未完成记录
+            if (IsRunning)
             {
-                // 如果计时器正在运行，更新未完成记录
-                if (_status == TimerStatus.Running)
-                {
-                    UpdateIncompleteRecord();
-                }
-
+                UpdateIncompleteRecord();
                 // SaveTimerState();
                 LogManager.WriteDebugLog("TimerService", "应用程序关闭时保存了计时状态和未完成记录");
             }
@@ -269,6 +257,16 @@ namespace DTwoMFTimerHelper.Services
         public void RestoreIncompleteRecord()
         {
             OnRestoreIncompleteRecordRequested();
+        }
+
+        /// <summary>
+        /// 处理来自ProfileService的重置定时器请求
+        /// </summary>
+        public void ResetTimerRequested()
+        {
+            LogManager.WriteDebugLog("TimerService", "接收到重置定时器请求");
+            Reset();
+            TimerHistoryService.Instance.ResetHistoryData();
         }
 
         #region Private Methods
@@ -295,42 +293,35 @@ namespace DTwoMFTimerHelper.Services
             if (string.IsNullOrEmpty(currentCharacter) || string.IsNullOrEmpty(currentScene))
                 return;
 
-            try
+            int actValue = SceneService.GetSceneActValue(currentScene);
+            string pureEnglishSceneName = LanguageManager.GetPureEnglishSceneName(currentScene);
+            var difficulty = profileService.CurrentDifficulty;
+
+            if (string.IsNullOrEmpty(pureEnglishSceneName))
             {
-                int actValue = SceneService.GetSceneActValue(currentScene);
-                string pureEnglishSceneName = LanguageManager.GetPureEnglishSceneName(currentScene);
-                var difficulty = profileService.CurrentDifficulty;
-
-                if (string.IsNullOrEmpty(pureEnglishSceneName))
-                {
-                    pureEnglishSceneName = "UnknownScene";
-                    LogManager.WriteDebugLog("TimerService", $"警告: CreateStartRecord中pureEnglishSceneName为空，使用默认值 '{pureEnglishSceneName}'");
-                }
-
-                var newRecord = new MFRecord
-                {
-                    SceneName = pureEnglishSceneName,
-                    ACT = actValue,
-                    Difficulty = difficulty,
-                    StartTime = _startTime,
-                    EndTime = null,
-                    LatestTime = _startTime, // 每次启动时，更新latestTime为当前时间
-                    DurationSeconds = 0.0
-                };
-
-                if (profileService.CurrentProfile != null)
-                {
-                    DataService.AddMFRecord(profileService.CurrentProfile, newRecord);
-                    LogManager.WriteDebugLog("TimerService", $"已创建开始记录到角色档案: {currentCharacter} - {currentScene}, ACT: {actValue}, 开始时间: {_startTime}");
-                }
-                else
-                {
-                    LogManager.WriteDebugLog("TimerService", $"已创建临时记录但未保存到档案: {currentCharacter} - {currentScene}, ACT: {actValue}, 开始时间: {_startTime}");
-                }
+                pureEnglishSceneName = "UnknownScene";
+                LogManager.WriteDebugLog("TimerService", $"警告: CreateStartRecord中pureEnglishSceneName为空，使用默认值 '{pureEnglishSceneName}'");
             }
-            catch (Exception ex)
+
+            var newRecord = new MFRecord
             {
-                LogManager.WriteErrorLog("TimerService", $"创建开始记录失败", ex);
+                SceneName = pureEnglishSceneName,
+                ACT = actValue,
+                Difficulty = difficulty,
+                StartTime = _startTime,
+                EndTime = null,
+                LatestTime = _startTime, // 每次启动时，更新latestTime为当前时间
+                DurationSeconds = 0.0
+            };
+
+            if (profileService.CurrentProfile != null)
+            {
+                DataService.AddMFRecord(profileService.CurrentProfile, newRecord);
+                LogManager.WriteDebugLog("TimerService", $"已创建开始记录到角色档案: {currentCharacter} - {currentScene}, ACT: {actValue}, 开始时间: {_startTime}");
+            }
+            else
+            {
+                LogManager.WriteDebugLog("TimerService", $"已创建临时记录但未保存到档案: {currentCharacter} - {currentScene}, ACT: {actValue}, 开始时间: {_startTime}");
             }
         }
 
@@ -344,32 +335,25 @@ namespace DTwoMFTimerHelper.Services
             if (record == null)
                 return;
 
-            try
+            DateTime now = updateTime ?? DateTime.Now;
+
+            // 直接使用GetElapsedTime()的计算结果，确保一致性
+            record.DurationSeconds = GetElapsedTime().TotalSeconds;
+            record.LatestTime = now;
+
+            if (profileService.CurrentProfile != null)
             {
-                DateTime now = updateTime ?? DateTime.Now;
-
-                // 直接使用GetElapsedTime()的计算结果，确保一致性
-                record.DurationSeconds = GetElapsedTime().TotalSeconds;
-                record.LatestTime = now;
-
-                if (profileService.CurrentProfile != null)
-                {
-                    DataService.UpdateMFRecord(profileService.CurrentProfile, record);
-                    LogManager.WriteDebugLog("TimerService",
-                        $"更新未完成记录: 场景={profileService.CurrentScene}, " +
-                        $"持续时间={record.DurationSeconds}秒, " +
-                        $"开始时间={_startTime}, 当前时间={now}");
-                }
-                else
-                {
-                    LogManager.WriteDebugLog("TimerService", $"跳过更新记录：当前角色档案为 null");
-                }
-
+                DataService.UpdateMFRecord(profileService.CurrentProfile, record);
+                LogManager.WriteDebugLog("TimerService",
+                    $"更新未完成记录: 场景={profileService.CurrentScene}, " +
+                    $"持续时间={record.DurationSeconds}秒, " +
+                    $"开始时间={_startTime}, 当前时间={now}");
             }
-            catch (Exception ex)
+            else
             {
-                LogManager.WriteErrorLog("TimerService", $"更新未完成记录失败", ex);
+                LogManager.WriteDebugLog("TimerService", $"跳过更新记录：当前角色档案为 null");
             }
+
         }
 
         /// <summary>
@@ -385,57 +369,47 @@ namespace DTwoMFTimerHelper.Services
                 string.IsNullOrEmpty(currentScene) || _startTime == DateTime.MinValue)
                 return;
 
-            try
+            int actValue = SceneService.GetSceneActValue(currentScene);
+            var difficulty = profileService.CurrentDifficulty;
+            double durationSeconds = GetElapsedTime().TotalSeconds;
+
+            // 统一使用LanguageManager.GetPureEnglishSceneName获取场景名称
+            string pureEnglishSceneName = LanguageManager.GetPureEnglishSceneName(currentScene);
+            if (string.IsNullOrEmpty(pureEnglishSceneName))
             {
-                int actValue = SceneService.GetSceneActValue(currentScene);
-                var difficulty = profileService.CurrentDifficulty;
-                double durationSeconds = GetElapsedTime().TotalSeconds;
-
-                // 统一使用LanguageManager.GetPureEnglishSceneName获取场景名称
-                string pureEnglishSceneName = LanguageManager.GetPureEnglishSceneName(currentScene);
-                if (string.IsNullOrEmpty(pureEnglishSceneName))
-                {
-                    pureEnglishSceneName = "UnknownScene";
-                    LogManager.WriteDebugLog("TimerService", $"警告: SaveToProfile中pureEnglishSceneName为空，使用默认值 '{pureEnglishSceneName}'");
-                }
-
-                var newRecord = new MFRecord
-                {
-                    SceneName = pureEnglishSceneName,
-                    ACT = actValue,
-                    Difficulty = difficulty,
-                    StartTime = _startTime,
-                    EndTime = DateTime.Now,
-                    LatestTime = DateTime.Now,
-                    DurationSeconds = durationSeconds
-                };
-
-                // 查找并更新现有记录或添加新记录
-                var existingRecord = profileService.CurrentProfile.Records.FirstOrDefault(r =>
-                    r.SceneName == pureEnglishSceneName &&
-                    r.Difficulty == difficulty &&
-                    !r.IsCompleted);
-
-                if (existingRecord != null)
-                {
-                    existingRecord.EndTime = DateTime.Now;
-                    existingRecord.LatestTime = DateTime.Now;
-                    existingRecord.DurationSeconds = durationSeconds;
-                    existingRecord.ACT = actValue;
-                    existingRecord.Difficulty = difficulty;
-
-                    DataService.UpdateMFRecord(profileService.CurrentProfile, existingRecord);
-                    LogManager.WriteDebugLog("TimerService", $"[更新现有记录] {currentCharacter} - {currentScene}, ACT: {actValue}, 难度: {difficulty}, 开始时间: {existingRecord.StartTime}, 结束时间: {DateTime.Now}, DurationSeconds: {existingRecord.DurationSeconds}");
-                }
-                else
-                {
-                    DataService.AddMFRecord(profileService.CurrentProfile, newRecord);
-                    LogManager.WriteDebugLog("TimerService", $"[添加新记录] {currentCharacter} - {currentScene}, ACT: {actValue}, 难度: {difficulty}, 开始时间: {_startTime}, 结束时间: {DateTime.Now}, DurationSeconds: {newRecord.DurationSeconds}");
-                }
+                pureEnglishSceneName = "UnknownScene";
+                LogManager.WriteDebugLog("TimerService", $"警告: SaveToProfile中pureEnglishSceneName为空，使用默认值 '{pureEnglishSceneName}'");
             }
-            catch (Exception ex)
+
+            var newRecord = new MFRecord
             {
-                LogManager.WriteErrorLog("TimerService", $"保存计时记录失败", ex);
+                SceneName = pureEnglishSceneName,
+                ACT = actValue,
+                Difficulty = difficulty,
+                StartTime = _startTime,
+                EndTime = DateTime.Now,
+                LatestTime = DateTime.Now,
+                DurationSeconds = durationSeconds
+            };
+
+            // 查找并更新现有记录或添加新记录
+            var existingRecord = FindIncompleteRecordForCurrentScene();
+
+            if (existingRecord != null)
+            {
+                existingRecord.EndTime = DateTime.Now;
+                existingRecord.LatestTime = DateTime.Now;
+                existingRecord.DurationSeconds = durationSeconds;
+                existingRecord.ACT = actValue;
+                existingRecord.Difficulty = difficulty;
+
+                DataService.UpdateMFRecord(profileService.CurrentProfile, existingRecord);
+                LogManager.WriteDebugLog("TimerService", $"[更新现有记录] {currentCharacter} - {currentScene}, ACT: {actValue}, 难度: {difficulty}, 开始时间: {existingRecord.StartTime}, 结束时间: {DateTime.Now}, DurationSeconds: {existingRecord.DurationSeconds}");
+            }
+            else
+            {
+                DataService.AddMFRecord(profileService.CurrentProfile, newRecord);
+                LogManager.WriteDebugLog("TimerService", $"[添加新记录] {currentCharacter} - {currentScene}, ACT: {actValue}, 难度: {difficulty}, 开始时间: {_startTime}, 结束时间: {DateTime.Now}, DurationSeconds: {newRecord.DurationSeconds}");
             }
         }
 
@@ -458,26 +432,9 @@ namespace DTwoMFTimerHelper.Services
         }
 
         /// <summary>
-        /// 处理来自ProfileService的重置定时器请求
-        /// </summary>
-        private void OnResetTimerRequested()
-        {
-            try
-            {
-                LogManager.WriteDebugLog("TimerService", "接收到重置定时器请求");
-                Reset();
-                TimerHistoryService.Instance.ResetHistoryData();
-            }
-            catch (Exception ex)
-            {
-                LogManager.WriteErrorLog("TimerService", "处理重置定时器请求时出错", ex);
-            }
-        }
-
-        /// <summary>
         /// 处理来自ProfileService的恢复未完成记录请求
         /// </summary>
-        public void OnRestoreIncompleteRecordRequested()
+        private void OnRestoreIncompleteRecordRequested()
         {
             Reset();
             LogManager.WriteDebugLog("TimerService", "接收到恢复未完成记录请求");
@@ -505,12 +462,7 @@ namespace DTwoMFTimerHelper.Services
 
         public void Dispose()
         {
-            // 取消订阅ProfileService的事件
-            var profileService = ProfileService.Instance;
-            profileService.ResetTimerRequestedEvent -= OnResetTimerRequested;
-            profileService.RestoreIncompleteRecordRequestedEvent -= OnRestoreIncompleteRecordRequested;
 
-            _timer?.Dispose();
         }
     }
 }

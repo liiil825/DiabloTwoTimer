@@ -9,26 +9,6 @@ ProfileManager 选择时是中文，并且带有ACT前缀
 - [x] 加载未完成的时间显示逻辑不对
 - [x] 重构MainForm的UI和逻辑分离
 帮我重构下.net代码，将MainForm的UI和逻辑分离，新建一个MainServices类，负责所有的逻辑。并且新提供一个方法SetActiveTabPage，用于切换Tab标签。并新建一个枚举TabPage，用于表示Tab标签的索引。MainServices最好使用单例模式，类似```
- public class TimerService : IDisposable
-    {
-        #region Singleton Implementation
-        private static readonly Lazy<TimerService> _instance =
-            new(() => new TimerService());
-
-        public static TimerService Instance => _instance.Value;
-
-        private TimerService()
-        {
-            _timer = new Timer(100); // 100毫秒间隔
-            _timer.Elapsed += OnTimerElapsed;
-
-            // 订阅ProfileService的事件
-            var profileService = ProfileService.Instance;
-            profileService.ResetTimerRequestedEvent += OnResetTimerRequested;
-            profileService.RestoreIncompleteRecordRequestedEvent += OnRestoreIncompleteRecordRequested;
-        }
-        #endregion
-    }```
 下面是代码:
 
 - [x] 修复加载未完成记录时，时间显示问题

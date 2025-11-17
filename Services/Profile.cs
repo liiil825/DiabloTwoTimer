@@ -26,8 +26,6 @@ namespace DTwoMFTimerHelper.Services
         public event Action<string>? CurrentSceneChangedEvent;
         public event Action<GameDifficulty>? CurrentDifficultyChangedEvent;
         public event Action? ProfileListChangedEvent;
-        public event Action? ResetTimerRequestedEvent;
-        public event Action? RestoreIncompleteRecordRequestedEvent;
         #endregion
 
         #region Properties
@@ -48,7 +46,7 @@ namespace DTwoMFTimerHelper.Services
                         var settings = SettingsManager.LoadSettings();
                         settings.LastUsedProfile = value.Name;
                         SettingsManager.SaveSettings(settings);
-                        RestoreIncompleteRecordRequestedEvent?.Invoke();
+                        TimerService.Instance.RestoreIncompleteRecord();
                     }
                 }
             }
@@ -72,7 +70,7 @@ namespace DTwoMFTimerHelper.Services
                     var settings = SettingsManager.LoadSettings();
                     settings.LastUsedScene = englishSceneName;
                     SettingsManager.SaveSettings(settings);
-                    RestoreIncompleteRecordRequestedEvent?.Invoke();
+                    TimerService.Instance.RestoreIncompleteRecord();
                 }
             }
         }
@@ -92,7 +90,7 @@ namespace DTwoMFTimerHelper.Services
                     var settings = SettingsManager.LoadSettings();
                     settings.LastUsedDifficulty = value.ToString();
                     SettingsManager.SaveSettings(settings);
-                    RestoreIncompleteRecordRequestedEvent?.Invoke();
+                    TimerService.Instance.RestoreIncompleteRecord();
                 }
             }
         }
@@ -177,7 +175,7 @@ namespace DTwoMFTimerHelper.Services
 
             ProfileListChangedEvent?.Invoke();
             // 触发重置定时器事件
-            ResetTimerRequestedEvent?.Invoke();
+            TimerService.Instance.ResetTimerRequested();
             LogManager.WriteDebugLog("ProfileService", $"成功删除角色: {profile.Name}");
 
             return true;
@@ -307,15 +305,6 @@ namespace DTwoMFTimerHelper.Services
                 LogManager.WriteDebugLog("ProfileService", "调用TimerService.Start()");
                 TimerService.Instance.Start();
             }
-        }
-
-        /// <summary>
-        /// 触发恢复未完成记录的请求
-        /// 提供公共方法以便其他类可以请求恢复未完成的记录
-        /// </summary>
-        public void RestoreIncompleteRecord()
-        {
-            RestoreIncompleteRecordRequestedEvent?.Invoke();
         }
         #endregion
 

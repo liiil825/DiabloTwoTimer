@@ -97,7 +97,7 @@ namespace DTwoMFTimerHelper.UI
             _profileManager?.LoadLastUsedProfile();
 
             // 在所有初始化完成后，触发恢复未完成记录的请求
-            ProfileService.Instance.RestoreIncompleteRecord();
+            TimerService.Instance.RestoreIncompleteRecord();
         }
 
         /// <summary>

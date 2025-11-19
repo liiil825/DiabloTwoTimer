@@ -4,12 +4,12 @@ indent_style = space
 trim_trailing_whitespace = true
 end_of_line = crlf
 max_line_length = 120
-# 启用自动换行
-wrap_when_manually_indented = true
+# 禁用自动换行
+wrap_when_manually_indented = false
 wrap_line_length = 120
 
 # 具体的换行规则
-csharp_preserve_single_line_statements = false
+csharp_preserve_single_line_statements = true
 csharp_preserve_single_line_blocks = false
 csharp_preserve_newlines = true
 
@@ -21,6 +21,6 @@ csharp_new_line_before_open_brace = all
 csharp_new_line_before_else = true
 csharp_new_line_before_catch = true
 csharp_new_line_before_finally = true
-csharp_new_line_before_members_in_object_initializers = true
+csharp_new_line_before_members_in_object_initializers = false
 csharp_new_line_before_members_in_anonymous_types = true
 csharp_new_line_between_query_expression_clauses = true

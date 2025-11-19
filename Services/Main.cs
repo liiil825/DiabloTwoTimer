@@ -132,16 +132,24 @@ namespace DTwoMFTimerHelper.Services
                 switch (id)
                 {
                     case HOTKEY_ID_STARTSTOP:
-                        SetActiveTabPage(Models.TabPage.Timer);
-                        bool hasIncompleteRecord = _profileService?.HasIncompleteRecord() ?? false;
-                        if (hasIncompleteRecord)
+                        if (_mainForm?.TabControl != null && _mainForm.TabControl.SelectedIndex != (int)Models.TabPage.Timer)
                         {
-                            _timerControl?.TogglePause();
+                            SetActiveTabPage(Models.TabPage.Timer);
+                            bool hasIncompleteRecord = _profileService?.HasIncompleteRecord() ?? false;
+                            if (hasIncompleteRecord)
+                            {
+                                _timerControl?.TogglePause();
+                            }
+                            else
+                            {
+                                _timerControl?.ToggleTimer();
+                            }
                         }
                         else
                         {
                             _timerControl?.ToggleTimer();
                         }
+
                         break;
                     case HOTKEY_ID_PAUSE:
                         SetActiveTabPage(Models.TabPage.Timer);

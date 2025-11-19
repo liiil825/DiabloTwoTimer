@@ -192,7 +192,7 @@ namespace DTwoMFTimerHelper.UI.Timer
         public void ToggleTimer()
         {
             LogManager.WriteDebugLog("TimerControl", $"ToggleTimer 调用（快捷键触发），当前状态: isTimerRunning={_timerService.IsRunning}");
-            _timerService.StartOrRestart();
+            _timerService.StartOrNextRun();
         }
 
         /// <summary>

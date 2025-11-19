@@ -67,8 +67,8 @@ namespace DTwoMFTimerHelper.Services
 
         // 方法
         void Start();
-        void Stop(bool autoStartNext = false);
-        void StartOrRestart();
+        void CompleteRun(bool autoStartNext = false);
+        void StartOrNextRun();
         void TogglePause();
         void Pause();
         void Resume();
@@ -97,7 +97,7 @@ namespace DTwoMFTimerHelper.Services
             _profileService.CurrentDifficultyChangedEvent += OnDifficultyChanged;
         }
 
-        #region Events for UI Communicati                    on
+        #region Events for UI Communication
         public event Action<string>? TimeUpdatedEvent;
         public event Action<bool>? TimerRunningStateChangedEvent;
         public event Action<bool>? TimerPauseStateChangedEvent;
@@ -142,10 +142,10 @@ namespace DTwoMFTimerHelper.Services
         }
 
         /// <summary>
-        /// 停止计时
+        /// 完成当前运行并保存记录
         /// </summary>
         /// <param name="autoStartNext">是否自动开始下一场</param>
-        public void Stop(bool autoStartNext = false)
+        public void CompleteRun(bool autoStartNext = false)
         {
             if (IsStopped)
                 return;
@@ -183,14 +183,14 @@ namespace DTwoMFTimerHelper.Services
         }
 
         /// <summary>
-        /// 启动计时器或停止当前计时并重新开始
+        /// 启动计时器或完成当前运行并开始下一场
         /// </summary>
-        public void StartOrRestart()
+        public void StartOrNextRun()
         {
             if (IsStopped || IsPaused)
                 Start();
             else
-                Stop(true); // 停止并自动开始下一场
+                CompleteRun(true); // 完成当前运行并自动开始下一场
         }
 
         /// <summary>
@@ -228,7 +228,6 @@ namespace DTwoMFTimerHelper.Services
             UpdateIncompleteRecord();
             UpdateTimeDisplay();
             TimerPauseStateChangedEvent?.Invoke(true);
-
         }
 
         /// <summary>
@@ -254,7 +253,13 @@ namespace DTwoMFTimerHelper.Services
         /// </summary>
         public void Reset()
         {
-            Stop();
+            if (!IsStopped)
+            {
+                _timer.Stop();
+                _status = TimerStatus.Stopped;
+                TimerRunningStateChangedEvent?.Invoke(false);
+            }
+
             _startTime = DateTime.MinValue;
             _pausedDuration = TimeSpan.Zero;
             _pauseStartTime = DateTime.MinValue;
@@ -538,7 +543,9 @@ namespace DTwoMFTimerHelper.Services
         private void OnSceneChanged(string? scene)
         {
             Reset();
-            // 当场景变更时，恢复未完成记录
+
+            // 只有在不是暂停状态下切换场景时才恢复未完成记录
+            // 这样可以避免将暂停的时间数据错误地应用到新场景
             if (scene != null)
             {
                 RestoreIncompleteRecord();

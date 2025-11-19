@@ -22,26 +22,18 @@ namespace DTwoMFTimerHelper.Services
         void SetActiveTabPage(Models.TabPage tabPage);
     }
 
-    public class MainServices : IMainServices, IDisposable
+    public class MainServices(
+        IProfileService profileService,
+        ITimerService timerService,
+        ITimerHistoryService timerHistoryService,
+        PomodoroTimerService pomodoroTimerService) : IMainServices, IDisposable
     {
-        // 修复构造函数：移除 IMainServices 参数
-        public MainServices(
-            IProfileService profileService,
-            ITimerService timerService,
-            ITimerHistoryService timerHistoryService,
-            PomodoroTimerService pomodoroTimerService)
-        {
-            _profileService = profileService;
-            _timerService = timerService;
-            _timerHistoryService = timerHistoryService;
-            _pomodoroTimerService = pomodoroTimerService;
-        }
 
         #region Fields and Properties
-        private readonly IProfileService _profileService;
-        private readonly ITimerService _timerService;
-        private readonly ITimerHistoryService _timerHistoryService;
-        private readonly PomodoroTimerService _pomodoroTimerService;
+        private readonly IProfileService _profileService = profileService;
+        private readonly ITimerService _timerService = timerService;
+        private readonly ITimerHistoryService _timerHistoryService = timerHistoryService;
+        private readonly PomodoroTimerService _pomodoroTimerService = pomodoroTimerService;
 
         private MainForm? _mainForm;
         private ProfileManager? _profileManager;
@@ -109,7 +101,6 @@ namespace DTwoMFTimerHelper.Services
         public void InitializeApplication()
         {
             LoadSettings();
-            LoadCharacterProfile();
             InitializeLanguageSupport();
             ApplyWindowSettings();
             RegisterHotkeys();
@@ -274,32 +265,6 @@ namespace DTwoMFTimerHelper.Services
         private void LoadSettings()
         {
             _appSettings = SettingsManager.LoadSettings();
-        }
-
-        private static void LoadCharacterProfile()
-        {
-            try
-            {
-                LogManager.WriteDebugLog("MainServices", "[启动测试] 开始加载角色档案...");
-
-                var profilesVisible = DataService.LoadAllProfiles(includeHidden: false);
-                LogManager.WriteDebugLog("MainServices", $"[启动测试] 测试1结果: 找到 {profilesVisible.Count} 个非隐藏角色档案");
-
-                var profilesAll = DataService.LoadAllProfiles(includeHidden: true);
-                LogManager.WriteDebugLog("MainServices", $"[启动测试] 测试2结果: 找到 {profilesAll.Count} 个角色档案（包括隐藏的）");
-
-                LogManager.WriteDebugLog("MainServices", "\n[启动测试] 所有角色详细信息:");
-                foreach (var profile in profilesAll)
-                {
-                    LogManager.WriteDebugLog("MainServices", $"[启动测试] - 角色: {profile.Name}, 职业: {profile.Class}, IsHidden: {profile.IsHidden}");
-                }
-
-                LogManager.WriteDebugLog("MainServices", "[启动测试] 角色档案加载完成");
-            }
-            catch (Exception ex)
-            {
-                LogManager.WriteErrorLog("MainServices", "[启动测试] 加载角色档案失败", ex);
-            }
         }
 
         private void InitializeLanguageSupport()

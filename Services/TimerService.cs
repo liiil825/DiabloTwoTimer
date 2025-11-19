@@ -527,6 +527,7 @@ namespace DTwoMFTimerHelper.Services
 
         private void OnProfileChanged(CharacterProfile? profile)
         {
+            Reset();
             // 当档案变更时，恢复未完成记录
             if (profile != null)
             {
@@ -536,6 +537,7 @@ namespace DTwoMFTimerHelper.Services
 
         private void OnSceneChanged(string? scene)
         {
+            Reset();
             // 当场景变更时，恢复未完成记录
             if (scene != null)
             {
@@ -545,6 +547,7 @@ namespace DTwoMFTimerHelper.Services
 
         private void OnDifficultyChanged(GameDifficulty difficulty)
         {
+            Reset();
             RestoreIncompleteRecord();
         }
         #endregion

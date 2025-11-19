@@ -145,7 +145,7 @@ namespace DTwoMFTimerHelper.UI.Profiles
             }
 
             // 检查角色是否已存在
-            if (DTwoMFTimerHelper.Services.DataService.FindProfileByName(CharacterName, true) != null)
+            if (DTwoMFTimerHelper.Services.DataService.FindProfileByName(CharacterName) != null)
             {
                 MessageBox.Show(LanguageManager.GetString("CharacterExists") ?? "该角色名称已存在", "提示");
                 return;

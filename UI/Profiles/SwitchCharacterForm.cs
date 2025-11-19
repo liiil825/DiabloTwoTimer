@@ -74,21 +74,21 @@ namespace DTwoMFTimerHelper.UI.Profiles
         {
             try
             {
-                LogManager.WriteDebugLog("SwitchCharacterForm", "[详细调试] 开始加载角色档案...");
-                // 明确指定只加载非隐藏角色
-                var profiles = DTwoMFTimerHelper.Services.DataService.LoadAllProfiles(includeHidden: false);
-                LogManager.WriteDebugLog("SwitchCharacterForm", "[详细调试] 从DataService获取到角色档案");
+                LogManager.WriteDebugLog("SwitchCharacterForm", "[详细调试] 开始加载角色档案名称...");
+                // 只获取文件名列表而不加载所有文件内容
+                var profileNames = DTwoMFTimerHelper.Services.DataService.GetProfileNames();
+                LogManager.WriteDebugLog("SwitchCharacterForm", "[详细调试] 从DataService获取到角色档案名称列表");
 
                 lstCharacters!.Items.Clear();
                 LogManager.WriteDebugLog("SwitchCharacterForm", "[详细调试] 已清空角色列表");
 
-                LogManager.WriteDebugLog("SwitchCharacterForm", $"[详细调试] 找到 {profiles.Count} 个角色档案");
+                LogManager.WriteDebugLog("SwitchCharacterForm", $"[详细调试] 找到 {profileNames.Count} 个角色档案");
 
-                // 显示每个角色的详细信息
-                foreach (var profile in profiles)
+                // 显示每个角色名称
+                foreach (var profileName in profileNames)
                 {
-                    LogManager.WriteDebugLog("SwitchCharacterForm", $"[详细调试] 加载角色: {profile.Name}, 职业: {profile.Class}, IsHidden: {profile.IsHidden}");
-                    var profileItem = new ProfileItem(profile);
+                    LogManager.WriteDebugLog("SwitchCharacterForm", $"[详细调试] 加载角色名称: {profileName}");
+                    var profileItem = new ProfileItem(profileName);
                     LogManager.WriteDebugLog("SwitchCharacterForm", $"[详细调试] 创建ProfileItem: {profileItem.DisplayName}");
                     lstCharacters.Items.Add(profileItem);
                     LogManager.WriteDebugLog("SwitchCharacterForm", $"[详细调试] 已添加到列表，当前列表项数: {lstCharacters.Items.Count}");
@@ -139,11 +139,14 @@ namespace DTwoMFTimerHelper.UI.Profiles
         {
             if (lstCharacters!.SelectedItem is ProfileItem profileItem)
             {
+                // 选择后加载单个配置文件
+                var selectedProfile = DTwoMFTimerHelper.Services.DataService.LoadProfileByName(profileItem.ProfileName);
+
                 // 验证角色数据有效性
-                if (profileItem.Profile != null && !string.IsNullOrEmpty(profileItem.Profile.Name))
+                if (selectedProfile != null && !string.IsNullOrEmpty(selectedProfile.Name))
                 {
-                    SelectedProfile = profileItem.Profile;
-                    LogManager.WriteDebugLog("SwitchCharacterForm", $"已选择角色: {profileItem.Profile.Name}");
+                    SelectedProfile = selectedProfile;
+                    LogManager.WriteDebugLog("SwitchCharacterForm", $"已选择角色: {selectedProfile.Name}");
                     this.DialogResult = DialogResult.OK;
                     this.Close();
                 }
@@ -178,17 +181,31 @@ namespace DTwoMFTimerHelper.UI.Profiles
         // 包装类，用于显示友好的角色信息
         private class ProfileItem
         {
-            public Models.CharacterProfile Profile
+            public string ProfileName
             {
                 get;
+            }
+            public Models.CharacterProfile? Profile
+            {
+                get; private set;
             }
             public string DisplayName
             {
                 get;
             }
 
+            // 构造函数：仅使用名称创建
+            public ProfileItem(string profileName)
+            {
+                ProfileName = profileName;
+                Profile = null;
+                DisplayName = profileName; // 只显示名称，稍后选择时再加载完整信息
+            }
+
+            // 构造函数：使用完整Profile对象
             public ProfileItem(Models.CharacterProfile profile)
             {
+                ProfileName = profile.Name;
                 Profile = profile;
 
                 // 获取本地化的职业名称

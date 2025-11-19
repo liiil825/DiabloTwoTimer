@@ -7,7 +7,52 @@ using DTwoMFTimerHelper.Utils;
 
 namespace DTwoMFTimerHelper.Services
 {
-    public class AppSettings
+    public interface IAppSettings
+    {
+        public string WindowPosition
+        {
+            get; set;
+        }
+        public bool AlwaysOnTop
+        {
+            get; set;
+        }
+        public string Language
+        {
+            get; set;
+        }
+        // 角色档案设置
+        public string LastUsedProfile
+        {
+            get; set;
+        }
+        public int WorkTimeMinutes
+        {
+            get; set;
+        }
+        public int WorkTimeSeconds
+        {
+            get; set;
+        }
+        public int ShortBreakMinutes
+        {
+            get; set;
+        }
+        public int ShortBreakSeconds
+        {
+            get; set;
+        }
+        public int LongBreakMinutes
+        {
+            get; set;
+        }
+        public int LongBreakSeconds
+        {
+            get; set;
+        }
+
+    }
+    public class AppSettings : IAppSettings
     {
         // 窗口设置
         public string WindowPosition { get; set; } = "TopLeft";

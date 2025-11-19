@@ -118,14 +118,6 @@ namespace DTwoMFTimerHelper.Services
                                 LogManager.WriteDebugLog("YamlParser", $"解析到Class: {profile.Class}");
                             }
                         }
-                        else if (key == "ishidden" || key == "hidden")
-                        {
-                            if (bool.TryParse(value, out var isHidden))
-                            {
-                                profile.IsHidden = isHidden;
-                                LogManager.WriteDebugLog("YamlParser", $"解析到IsHidden: {profile.IsHidden}");
-                            }
-                        }
                     }
                     else
                     {

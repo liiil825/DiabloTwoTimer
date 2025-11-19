@@ -46,10 +46,31 @@ namespace DTwoMFTimerHelper.Services
             .IgnoreUnmatchedProperties()
             .Build();
 
-        public static List<CharacterProfile> LoadAllProfiles(bool includeHidden = false)
+        /// <summary>
+        /// 加载指定名称的单个角色档案
+        /// </summary>
+        public static CharacterProfile? LoadProfileByName(string profileName)
         {
-            LogManager.WriteDebugLog("DataService", $"调用ProfileLoader加载角色档案，includeHidden={includeHidden}");
-            return ProfileLoader.LoadAllProfiles(includeHidden);
+            LogManager.WriteDebugLog("DataService", $"加载单个角色档案: {profileName}");
+            return ProfileLoader.LoadProfileByName(profileName);
+        }
+
+        /// <summary>
+        /// 获取所有角色档案的文件名列表（不加载文件内容）
+        /// </summary>
+        public static List<string> GetProfileNames()
+        {
+            LogManager.WriteDebugLog("DataService", $"获取角色档案名称列表");
+            return ProfileLoader.GetProfileNames();
+        }
+
+        /// <summary>
+        /// 加载所有角色档案
+        /// </summary>
+        public static List<CharacterProfile> LoadAllProfiles()
+        {
+            LogManager.WriteDebugLog("DataService", $"调用ProfileLoader加载角色档案");
+            return ProfileLoader.LoadAllProfiles();
         }
 
         private static string GetSafeFileName(string name)
@@ -162,6 +183,9 @@ namespace DTwoMFTimerHelper.Services
                 }
 
                 LogManager.WriteDebugLog($"角色 {profile.Name} 保存完成");
+
+                // 清除该档案的缓存，确保下次读取时获取最新内容
+                ProfileLoader.ClearProfileCache(profile.Name);
             }
             catch (Exception ex)
             {
@@ -181,6 +205,9 @@ namespace DTwoMFTimerHelper.Services
         {
             try
             {
+                // 清除该档案的缓存
+                ProfileLoader.ClearProfileCache(profile.Name);
+
                 // 使用统一的方法获取文件路径
                 var filePath = GetProfileFilePath(profile.Name);
                 if (File.Exists(filePath))
@@ -204,12 +231,7 @@ namespace DTwoMFTimerHelper.Services
             }
         }
 
-        // 隐藏/显示角色档案
-        public static void ToggleProfileVisibility(CharacterProfile profile, bool isHidden)
-        {
-            profile.IsHidden = isHidden;
-            SaveProfile(profile);
-        }
+        // 移除了ToggleProfileVisibility方法，因为不再需要隐藏/显示角色档案功能
 
         /// <summary>
         /// 加载场景数据
@@ -248,10 +270,16 @@ namespace DTwoMFTimerHelper.Services
         }
 
         // 根据名称查找角色档案
-        public static CharacterProfile? FindProfileByName(string name, bool includeHidden = false)
+        public static CharacterProfile? FindProfileByName(string name)
         {
-            var profiles = LoadAllProfiles(includeHidden);
-            return profiles.FirstOrDefault(p => p.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            LogManager.WriteDebugLog("DataService", $"查找角色档案: {name}");
+            // 直接加载单个配置文件而不是加载所有文件
+            var profile = LoadProfileByName(name);
+            if (profile != null)
+            {
+                return profile;
+            }
+            return null;
         }
 
         // 创建新的角色档案
@@ -280,7 +308,6 @@ namespace DTwoMFTimerHelper.Services
                 {
                     Name = name,
                     Class = characterClass,
-                    IsHidden = false,
                     Records = []
                 };
 

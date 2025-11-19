@@ -63,7 +63,6 @@ namespace DTwoMFTimerHelper.Models
         {
             get; set;
         }
-        public bool IsHidden { get; set; } = false;
         public List<MFRecord> Records { get; set; } = [];
 
         // 计算属性

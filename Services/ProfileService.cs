@@ -219,7 +219,7 @@ namespace DTwoMFTimerHelper.Services
         /// </summary>
         public List<CharacterProfile> GetAllProfiles()
         {
-            return DataService.LoadAllProfiles(false);
+            return DataService.LoadAllProfiles();
         }
 
         /// <summary>

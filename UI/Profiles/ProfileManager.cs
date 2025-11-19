@@ -530,6 +530,12 @@ namespace DTwoMFTimerHelper.UI.Profiles
                     currentRecord = null;
 
                     WriteDebugLog($"成功切换到角色: {currentProfile.Name}");
+                    
+                    // 更新LastUsedProfile设置
+                    var settings = SettingsManager.LoadSettings();
+                    settings.LastUsedProfile = selectedProfile.Name;
+                    SettingsManager.SaveSettings(settings);
+                    WriteDebugLog($"更新LastUsedProfile为: {selectedProfile.Name}");
 
                     // 更新UI显示新角色信息
                     UpdateUI();
@@ -613,12 +619,8 @@ namespace DTwoMFTimerHelper.UI.Profiles
             {
                 WriteDebugLog($"尝试加载上次使用的角色档案: {lastUsedProfileName}");
 
-                // 加载所有角色档案
-                var allProfiles = Services.DataService.LoadAllProfiles(false);
-                WriteDebugLog($"已加载所有角色档案，数量: {allProfiles.Count}");
-
-                // 查找上次使用的角色档案
-                var profile = allProfiles.FirstOrDefault(p => p.Name == lastUsedProfileName);
+                // 直接加载单个角色配置文件，而不是加载所有文件
+                var profile = Services.DataService.LoadProfileByName(lastUsedProfileName);
                 if (profile != null)
                 {
                     currentProfile = profile;

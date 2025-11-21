@@ -22,9 +22,9 @@ namespace DTwoMFTimerHelper.UI.Profiles {
 
             InitializeComponent();
             LoadFarmingScenes();
+            LoadLastRunSettings();
             UpdateUI();
         }
-
         // 控件字段 - 使用组件容器来支持设计器
         private IContainer components = null;
         private Button btnCreateCharacter;
@@ -244,13 +244,22 @@ namespace DTwoMFTimerHelper.UI.Profiles {
                 string summary = $"场景列表加载完成\n场景总数: {farmingScenes.Count}\n成功添加到下拉框: {(cmbScene != null ? cmbScene.Items.Count : 0)}";
                 WriteDebugLog(summary);
             }
+        }
 
-            var settings = Services.SettingsManager.LoadSettings();
+        private void LoadLastRunSettings() {
+            if (_profileService.CurrentProfile == null) {
+                return;
+            }
+
+            var lastRunDifficulty = _profileService.CurrentProfile.LastRunDifficulty;
+            var LastRunScene = _profileService.CurrentProfile.LastRunScene;
+
             // 加载上次使用的场景
-            if (!string.IsNullOrEmpty(settings.LastUsedScene) && cmbScene != null) {
-                for (int i = 0; i < cmbScene.Items.Count; i++) {
-                    var itemText = cmbScene.Items[i]?.ToString();
-                    if (itemText != null && itemText == settings.LastUsedScene) {
+            WriteDebugLog($"上次运行场景: {LastRunScene}， 加载的账户: {_profileService.CurrentProfile.Name}");
+            if (cmbScene != null) {
+                for (int i = 0; i < farmingScenes.Count; i++) {
+                    WriteDebugLog($"匹配场景 {i}: {farmingScenes[i].EnUS}");
+                    if (farmingScenes[i].EnUS == LastRunScene) {
                         cmbScene.SelectedIndex = i;
                         break;
                     }
@@ -258,8 +267,8 @@ namespace DTwoMFTimerHelper.UI.Profiles {
             }
 
             // 尝试加载上次使用的难度
-            if (!string.IsNullOrEmpty(settings.LastUsedDifficulty) && cmbDifficulty != null) {
-                if (Enum.TryParse<DTwoMFTimerHelper.Models.GameDifficulty>(settings.LastUsedDifficulty, out var difficulty)) {
+            if (cmbDifficulty != null) {
+                if (Enum.TryParse<DTwoMFTimerHelper.Models.GameDifficulty>(lastRunDifficulty.ToString(), out var difficulty)) {
                     // 根据难度值设置下拉框索引
                     switch (difficulty) {
                         case DTwoMFTimerHelper.Models.GameDifficulty.Normal:
@@ -275,6 +284,7 @@ namespace DTwoMFTimerHelper.UI.Profiles {
                 }
             }
 
+            var settings = Services.SettingsManager.LoadSettings();
             // 尝试加载上次使用的角色档案
             if (!string.IsNullOrEmpty(settings.LastUsedProfile)) {
                 var profile = Services.DataService.FindProfileByName(settings.LastUsedProfile);
@@ -289,6 +299,7 @@ namespace DTwoMFTimerHelper.UI.Profiles {
                 }
             }
         }
+
 
         // 其他方法保持不变...
         private Models.GameDifficulty GetSelectedDifficulty() {
@@ -496,7 +507,7 @@ namespace DTwoMFTimerHelper.UI.Profiles {
                     settings.LastUsedProfile = selectedProfile.Name;
                     SettingsManager.SaveSettings(settings);
                     WriteDebugLog($"更新LastUsedProfile为: {selectedProfile.Name}");
-
+                    LoadLastRunSettings();
                     // 更新UI显示新角色信息
                     UpdateUI();
 

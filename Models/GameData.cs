@@ -6,19 +6,16 @@ using System.Reflection;
 using YamlDotNet.Serialization;
 using DTwoMFTimerHelper.Utils;
 
-namespace DTwoMFTimerHelper.Models
-{
+namespace DTwoMFTimerHelper.Models {
     // 游戏难度枚举
-    public enum GameDifficulty
-    {
+    public enum GameDifficulty {
         Normal,
         Nightmare,
         Hell
     }
 
     // 角色职业枚举
-    public enum CharacterClass
-    {
+    public enum CharacterClass {
         Barbarian,
         Sorceress,
         Assassin,
@@ -29,24 +26,20 @@ namespace DTwoMFTimerHelper.Models
     }
 
     // MF记录类
-    public class MFRecord
-    {
+    public class MFRecord {
         public string SceneName { get; set; } = string.Empty;
         public int ACT { get; set; } = 0;
         public GameDifficulty Difficulty { get; set; } = GameDifficulty.Normal;
         [YamlDotNet.Serialization.YamlMember(Alias = "startTime")]
-        public DateTime StartTime
-        {
+        public DateTime StartTime {
             get; set;
         }
         [YamlDotNet.Serialization.YamlMember(Alias = "endTime")]
-        public DateTime? EndTime
-        {
+        public DateTime? EndTime {
             get; set;
         }
         [YamlDotNet.Serialization.YamlMember(Alias = "latestTime")]
-        public DateTime? LatestTime
-        {
+        public DateTime? LatestTime {
             get; set;
         }
         [YamlDotNet.Serialization.YamlMember(Alias = "durationSeconds")]
@@ -56,33 +49,28 @@ namespace DTwoMFTimerHelper.Models
     }
 
     // 角色档案类
-    public class CharacterProfile
-    {
+    public class CharacterProfile {
         public string Name { get; set; } = string.Empty;
-        public CharacterClass Class
-        {
+        public CharacterClass Class {
             get; set;
         }
         public List<MFRecord> Records { get; set; } = [];
 
+        public string LastRunScene { get; set; } = string.Empty;
+        public GameDifficulty LastRunDifficulty { get; set; } = GameDifficulty.Hell;
+
         // 计算属性
-        public double TotalPlayTimeSeconds
-        {
-            get
-            {
-                try
-                {
+        public double TotalPlayTimeSeconds {
+            get {
+                try {
                     return Records?.Sum(r => r.DurationSeconds) ?? 0;
                 }
                 catch { return 0; }
             }
         }
-        public double AverageGameTimeSeconds
-        {
-            get
-            {
-                try
-                {
+        public double AverageGameTimeSeconds {
+            get {
+                try {
                     var completedRecords = Records.Where(r => r.IsCompleted).ToList();
                     return completedRecords.Count > 0 ? completedRecords.Average(r => r.DurationSeconds) : 0;
                 }
@@ -94,8 +82,7 @@ namespace DTwoMFTimerHelper.Models
     }
 
     // 场景类
-    public class FarmingScene
-    {
+    public class FarmingScene {
         public int ACT { get; set; } = 0;
         [YamlDotNet.Serialization.YamlMember(Alias = "enUS")]
         public string EnUS { get; set; } = string.Empty;
@@ -109,15 +96,13 @@ namespace DTwoMFTimerHelper.Models
         public string ShortZhCN { get; set; } = string.Empty;
 
         // 根据当前语言获取场景名称
-        public string GetSceneName(string language)
-        {
+        public string GetSceneName(string language) {
             return language == "English" ? EnUS : ZhCN;
         }
     }
 
     // 场景数据容器
-    public class FarmingSpotsData
-    {
+    public class FarmingSpotsData {
         // 只使用一个属性，并通过YamlMember特性指定别名，避免重复映射
         [YamlDotNet.Serialization.YamlMember(Alias = "farmingSpots", ApplyNamingConventions = false)]
         public List<FarmingScene> FarmingSpots { get; set; } = [];

@@ -357,6 +357,8 @@ namespace DTwoMFTimerHelper.Services {
             };
 
             if (_profileService.CurrentProfile != null) {
+                _profileService.CurrentProfile.LastRunScene = pureEnglishSceneName;
+                _profileService.CurrentProfile.LastRunDifficulty = difficulty;
                 DataService.AddMFRecord(_profileService.CurrentProfile, newRecord);
                 LogManager.WriteDebugLog("TimerService", $"已创建开始记录到角色档案: {currentCharacter} - {currentScene}, ACT: {actValue}, 开始时间: {_startTime}");
             }
@@ -395,7 +397,8 @@ namespace DTwoMFTimerHelper.Services {
                 LatestTime = DateTime.Now,
                 DurationSeconds = durationSeconds
             };
-
+            _profileService.CurrentProfile.LastRunScene = pureEnglishSceneName;
+            _profileService.CurrentProfile.LastRunDifficulty = difficulty;
             // 查找并更新现有记录或添加新记录
             var existingRecord = FindIncompleteRecordForCurrentScene();
             if (existingRecord != null) {
@@ -410,6 +413,7 @@ namespace DTwoMFTimerHelper.Services {
                 DataService.AddMFRecord(_profileService.CurrentProfile, newRecord);
                 LogManager.WriteDebugLog("TimerService", $"[添加新记录] {currentCharacter} - {currentScene}, ACT: {actValue}, 难度: {difficulty}, 开始时间: {_startTime}, 结束时间: {DateTime.Now}, DurationSeconds: {newRecord.DurationSeconds}");
             }
+
 
             // 保存数据后生成并复制房间名称
             GenerateAndCopyRoomName();

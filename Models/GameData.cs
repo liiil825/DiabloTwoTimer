@@ -55,6 +55,7 @@ namespace DTwoMFTimerHelper.Models {
             get; set;
         }
         public List<MFRecord> Records { get; set; } = [];
+        public List<LootRecord> LootRecords { get; set; } = []; // 存储掉落的历史记录
 
         public string LastRunScene { get; set; } = string.Empty;
         public GameDifficulty LastRunDifficulty { get; set; } = GameDifficulty.Hell;
@@ -106,5 +107,13 @@ namespace DTwoMFTimerHelper.Models {
         // 只使用一个属性，并通过YamlMember特性指定别名，避免重复映射
         [YamlDotNet.Serialization.YamlMember(Alias = "farmingSpots", ApplyNamingConventions = false)]
         public List<FarmingScene> FarmingSpots { get; set; } = [];
+    }
+
+    // 优质装备/符文记录类
+    public class LootRecord {
+        public string Name { get; set; } = string.Empty; // 装备或符文的名称
+        public string SceneName { get; set; } = string.Empty; // 掉落的场景
+        public int RunCount { get; set; } = 0; // 刷多少次掉落的
+        public DateTime DropTime { get; set; } = DateTime.Now; // 掉落的时间
     }
 }

@@ -40,7 +40,7 @@ namespace DTwoMFTimerHelper.UI {
         private void InitializeForm() {
             var width = UISizeConstants.MainFormWidth;
             var settings = Services.SettingsManager.LoadSettings();
-            var height = settings.ShowLoot ? UISizeConstants.MainFormHeightWithLoot : UISizeConstants.MainFormHeightWithoutLoot;
+            var height = settings.TimerShowLootDrops ? UISizeConstants.MainFormHeightWithLoot : UISizeConstants.MainFormHeightWithoutLoot;
             this.Size = new Size(width, height);
             this.StartPosition = FormStartPosition.Manual;
             this.ShowInTaskbar = true;

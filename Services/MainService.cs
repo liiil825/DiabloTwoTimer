@@ -256,6 +256,7 @@ namespace DTwoMFTimerHelper.Services {
                 _settingsControl.LanguageChanged += OnLanguageChanged;
                 _settingsControl.AlwaysOnTopChanged += OnAlwaysOnTopChanged;
                 _settingsControl.HotkeysChanged += OnHotkeysChanged;
+                _settingsControl.TimerSettingsChanged += OnTimerSettingsChanged;
             }
         }
 
@@ -378,6 +379,19 @@ namespace DTwoMFTimerHelper.Services {
 
             // 可选：提示用户保存成功
             // MessageBox.Show("设置已保存", "提示");
+        }
+
+        private void OnTimerSettingsChanged(object? sender, SettingsControl.TimerSettingsChangedEventArgs e) {
+            // 更新并保存到配置文件
+            if (_appSettings != null) {
+                _appSettings.TimerShowPomodoro = e.ShowPomodoro;
+                _appSettings.TimerShowLootDrops = e.ShowLootDrops;
+                _appSettings.TimerSyncStartPomodoro = e.SyncStartPomodoro;
+                SettingsManager.SaveSettings(_appSettings);
+            }
+
+            // 应用设置到UI
+            UpdateUI();
         }
 
 

@@ -50,7 +50,15 @@ namespace DTwoMFTimerHelper.Services {
             set;
         }
         // 界面设置
-        public bool ShowLoot {
+        public bool TimerShowLootDrops {
+            get;
+            set;
+        }
+        public bool TimerShowPomodoro {
+            get;
+            set;
+        }
+        public bool TimerSyncStartPomodoro {
             get;
             set;
         }
@@ -76,7 +84,9 @@ namespace DTwoMFTimerHelper.Services {
         public int LongBreakSeconds { get; set; } = 0;
 
         // 界面设置
-        public bool ShowLoot { get; set; } = false; // 是否显示掉落记录
+        public bool TimerShowLootDrops { get; set; } = false; // 是否显示掉落记录
+        public bool TimerShowPomodoro { get; set; } = true; // 是否显示番茄钟
+        public bool TimerSyncStartPomodoro { get; set; } = false; // 开启计时器时是否同步开启番茄钟
 
         public Keys HotkeyStartOrNext { get; set; } = Keys.Q | Keys.Alt;
         public Keys HotkeyPause { get; set; } = Keys.Space | Keys.Control;

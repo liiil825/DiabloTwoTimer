@@ -17,6 +17,7 @@ namespace DTwoMFTimerHelper.UI.Settings {
 
         // 建议合并为一个快捷键更新事件，或者分别定义
         public event EventHandler<AllHotkeysChangedEventArgs>? HotkeysChanged;
+        public event EventHandler<TimerSettingsChangedEventArgs>? TimerSettingsChanged;
         // 控件引用
         private TabControl tabControl = null!;
         private TabPage tabPageGeneral = null!;
@@ -27,6 +28,8 @@ namespace DTwoMFTimerHelper.UI.Settings {
         // 子组件引用
         private GeneralSettingsControl generalSettings = null!;
         private HotkeySettingsControl hotkeySettings = null!;
+        private TimerSettingsControl timerSettings = null!;
+        private TabPage tabPageTimer = null!;
 
         public SettingsControl() {
             InitializeComponent();
@@ -39,11 +42,14 @@ namespace DTwoMFTimerHelper.UI.Settings {
             generalSettings = new GeneralSettingsControl();
             tabPageHotkeys = new TabPage();
             hotkeySettings = new HotkeySettingsControl();
+            tabPageTimer = new TabPage();
+            timerSettings = new TimerSettingsControl();
             btnConfirmSettings = new Button();
             panelBottom = new Panel();
             tabControl.SuspendLayout();
             tabPageGeneral.SuspendLayout();
             tabPageHotkeys.SuspendLayout();
+            tabPageTimer.SuspendLayout();
             panelBottom.SuspendLayout();
             SuspendLayout();
             // 
@@ -51,6 +57,7 @@ namespace DTwoMFTimerHelper.UI.Settings {
             // 
             tabControl.Controls.Add(tabPageGeneral);
             tabControl.Controls.Add(tabPageHotkeys);
+            tabControl.Controls.Add(tabPageTimer);
             tabControl.Dock = DockStyle.Fill;
             tabControl.Location = new Point(0, 0);
             tabControl.Name = "tabControl";
@@ -87,6 +94,16 @@ namespace DTwoMFTimerHelper.UI.Settings {
             tabPageHotkeys.TabIndex = 1;
             tabPageHotkeys.Text = "快捷键";
             // 
+            // tabPageTimer
+            // 
+            tabPageTimer.Controls.Add(timerSettings);
+            tabPageTimer.Location = new Point(4, 37);
+            tabPageTimer.Name = "tabPageTimer";
+            tabPageTimer.Padding = new Padding(3);
+            tabPageTimer.Size = new Size(363, 350);
+            tabPageTimer.TabIndex = 2;
+            tabPageTimer.Text = "计时器";
+            // 
             // hotkeySettings
             // 
             hotkeySettings.AutoScroll = true;
@@ -95,6 +112,15 @@ namespace DTwoMFTimerHelper.UI.Settings {
             hotkeySettings.Name = "hotkeySettings";
             hotkeySettings.Size = new Size(357, 344);
             hotkeySettings.TabIndex = 0;
+            // 
+            // timerSettings
+            // 
+            timerSettings.AutoScroll = true;
+            timerSettings.Dock = DockStyle.Fill;
+            timerSettings.Location = new Point(3, 3);
+            timerSettings.Name = "timerSettings";
+            timerSettings.Size = new Size(357, 344);
+            timerSettings.TabIndex = 0;
             // 
             // btnConfirmSettings
             // 
@@ -124,6 +150,7 @@ namespace DTwoMFTimerHelper.UI.Settings {
             tabControl.ResumeLayout(false);
             tabPageGeneral.ResumeLayout(false);
             tabPageHotkeys.ResumeLayout(false);
+            tabPageTimer.ResumeLayout(false);
             panelBottom.ResumeLayout(false);
             ResumeLayout(false);
         }
@@ -135,15 +162,18 @@ namespace DTwoMFTimerHelper.UI.Settings {
             btnConfirmSettings.Text = LanguageManager.GetString("ConfirmSettings");
             tabPageGeneral.Text = LanguageManager.GetString("General");
             tabPageHotkeys.Text = LanguageManager.GetString("Hotkeys");
+            tabPageTimer.Text = LanguageManager.GetString("TimerSettings");
 
             // 刷新子组件
             generalSettings.RefreshUI();
             hotkeySettings.RefreshUI();
+            timerSettings.RefreshUI();
         }
 
         public void InitializeData(Services.AppSettings settings) {
             generalSettings.LoadSettings(settings);
             hotkeySettings.LoadHotkeys(settings);
+            timerSettings.LoadSettings(settings);
         }
 
         private void BtnConfirmSettings_Click(object? sender, EventArgs e) {
@@ -158,6 +188,13 @@ namespace DTwoMFTimerHelper.UI.Settings {
                 hotkeySettings.PauseHotkey,
                 hotkeySettings.DeleteHistoryHotkey,
                 hotkeySettings.RecordLootHotkey
+            ));
+
+            // 触发计时器设置更新事件
+            TimerSettingsChanged?.Invoke(this, new TimerSettingsChangedEventArgs(
+                timerSettings.TimerShowPomodoro,
+                timerSettings.TimerShowLootDrops,
+                timerSettings.TimerSyncStartPomodoro
             ));
         }
 
@@ -196,5 +233,12 @@ namespace DTwoMFTimerHelper.UI.Settings {
         public class LanguageChangedEventArgs(LanguageOption language) : EventArgs { public LanguageOption Language { get; } = language; }
         public class AlwaysOnTopChangedEventArgs(bool isAlwaysOnTop) : EventArgs { public bool IsAlwaysOnTop { get; } = isAlwaysOnTop; }
         public class HotkeyChangedEventArgs(Keys hotkey) : EventArgs { public Keys Hotkey { get; } = hotkey; }
+
+        // 新增：计时器设置事件参数类
+        public class TimerSettingsChangedEventArgs(bool showPomodoro, bool showLootDrops, bool syncStartPomodoro) : EventArgs {
+            public bool ShowPomodoro { get; } = showPomodoro;
+            public bool ShowLootDrops { get; } = showLootDrops;
+            public bool SyncStartPomodoro { get; } = syncStartPomodoro;
+        }
     }
 }

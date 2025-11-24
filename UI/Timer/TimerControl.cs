@@ -97,7 +97,7 @@ namespace DTwoMFTimerHelper.UI.Timer {
             if (lootRecordsControl != null) {
                 // 根据应用设置的ShowLoot设置初始化掉落记录控件的可见性
                 var settings = Services.SettingsManager.LoadSettings();
-                lootRecordsControl.Visible = settings.ShowLoot;
+                lootRecordsControl.Visible = settings.TimerShowLootDrops;
                 bool isVisible = lootRecordsControl.Visible;
 
                 // 更新按钮文本
@@ -261,10 +261,10 @@ namespace DTwoMFTimerHelper.UI.Timer {
         }
 
         private void SaveShowLootSetting() {
-            // 保存应用设置的ShowLoot设置
+            // 保存应用设置的TimerShowLootDrops设置
             if (lootRecordsControl != null) {
                 var settings = Services.SettingsManager.LoadSettings();
-                settings.ShowLoot = lootRecordsControl.Visible;
+                settings.TimerShowLootDrops = lootRecordsControl.Visible;
                 Services.SettingsManager.SaveSettings(settings);
             }
         }
@@ -491,8 +491,8 @@ namespace DTwoMFTimerHelper.UI.Timer {
                     }
                 }
 
-                // 更新应用设置的ShowLoot设置
-                settings.ShowLoot = isVisible;
+                // 更新应用设置的TimerShowLootDrops设置
+                settings.TimerShowLootDrops = isVisible;
                 Services.SettingsManager.SaveSettings(settings);
             }
         }

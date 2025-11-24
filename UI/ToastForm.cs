@@ -19,9 +19,9 @@ namespace DTwoMFTimerHelper.UI {
         // private double _targetOpacity = 1.0;
 
         // UI 组件
-        private Label lblTitle;
-        private Label lblMessage;
-        private Panel pnlColorStrip;
+        private Label? lblTitle;
+        private Label? lblMessage;
+        private Panel? pnlColorStrip;
 
         public ToastForm(string message, ToastType type, string title = "") {
             this.StartPosition = FormStartPosition.Manual;
@@ -111,7 +111,7 @@ namespace DTwoMFTimerHelper.UI {
             _timerLife.Start(); // 开始倒计时
         }
 
-        private void TimerAnim_Tick(object sender, EventArgs e) {
+        private void TimerAnim_Tick(object? sender, EventArgs e) {
             if (_isClosing) {
                 // 淡出
                 this.Opacity -= 0.1;

@@ -107,5 +107,7 @@
   "ContinueFarm": "Continue Farm",
   "ShowLoot": "Show Loot",
   "HideLoot": "Hide Loot",
-  "SuccessSettingsChanged": "Settings modified successfully"
+  "SuccessSettingsChanged": "Settings modified successfully",
+  "PomodoroWorkEnding60s": "Work time ending in 60 seconds",
+  "PomodoroWorkEnding3s": "Work time ending in 3 seconds"
 }

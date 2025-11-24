@@ -106,5 +106,7 @@
   "ContinueFarm": "继续 Farm",
   "ShowLoot": "显示掉落",
   "HideLoot": "隐藏掉落",
-  "SuccessSettingsChanged": "设置修改成功"
+  "SuccessSettingsChanged": "设置修改成功",
+  "PomodoroWorkEnding60s": "工作时间将在60秒后结束",
+  "PomodoroWorkEnding3s": "工作时间将在3秒后结束"
 }

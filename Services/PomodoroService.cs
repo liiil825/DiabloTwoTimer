@@ -1,6 +1,7 @@
 using System;
 using System.Media;
 using DTwoMFTimerHelper.Services;
+using DTwoMFTimerHelper.Utils;
 
 namespace DTwoMFTimerHelper.Services {
     public class PomodoroTimerService {
@@ -115,7 +116,23 @@ namespace DTwoMFTimerHelper.Services {
 
         private void Timer_Tick(object? sender, EventArgs e) {
             if (_isRunning) {
+                // 记录当前时间，用于比较
+                var currentTime = _timeLeft;
                 _timeLeft = _timeLeft.Subtract(TimeSpan.FromMilliseconds(100));
+
+                // 检查是否需要显示提示
+                if (_currentState == TimerState.Work) {
+                    // 当时间从61秒变为60秒时显示提示
+                    if (currentTime.TotalSeconds > 60 && _timeLeft.TotalSeconds <= 60 && _timeLeft.TotalSeconds > 59.9) {
+                        // 60秒提示
+                        Toast.Info(LanguageManager.GetString("PomodoroWorkEnding60s", "Work time ending in 60 seconds"));
+                    }
+                    // 当时间从4秒变为3秒时显示提示
+                    else if (currentTime.TotalSeconds > 3 && _timeLeft.TotalSeconds <= 3 && _timeLeft.TotalSeconds > 2.9) {
+                        // 3秒提示
+                        Toast.Info(LanguageManager.GetString("PomodoroWorkEnding3s", "Work time ending in 3 seconds"));
+                    }
+                }
 
                 if (_timeLeft <= TimeSpan.Zero) {
                     HandleTimerCompletion();

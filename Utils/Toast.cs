@@ -14,21 +14,28 @@ namespace DTwoMFTimerHelper.Utils {
             var toast = new ToastForm(message, type, title);
 
             // 获取主屏幕的工作区（去除任务栏的区域）
-            var screen = Screen.PrimaryScreen.WorkingArea;
+            var screen = Screen.PrimaryScreen;
+            if (screen == null) {
+                // 如果无法获取主屏幕，使用默认位置
+                toast.Location = new Point(100, 100);
+            }
+            else {
+                var workingArea = screen.WorkingArea;
 
-            // 1. 计算水平居中 X 坐标
-            // 公式：屏幕左边距 + (屏幕宽 - 窗体宽) / 2
-            // 注意：加上 screen.X 是为了兼容多显示器，防止计算到负坐标去
-            int x = screen.X + (screen.Width - toast.Width) / 2;
+                // 1. 计算水平居中 X 坐标
+                // 公式：屏幕左边距 + (屏幕宽 - 窗体宽) / 2
+                // 注意：加上 screen.X 是为了兼容多显示器，防止计算到负坐标去
+                int x = workingArea.X + (workingArea.Width - toast.Width) / 2;
 
-            // 2. 计算 Y 坐标 (离顶部 10%)
-            int startY = screen.Y + (int)(screen.Height * 0.2);
+                // 2. 计算 Y 坐标 (离顶部 10%)
+                int startY = workingArea.Y + (int)(workingArea.Height * 0.2);
 
-            // 3. 堆叠偏移
-            int offset = _openToasts.Count * (toast.Height + 10);
+                // 3. 堆叠偏移
+                int offset = _openToasts.Count * (toast.Height + 10);
 
-            // 设置坐标
-            toast.Location = new Point(x, startY + offset);
+                // 设置坐标
+                toast.Location = new Point(x, startY + offset);
+            }
 
             toast.FormClosed += (s, e) => { _openToasts.Remove(toast); };
             _openToasts.Add(toast);

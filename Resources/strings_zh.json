@@ -131,5 +131,7 @@
   "FullScreenStatistics": "全屏统计",
   "TimerSyncPausePomodoro": "同步暂停番茄钟",
   "TimerGenerateRoomName": "生成房间名称",
+  "PomodoroWarningLongTime": "提前长时间提示:",
+  "PomodoroWarningShortTime": "提前短时间提示:",
   "LootRecordSavedSuccessfully": "掉落记录保存成功"
 }

@@ -46,6 +46,7 @@ namespace DTwoMFTimerHelper.Services {
 
         // 标记是否在休息前暂停了计时器
         private bool _timerWasPausedBeforeBreak = false;
+        private IAppSettings? _appSettings;
 
         // 时间设置
         public TimeSettings Settings { get; set; }
@@ -119,6 +120,7 @@ namespace DTwoMFTimerHelper.Services {
         }
 
         public void LoadSettings(IAppSettings appSettings) {
+            _appSettings = appSettings;
             Settings.WorkTimeMinutes = appSettings.WorkTimeMinutes;
             Settings.WorkTimeSeconds = appSettings.WorkTimeSeconds;
             Settings.ShortBreakMinutes = appSettings.ShortBreakMinutes;
@@ -155,15 +157,19 @@ namespace DTwoMFTimerHelper.Services {
 
                 // 检查是否需要显示提示
                 if (_currentState == TimerState.Work) {
-                    // 当时间从61秒变为60秒时显示提示
-                    if (currentTime.TotalSeconds > 60 && _timeLeft.TotalSeconds <= 60 && _timeLeft.TotalSeconds > 59.9) {
-                        // 60秒提示
-                        Toast.Info(LanguageManager.GetString("PomodoroWorkEnding60s", "Work time ending in 60 seconds"));
+                    // 获取配置的提示时间，默认值分别为60秒和3秒
+                    int warningLongTime = _appSettings?.PomodoroWarningLongTime ?? 60;
+                    int warningShortTime = _appSettings?.PomodoroWarningShortTime ?? 3;
+
+                    // 当时间从warningLongTime+1秒变为warningLongTime秒时显示提示
+                    if (currentTime.TotalSeconds > warningLongTime && _timeLeft.TotalSeconds <= warningLongTime && _timeLeft.TotalSeconds > warningLongTime - 0.1) {
+                        // 自定义秒数提示
+                        Toast.Info(LanguageManager.GetString("PomodoroWorkEndingLong", $"Work time ending in {warningLongTime} seconds"));
                     }
-                    // 当时间从4秒变为3秒时显示提示
-                    else if (currentTime.TotalSeconds > 3 && _timeLeft.TotalSeconds <= 3 && _timeLeft.TotalSeconds > 2.9) {
-                        // 3秒提示
-                        Toast.Info(LanguageManager.GetString("PomodoroWorkEnding3s", "Work time ending in 3 seconds"));
+                    // 当时间从warningShortTime+1秒变为warningShortTime秒时显示提示
+                    else if (currentTime.TotalSeconds > warningShortTime && _timeLeft.TotalSeconds <= warningShortTime && _timeLeft.TotalSeconds > warningShortTime - 0.1) {
+                        // 自定义秒数提示
+                        Toast.Info(LanguageManager.GetString("PomodoroWorkEndingShort", $"Work time ending in {warningShortTime} seconds"));
                     }
                 }
 

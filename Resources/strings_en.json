@@ -131,6 +131,8 @@
   "FullScreenStatistics": "Statistics",
   "TimerSyncPausePomodoro": "Sync Pause Pomodoro",
   "TimerGenerateRoomName": "Generate Room Name",
+  "PomodoroWarningLongTime": "Warning Long Time:",
+  "PomodoroWarningShortTime": "Warning Short Time:",
   "Minutes": "min",
   "Seconds": "sec"
 }

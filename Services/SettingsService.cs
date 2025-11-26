@@ -74,6 +74,15 @@ namespace DTwoMFTimerHelper.Services {
             get;
             set;
         }
+        // 番茄钟提示时间设置
+        public int PomodoroWarningLongTime {
+            get;
+            set;
+        }
+        public int PomodoroWarningShortTime {
+            get;
+            set;
+        }
         public bool GenerateRoomName {
             get;
             set;
@@ -120,6 +129,8 @@ namespace DTwoMFTimerHelper.Services {
         public bool TimerShowPomodoro { get; set; } = true; // 是否显示番茄钟
         public bool TimerSyncStartPomodoro { get; set; } = false; // 开启计时器时是否同步开启番茄钟
         public bool TimerSyncPausePomodoro { get; set; } = false; // 暂停计时器时是否同步暂停番茄钟
+        public int PomodoroWarningLongTime { get; set; } = 60; // 番茄钟长时间提示（实际值）
+        public int PomodoroWarningShortTime { get; set; } = 3; // 番茄钟短时间提示（实际值）
         public bool GenerateRoomName { get; set; } = true; // 是否生成房间名称
 
         public Keys HotkeyStartOrNext { get; set; } = Keys.Q | Keys.Alt;
@@ -193,6 +204,8 @@ namespace DTwoMFTimerHelper.Services {
                     TimerShowPomodoro = settings.TimerShowPomodoro,
                     TimerSyncStartPomodoro = settings.TimerSyncStartPomodoro,
                     TimerSyncPausePomodoro = settings.TimerSyncPausePomodoro,
+                    PomodoroWarningLongTime = settings.PomodoroWarningLongTime,
+                    PomodoroWarningShortTime = settings.PomodoroWarningShortTime,
                     GenerateRoomName = settings.GenerateRoomName,
                     HotkeyStartOrNext = settings.HotkeyStartOrNext,
                     HotkeyPause = settings.HotkeyPause,

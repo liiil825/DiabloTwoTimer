@@ -131,12 +131,15 @@ namespace DTwoMFTimerHelper.UI.Pomodoro {
 
         private void BtnPomodoroSettings_Click(object sender, EventArgs e) {
             using var settingsForm = new PomodoroSettingsForm(
+                _appSettings,
                 _timerService.Settings.WorkTimeMinutes,
                 _timerService.Settings.WorkTimeSeconds,
                 _timerService.Settings.ShortBreakMinutes,
                 _timerService.Settings.ShortBreakSeconds,
                 _timerService.Settings.LongBreakMinutes,
-                _timerService.Settings.LongBreakSeconds);
+                _timerService.Settings.LongBreakSeconds,
+                _appSettings.PomodoroWarningLongTime,
+                _appSettings.PomodoroWarningShortTime);
 
             if (settingsForm.ShowDialog(this.FindForm()) == DialogResult.OK) {
                 // 更新 Service 配置
@@ -146,6 +149,10 @@ namespace DTwoMFTimerHelper.UI.Pomodoro {
                 _timerService.Settings.ShortBreakSeconds = settingsForm.ShortBreakSeconds;
                 _timerService.Settings.LongBreakMinutes = settingsForm.LongBreakMinutes;
                 _timerService.Settings.LongBreakSeconds = settingsForm.LongBreakSeconds;
+
+                // 更新警告时间设置
+                _appSettings.PomodoroWarningLongTime = settingsForm.WarningLongTime;
+                _appSettings.PomodoroWarningShortTime = settingsForm.WarningShortTime;
 
                 SaveSettings();
                 _timerService.Reset();
@@ -166,27 +173,25 @@ namespace DTwoMFTimerHelper.UI.Pomodoro {
 
         #region 设置加载/保存
         private void LoadSettings() {
-            var settings = SettingsManager.LoadSettings();
-            if (settings != null) {
-                _timerService.Settings.WorkTimeMinutes = settings.WorkTimeMinutes;
-                _timerService.Settings.WorkTimeSeconds = settings.WorkTimeSeconds;
-                _timerService.Settings.ShortBreakMinutes = settings.ShortBreakMinutes;
-                _timerService.Settings.ShortBreakSeconds = settings.ShortBreakSeconds;
-                _timerService.Settings.LongBreakMinutes = settings.LongBreakMinutes;
-                _timerService.Settings.LongBreakSeconds = settings.LongBreakSeconds;
-                _timerService.Reset();
-            }
+            // 使用注入的_appSettings获取设置
+            _timerService.Settings.WorkTimeMinutes = _appSettings.WorkTimeMinutes;
+            _timerService.Settings.WorkTimeSeconds = _appSettings.WorkTimeSeconds;
+            _timerService.Settings.ShortBreakMinutes = _appSettings.ShortBreakMinutes;
+            _timerService.Settings.ShortBreakSeconds = _appSettings.ShortBreakSeconds;
+            _timerService.Settings.LongBreakMinutes = _appSettings.LongBreakMinutes;
+            _timerService.Settings.LongBreakSeconds = _appSettings.LongBreakSeconds;
+            _timerService.Reset();
         }
 
         private void SaveSettings() {
-            var settings = SettingsManager.LoadSettings() ?? new AppSettings(); // 假设有 AppSettings 类
-            settings.WorkTimeMinutes = _timerService.Settings.WorkTimeMinutes;
-            settings.WorkTimeSeconds = _timerService.Settings.WorkTimeSeconds;
-            settings.ShortBreakMinutes = _timerService.Settings.ShortBreakMinutes;
-            settings.ShortBreakSeconds = _timerService.Settings.ShortBreakSeconds;
-            settings.LongBreakMinutes = _timerService.Settings.LongBreakMinutes;
-            settings.LongBreakSeconds = _timerService.Settings.LongBreakSeconds;
-            SettingsManager.SaveSettings(settings);
+            // 使用注入的_appSettings保存设置
+            _appSettings.WorkTimeMinutes = _timerService.Settings.WorkTimeMinutes;
+            _appSettings.WorkTimeSeconds = _timerService.Settings.WorkTimeSeconds;
+            _appSettings.ShortBreakMinutes = _timerService.Settings.ShortBreakMinutes;
+            _appSettings.ShortBreakSeconds = _timerService.Settings.ShortBreakSeconds;
+            _appSettings.LongBreakMinutes = _timerService.Settings.LongBreakMinutes;
+            _appSettings.LongBreakSeconds = _timerService.Settings.LongBreakSeconds;
+            SettingsManager.SaveSettings(_appSettings);
         }
 
         public void RefreshUI() {

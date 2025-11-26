@@ -1,122 +1,82 @@
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Utils;
 using DTwoMFTimerHelper.Services;
+using DTwoMFTimerHelper.Utils;
+using DTwoMFTimerHelper.UI.Common;
 
-namespace DTwoMFTimerHelper.UI.Pomodoro
-{
-    public class PomodoroSettingsForm : Form
-    {
-        // 控件声明
-        private Label? lblWorkTime;
-        private Label? lblShortBreakTime;
-        private Label? lblLongBreakTime;
-        private Label? lblWorkTimeSec;
-        private Label? lblShortBreakTimeSec;
-        private Label? lblLongBreakTimeSec;
-        private NumericUpDown? nudWorkTimeMin;
-        private NumericUpDown? nudShortBreakTimeMin;
-        private NumericUpDown? nudLongBreakTimeMin;
-        private NumericUpDown? nudWorkTimeSec;
-        private NumericUpDown? nudShortBreakTimeSec;
-        private NumericUpDown? nudLongBreakTimeSec;
-        private Button? btnSave;
-        private Button? btnCancel;
+namespace DTwoMFTimerHelper.UI.Pomodoro {
+    public class PomodoroSettingsForm : BaseForm {
+        // 控件使用 null! 初始化
+        private Label lblWorkTime = null!;
+        private Label lblShortBreakTime = null!;
+        private Label lblLongBreakTime = null!;
+        private Label lblWorkTimeSec = null!;
+        private Label lblShortBreakTimeSec = null!;
+        private Label lblLongBreakTimeSec = null!;
+        private NumericUpDown nudWorkTimeMin = null!;
+        private NumericUpDown nudShortBreakTimeMin = null!;
+        private NumericUpDown nudLongBreakTimeMin = null!;
+        private NumericUpDown nudWorkTimeSec = null!;
+        private NumericUpDown nudShortBreakTimeSec = null!;
+        private NumericUpDown nudLongBreakTimeSec = null!;
+        private readonly IContainer components = null!;
 
-        // 属性，用于获取设置的值
-        public int WorkTimeMinutes
-        {
-            get; private set;
-        }
-        public int WorkTimeSeconds
-        {
-            get; private set;
-        }
-        public int ShortBreakMinutes
-        {
-            get; private set;
-        }
-        public int ShortBreakSeconds
-        {
-            get; private set;
-        }
-        public int LongBreakMinutes
-        {
-            get; private set;
-        }
-        public int LongBreakSeconds
-        {
-            get; private set;
-        }
+        // 属性
+        public int WorkTimeMinutes { get; private set; }
+        public int WorkTimeSeconds { get; private set; }
+        public int ShortBreakMinutes { get; private set; }
+        public int ShortBreakSeconds { get; private set; }
+        public int LongBreakMinutes { get; private set; }
+        public int LongBreakSeconds { get; private set; }
 
-        public PomodoroSettingsForm(int workTime, int shortBreakTime, int longBreakTime)
-        {
-            // 设置窗口属性
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.TopMost = true;
-
-            // 设置默认值，避免在构造函数中进行复杂操作
-            WorkTimeMinutes = workTime;
-            WorkTimeSeconds = 0;
-            ShortBreakMinutes = shortBreakTime;
-            ShortBreakSeconds = 0;
-            LongBreakMinutes = longBreakTime;
-            LongBreakSeconds = 0;
-
+        // 1. 必需的无参构造函数，供设计器使用
+        public PomodoroSettingsForm() {
             InitializeComponent();
-
-            // 初始化设置（移到InitializeComponent后，避免设计器问题）
-            LoadSettings();
-            UpdateUI();
         }
 
-        public PomodoroSettingsForm(int workTimeMinutes, int workTimeSeconds, int shortBreakMinutes, int shortBreakSeconds, int longBreakMinutes, int longBreakSeconds)
-        {
-            // 设置窗口属性
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.TopMost = true;
+        // 2. 带参构造函数
+        public PomodoroSettingsForm(int workTime, int shortBreakTime, int longBreakTime) : this() {
+            WorkTimeMinutes = workTime;
+            ShortBreakMinutes = shortBreakTime;
+            LongBreakMinutes = longBreakTime;
+        }
 
-            // 设置默认值，避免在构造函数中进行复杂操作
+        // 3. 全参数构造函数
+        public PomodoroSettingsForm(int workTimeMinutes, int workTimeSeconds, int shortBreakMinutes, int shortBreakSeconds, int longBreakMinutes, int longBreakSeconds) : this() {
             WorkTimeMinutes = workTimeMinutes;
             WorkTimeSeconds = workTimeSeconds;
             ShortBreakMinutes = shortBreakMinutes;
             ShortBreakSeconds = shortBreakSeconds;
             LongBreakMinutes = longBreakMinutes;
             LongBreakSeconds = longBreakSeconds;
-
-            InitializeComponent();
-
-            // 如果秒数为0，从配置文件加载（移到InitializeComponent后，避免设计器问题）
-            if (WorkTimeSeconds == 0 || ShortBreakSeconds == 0 || LongBreakSeconds == 0)
-            {
-                LoadSettings();
-            }
-            UpdateUI();
         }
 
-        private void LoadSettings()
-        {
-            // 从配置文件加载默认设置
-            try
-            {
+        protected override void OnLoad(EventArgs e) {
+            base.OnLoad(e);
+            if (!this.DesignMode) {
+                // 如果所有值都是0（通常是无参构造进入），尝试加载配置
+                if (WorkTimeMinutes == 0 && ShortBreakMinutes == 0 && LongBreakMinutes == 0) {
+                    LoadSettings();
+                }
+                UpdateUI();
+            }
+        }
+
+        private void LoadSettings() {
+            try {
                 var settings = SettingsManager.LoadSettings();
-
-                // 只在秒数为0时才从设置中加载
-                if (WorkTimeSeconds == 0)
-                    WorkTimeSeconds = settings.WorkTimeSeconds;
-                if (ShortBreakSeconds == 0)
-                    ShortBreakSeconds = settings.ShortBreakSeconds;
-                if (LongBreakSeconds == 0)
-                    LongBreakSeconds = settings.LongBreakSeconds;
+                WorkTimeMinutes = settings.WorkTimeMinutes; // 假设设置里有Min
+                WorkTimeSeconds = settings.WorkTimeSeconds;
+                ShortBreakMinutes = settings.ShortBreakMinutes;
+                ShortBreakSeconds = settings.ShortBreakSeconds;
+                LongBreakMinutes = settings.LongBreakMinutes;
+                LongBreakSeconds = settings.LongBreakSeconds;
             }
-            catch
-            {
-                // 忽略可能的异常，确保设计器不会崩溃
-            }
+            catch { /* Ignore */ }
         }
 
-        private void InitializeComponent()
-        {
+        private void InitializeComponent() {
             lblWorkTime = new Label();
             lblShortBreakTime = new Label();
             lblLongBreakTime = new Label();
@@ -129,127 +89,136 @@ namespace DTwoMFTimerHelper.UI.Pomodoro
             nudWorkTimeSec = new NumericUpDown();
             nudShortBreakTimeSec = new NumericUpDown();
             nudLongBreakTimeSec = new NumericUpDown();
-            btnSave = new Button();
-            btnCancel = new Button();
-            ((System.ComponentModel.ISupportInitialize)nudWorkTimeMin).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)nudShortBreakTimeMin).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)nudLongBreakTimeMin).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)nudWorkTimeSec).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)nudShortBreakTimeSec).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)nudLongBreakTimeSec).BeginInit();
+            ((ISupportInitialize)nudWorkTimeMin).BeginInit();
+            ((ISupportInitialize)nudShortBreakTimeMin).BeginInit();
+            ((ISupportInitialize)nudLongBreakTimeMin).BeginInit();
+            ((ISupportInitialize)nudWorkTimeSec).BeginInit();
+            ((ISupportInitialize)nudShortBreakTimeSec).BeginInit();
+            ((ISupportInitialize)nudLongBreakTimeSec).BeginInit();
             SuspendLayout();
+            // 
+            // btnConfirm
+            // 
+            btnConfirm.Location = new System.Drawing.Point(239, 330);
+            btnConfirm.Margin = new Padding(5, 6, 5, 6);
+            btnConfirm.Size = new System.Drawing.Size(130, 56);
+            btnConfirm.Text = "保存";
+            // 
+            // btnCancel
+            // 
+            btnCancel.Location = new System.Drawing.Point(444, 330);
+            btnCancel.Margin = new Padding(5, 6, 5, 6);
+            btnCancel.Size = new System.Drawing.Size(130, 56);
             // 
             // lblWorkTime
             // 
-            lblWorkTime.Location = new System.Drawing.Point(41, 28);
+            lblWorkTime.Location = new System.Drawing.Point(67, 52);
+            lblWorkTime.Margin = new Padding(5, 0, 5, 0);
             lblWorkTime.Name = "lblWorkTime";
-            lblWorkTime.Size = new System.Drawing.Size(100, 36);
+            lblWorkTime.Size = new System.Drawing.Size(211, 67);
             lblWorkTime.TabIndex = 0;
+            lblWorkTime.Text = "Work Time (min):";
             // 
             // lblShortBreakTime
             // 
-            lblShortBreakTime.Location = new System.Drawing.Point(41, 68);
+            lblShortBreakTime.Location = new System.Drawing.Point(67, 127);
+            lblShortBreakTime.Margin = new Padding(5, 0, 5, 0);
             lblShortBreakTime.Name = "lblShortBreakTime";
-            lblShortBreakTime.Size = new System.Drawing.Size(100, 36);
+            lblShortBreakTime.Size = new System.Drawing.Size(211, 67);
             lblShortBreakTime.TabIndex = 4;
             // 
             // lblLongBreakTime
             // 
-            lblLongBreakTime.Location = new System.Drawing.Point(41, 104);
+            lblLongBreakTime.Location = new System.Drawing.Point(67, 194);
+            lblLongBreakTime.Margin = new Padding(5, 0, 5, 0);
             lblLongBreakTime.Name = "lblLongBreakTime";
-            lblLongBreakTime.Size = new System.Drawing.Size(100, 40);
+            lblLongBreakTime.Size = new System.Drawing.Size(211, 75);
             lblLongBreakTime.TabIndex = 8;
             // 
             // lblWorkTimeSec
             // 
-            lblWorkTimeSec.Location = new System.Drawing.Point(253, 32);
+            lblWorkTimeSec.Location = new System.Drawing.Point(411, 50);
+            lblWorkTimeSec.Margin = new Padding(5, 0, 5, 0);
             lblWorkTimeSec.Name = "lblWorkTimeSec";
-            lblWorkTimeSec.Size = new System.Drawing.Size(47, 32);
+            lblWorkTimeSec.Size = new System.Drawing.Size(76, 60);
             lblWorkTimeSec.TabIndex = 2;
+            lblWorkTimeSec.Text = "sec:";
             // 
             // lblShortBreakTimeSec
             // 
-            lblShortBreakTimeSec.Location = new System.Drawing.Point(253, 70);
+            lblShortBreakTimeSec.Location = new System.Drawing.Point(411, 131);
+            lblShortBreakTimeSec.Margin = new Padding(5, 0, 5, 0);
             lblShortBreakTimeSec.Name = "lblShortBreakTimeSec";
-            lblShortBreakTimeSec.Size = new System.Drawing.Size(47, 23);
+            lblShortBreakTimeSec.Size = new System.Drawing.Size(76, 43);
             lblShortBreakTimeSec.TabIndex = 6;
             // 
             // lblLongBreakTimeSec
             // 
-            lblLongBreakTimeSec.Location = new System.Drawing.Point(253, 110);
+            lblLongBreakTimeSec.Location = new System.Drawing.Point(411, 205);
+            lblLongBreakTimeSec.Margin = new Padding(5, 0, 5, 0);
             lblLongBreakTimeSec.Name = "lblLongBreakTimeSec";
-            lblLongBreakTimeSec.Size = new System.Drawing.Size(47, 32);
+            lblLongBreakTimeSec.Size = new System.Drawing.Size(76, 60);
             lblLongBreakTimeSec.TabIndex = 10;
-            lblLongBreakTimeSec.Click += LblLongBreakTimeSec_Click;
             // 
             // nudWorkTimeMin
             // 
-            nudWorkTimeMin.Location = new System.Drawing.Point(177, 30);
-            nudWorkTimeMin.Maximum = new decimal([60, 0, 0, 0]);
+            nudWorkTimeMin.Location = new System.Drawing.Point(287, 50);
+            nudWorkTimeMin.Margin = new Padding(5, 6, 5, 6);
+            nudWorkTimeMin.Maximum = new decimal(new int[] { 60, 0, 0, 0 });
             nudWorkTimeMin.Name = "nudWorkTimeMin";
-            nudWorkTimeMin.Size = new System.Drawing.Size(70, 34);
+            nudWorkTimeMin.Size = new System.Drawing.Size(114, 34);
             nudWorkTimeMin.TabIndex = 1;
-            nudWorkTimeMin.ValueChanged += NudWorkTimeMin_ValueChanged;
             // 
             // nudShortBreakTimeMin
             // 
-            nudShortBreakTimeMin.Location = new System.Drawing.Point(177, 70);
-            nudShortBreakTimeMin.Maximum = new decimal([30, 0, 0, 0]);
+            nudShortBreakTimeMin.Location = new System.Drawing.Point(288, 131);
+            nudShortBreakTimeMin.Margin = new Padding(5, 6, 5, 6);
+            nudShortBreakTimeMin.Maximum = new decimal(new int[] { 30, 0, 0, 0 });
             nudShortBreakTimeMin.Name = "nudShortBreakTimeMin";
-            nudShortBreakTimeMin.Size = new System.Drawing.Size(70, 34);
+            nudShortBreakTimeMin.Size = new System.Drawing.Size(114, 34);
             nudShortBreakTimeMin.TabIndex = 5;
             // 
             // nudLongBreakTimeMin
             // 
-            nudLongBreakTimeMin.Location = new System.Drawing.Point(177, 110);
-            nudLongBreakTimeMin.Maximum = new decimal([60, 0, 0, 0]);
+            nudLongBreakTimeMin.Location = new System.Drawing.Point(288, 205);
+            nudLongBreakTimeMin.Margin = new Padding(5, 6, 5, 6);
+            nudLongBreakTimeMin.Maximum = new decimal(new int[] { 60, 0, 0, 0 });
             nudLongBreakTimeMin.Name = "nudLongBreakTimeMin";
-            nudLongBreakTimeMin.Size = new System.Drawing.Size(70, 34);
+            nudLongBreakTimeMin.Size = new System.Drawing.Size(114, 34);
             nudLongBreakTimeMin.TabIndex = 9;
             // 
             // nudWorkTimeSec
             // 
-            nudWorkTimeSec.Location = new System.Drawing.Point(306, 30);
-            nudWorkTimeSec.Maximum = new decimal([59, 0, 0, 0]);
+            nudWorkTimeSec.Location = new System.Drawing.Point(497, 48);
+            nudWorkTimeSec.Margin = new Padding(5, 6, 5, 6);
+            nudWorkTimeSec.Maximum = new decimal(new int[] { 59, 0, 0, 0 });
             nudWorkTimeSec.Name = "nudWorkTimeSec";
-            nudWorkTimeSec.Size = new System.Drawing.Size(70, 34);
+            nudWorkTimeSec.Size = new System.Drawing.Size(114, 34);
             nudWorkTimeSec.TabIndex = 3;
             // 
             // nudShortBreakTimeSec
             // 
-            nudShortBreakTimeSec.Location = new System.Drawing.Point(306, 70);
-            nudShortBreakTimeSec.Maximum = new decimal([59, 0, 0, 0]);
+            nudShortBreakTimeSec.Location = new System.Drawing.Point(497, 131);
+            nudShortBreakTimeSec.Margin = new Padding(5, 6, 5, 6);
+            nudShortBreakTimeSec.Maximum = new decimal(new int[] { 59, 0, 0, 0 });
             nudShortBreakTimeSec.Name = "nudShortBreakTimeSec";
-            nudShortBreakTimeSec.Size = new System.Drawing.Size(70, 34);
+            nudShortBreakTimeSec.Size = new System.Drawing.Size(114, 34);
             nudShortBreakTimeSec.TabIndex = 7;
             // 
             // nudLongBreakTimeSec
             // 
-            nudLongBreakTimeSec.Location = new System.Drawing.Point(306, 110);
-            nudLongBreakTimeSec.Maximum = new decimal([59, 0, 0, 0]);
+            nudLongBreakTimeSec.Location = new System.Drawing.Point(497, 205);
+            nudLongBreakTimeSec.Margin = new Padding(5, 6, 5, 6);
+            nudLongBreakTimeSec.Maximum = new decimal(new int[] { 59, 0, 0, 0 });
             nudLongBreakTimeSec.Name = "nudLongBreakTimeSec";
-            nudLongBreakTimeSec.Size = new System.Drawing.Size(70, 34);
+            nudLongBreakTimeSec.Size = new System.Drawing.Size(114, 34);
             nudLongBreakTimeSec.TabIndex = 11;
-            // 
-            // btnSave
-            // 
-            btnSave.Location = new System.Drawing.Point(147, 177);
-            btnSave.Name = "btnSave";
-            btnSave.Size = new System.Drawing.Size(80, 23);
-            btnSave.TabIndex = 12;
-            btnSave.Click += BtnSave_Click;
-            // 
-            // btnCancel
-            // 
-            btnCancel.Location = new System.Drawing.Point(273, 177);
-            btnCancel.Name = "btnCancel";
-            btnCancel.Size = new System.Drawing.Size(80, 23);
-            btnCancel.TabIndex = 13;
-            btnCancel.Click += BtnCancel_Click;
             // 
             // PomodoroSettingsForm
             // 
-            ClientSize = new System.Drawing.Size(504, 334);
+            AutoScaleDimensions = new System.Drawing.SizeF(13F, 28F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new System.Drawing.Size(819, 623);
             Controls.Add(lblWorkTime);
             Controls.Add(nudWorkTimeMin);
             Controls.Add(lblWorkTimeSec);
@@ -262,94 +231,68 @@ namespace DTwoMFTimerHelper.UI.Pomodoro
             Controls.Add(nudLongBreakTimeMin);
             Controls.Add(lblLongBreakTimeSec);
             Controls.Add(nudLongBreakTimeSec);
-            Controls.Add(btnSave);
-            Controls.Add(btnCancel);
-            FormBorderStyle = FormBorderStyle.FixedDialog;
-            MaximizeBox = false;
+            Margin = new Padding(5, 6, 5, 6);
             Name = "PomodoroSettingsForm";
-            StartPosition = FormStartPosition.CenterParent;
             Text = "番茄时钟设置";
-            ((System.ComponentModel.ISupportInitialize)nudWorkTimeMin).EndInit();
-            ((System.ComponentModel.ISupportInitialize)nudShortBreakTimeMin).EndInit();
-            ((System.ComponentModel.ISupportInitialize)nudLongBreakTimeMin).EndInit();
-            ((System.ComponentModel.ISupportInitialize)nudWorkTimeSec).EndInit();
-            ((System.ComponentModel.ISupportInitialize)nudShortBreakTimeSec).EndInit();
-            ((System.ComponentModel.ISupportInitialize)nudLongBreakTimeSec).EndInit();
+            Controls.SetChildIndex(nudLongBreakTimeSec, 0);
+            Controls.SetChildIndex(lblLongBreakTimeSec, 0);
+            Controls.SetChildIndex(nudLongBreakTimeMin, 0);
+            Controls.SetChildIndex(lblLongBreakTime, 0);
+            Controls.SetChildIndex(nudShortBreakTimeSec, 0);
+            Controls.SetChildIndex(lblShortBreakTimeSec, 0);
+            Controls.SetChildIndex(nudShortBreakTimeMin, 0);
+            Controls.SetChildIndex(lblShortBreakTime, 0);
+            Controls.SetChildIndex(nudWorkTimeSec, 0);
+            Controls.SetChildIndex(lblWorkTimeSec, 0);
+            Controls.SetChildIndex(nudWorkTimeMin, 0);
+            Controls.SetChildIndex(lblWorkTime, 0);
+            Controls.SetChildIndex(btnConfirm, 0);
+            Controls.SetChildIndex(btnCancel, 0);
+            ((ISupportInitialize)nudWorkTimeMin).EndInit();
+            ((ISupportInitialize)nudShortBreakTimeMin).EndInit();
+            ((ISupportInitialize)nudLongBreakTimeMin).EndInit();
+            ((ISupportInitialize)nudWorkTimeSec).EndInit();
+            ((ISupportInitialize)nudShortBreakTimeSec).EndInit();
+            ((ISupportInitialize)nudLongBreakTimeSec).EndInit();
             ResumeLayout(false);
         }
 
-        /// <summary>
-        /// 公共方法，供外部调用刷新UI
-        /// </summary>
-        public void RefreshUI()
-        {
-            if (this.InvokeRequired)
-            {
-                this.Invoke(new Action(UpdateUI));
-            }
-            else
-            {
-                UpdateUI();
-            }
-        }
+        protected override void UpdateUI() {
+            base.UpdateUI();
 
-        private void UpdateUI()
-        {
-            // 设置数值控件的值
-            if (nudWorkTimeMin != null)
-                nudWorkTimeMin.Value = WorkTimeMinutes;
-            if (nudWorkTimeSec != null)
-                nudWorkTimeSec.Value = WorkTimeSeconds;
-            if (nudShortBreakTimeMin != null)
-                nudShortBreakTimeMin.Value = ShortBreakMinutes;
-            if (nudShortBreakTimeSec != null)
-                nudShortBreakTimeSec.Value = ShortBreakSeconds;
-            if (nudLongBreakTimeMin != null)
-                nudLongBreakTimeMin.Value = LongBreakMinutes;
-            if (nudLongBreakTimeSec != null)
-                nudLongBreakTimeSec.Value = LongBreakSeconds;
-            // 更新界面文本
+            // 1. 设置数值
+            nudWorkTimeMin.Value = Math.Max(nudWorkTimeMin.Minimum, Math.Min(nudWorkTimeMin.Maximum, WorkTimeMinutes));
+            nudWorkTimeSec.Value = Math.Max(nudWorkTimeSec.Minimum, Math.Min(nudWorkTimeSec.Maximum, WorkTimeSeconds));
+            nudShortBreakTimeMin.Value = Math.Max(nudShortBreakTimeMin.Minimum, Math.Min(nudShortBreakTimeMin.Maximum, ShortBreakMinutes));
+            nudShortBreakTimeSec.Value = Math.Max(nudShortBreakTimeSec.Minimum, Math.Min(nudShortBreakTimeSec.Maximum, ShortBreakSeconds));
+            nudLongBreakTimeMin.Value = Math.Max(nudLongBreakTimeMin.Minimum, Math.Min(nudLongBreakTimeMin.Maximum, LongBreakMinutes));
+            nudLongBreakTimeSec.Value = Math.Max(nudLongBreakTimeSec.Minimum, Math.Min(nudLongBreakTimeSec.Maximum, LongBreakSeconds));
+
+            // 2. 本地化文本
             this.Text = LanguageManager.GetString("PomodoroSettings") ?? "番茄时钟设置";
-            this.lblWorkTime!.Text = LanguageManager.GetString("WorkTime") ?? "工作时间(分):";
-            this.lblWorkTimeSec!.Text = "秒:";
-            this.lblShortBreakTime!.Text = LanguageManager.GetString("ShortBreakTime") ?? "短休息时间(分):";
-            this.lblShortBreakTimeSec!.Text = "秒:";
-            this.lblLongBreakTime!.Text = LanguageManager.GetString("LongBreakTime") ?? "长休息时间(分):";
-            this.lblLongBreakTimeSec!.Text = "秒:";
-            this.btnSave!.Text = LanguageManager.GetString("Save") ?? "保存";
-            this.btnCancel!.Text = LanguageManager.GetString("Cancel") ?? "取消";
+            lblWorkTime.Text = LanguageManager.GetString("WorkTime") ?? "工作时间(分):";
+            lblShortBreakTime.Text = LanguageManager.GetString("ShortBreakTime") ?? "短休息时间(分):";
+            lblLongBreakTime.Text = LanguageManager.GetString("LongBreakTime") ?? "长休息时间(分):";
+
+            if (btnConfirm != null) btnConfirm.Text = LanguageManager.GetString("Save") ?? "保存";
         }
 
-        private void BtnSave_Click(object? sender, EventArgs e)
-        {
-            // 保存设置
-            WorkTimeMinutes = (int)this.nudWorkTimeMin!.Value;
-            WorkTimeSeconds = (int)this.nudWorkTimeSec!.Value;
-            ShortBreakMinutes = (int)this.nudShortBreakTimeMin!.Value;
-            ShortBreakSeconds = (int)this.nudShortBreakTimeSec!.Value;
-            LongBreakMinutes = (int)this.nudLongBreakTimeMin!.Value;
-            LongBreakSeconds = (int)this.nudLongBreakTimeSec!.Value;
+        protected override void BtnConfirm_Click(object? sender, EventArgs e) {
+            WorkTimeMinutes = (int)nudWorkTimeMin.Value;
+            WorkTimeSeconds = (int)nudWorkTimeSec.Value;
+            ShortBreakMinutes = (int)nudShortBreakTimeMin.Value;
+            ShortBreakSeconds = (int)nudShortBreakTimeSec.Value;
+            LongBreakMinutes = (int)nudLongBreakTimeMin.Value;
+            LongBreakSeconds = (int)nudLongBreakTimeSec.Value;
 
-            // 设置对话框结果为OK
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            base.BtnConfirm_Click(sender, e);
         }
 
-        private void BtnCancel_Click(object? sender, EventArgs e)
-        {
-            // 设置对话框结果为Cancel
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
-        }
-
-        private void NudWorkTimeMin_ValueChanged(object? sender, EventArgs e)
-        {
-
-        }
-
-        private void LblLongBreakTimeSec_Click(object? sender, EventArgs e)
-        {
-
+        protected override void Dispose(bool disposing) {
+            if (disposing && (components != null)) {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

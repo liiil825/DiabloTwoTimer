@@ -1,157 +1,197 @@
 using System;
 using System.Windows.Forms;
+using System.ComponentModel;
 using DTwoMFTimerHelper.Models;
 using DTwoMFTimerHelper.Utils;
+using DTwoMFTimerHelper.UI.Common;
 
 namespace DTwoMFTimerHelper.UI.Profiles {
-    public class CreateCharacterForm : Form {
-        private Label? lblCharacterName;
-        private TextBox? txtCharacterName;
-        private Label? lblCharacterClass;
-        private ComboBox? cmbCharacterClass;
-        private Button? btnConfirm;
-        private Button? btnCancel;
+    public class CreateCharacterForm : BaseForm {
+        private Label lblCharacterName = null!;
+        private TextBox txtCharacterName = null!;
+        private Label lblCharacterClass = null!;
+        private ComboBox cmbCharacterClass = null!;
 
-        // 属性
+        // 必需的设计器变量
+        private readonly IContainer components = null!;
+
         public string? CharacterName => txtCharacterName?.Text.Trim();
-        public CharacterClass? SelectedClass {
-            get {
-                if (cmbCharacterClass?.SelectedItem is CharacterClass charClass)
-                    return charClass;
-                return null;
-            }
-        }
 
         public CreateCharacterForm() {
+            // 构造函数只负责初始化组件，不做业务逻辑
             InitializeComponent();
-            SetupCharacterClasses();
-            UpdateUI();
+        }
+
+        // 将业务逻辑移至 OnLoad，防止设计器打开时崩溃
+        protected override void OnLoad(EventArgs e) {
+            base.OnLoad(e); // 调用基类 OnLoad (触发 BaseForm 的 UpdateUI)
+
+            if (!this.DesignMode) // 再次确保设计模式下不运行
+            {
+                SetupCharacterClasses();
+                UpdateUI();
+            }
         }
 
         private void InitializeComponent() {
-            // 设置窗口属性
+            this.lblCharacterName = new System.Windows.Forms.Label();
+            this.txtCharacterName = new System.Windows.Forms.TextBox();
+            this.lblCharacterClass = new System.Windows.Forms.Label();
+            this.cmbCharacterClass = new System.Windows.Forms.ComboBox();
+            this.SuspendLayout();
+
+            // 
+            // lblCharacterName
+            // 
+            this.lblCharacterName.AutoSize = true;
+            this.lblCharacterName.Location = new System.Drawing.Point(50, 33);
+            this.lblCharacterName.Name = "lblCharacterName";
+            this.lblCharacterName.Size = new System.Drawing.Size(60, 15); // 建议由 AutoSize 控制
+            this.lblCharacterName.TabIndex = 0;
+            this.lblCharacterName.Text = "Name:";
+
+            // 
+            // txtCharacterName
+            // 
+            this.txtCharacterName.Location = new System.Drawing.Point(150, 30);
+            this.txtCharacterName.Name = "txtCharacterName";
+            this.txtCharacterName.Size = new System.Drawing.Size(180, 25);
+            this.txtCharacterName.TabIndex = 1;
+
+            // 
+            // lblCharacterClass
+            // 
+            this.lblCharacterClass.AutoSize = true;
+            this.lblCharacterClass.Location = new System.Drawing.Point(50, 73);
+            this.lblCharacterClass.Name = "lblCharacterClass";
+            this.lblCharacterClass.Size = new System.Drawing.Size(60, 15);
+            this.lblCharacterClass.TabIndex = 2;
+            this.lblCharacterClass.Text = "Class:";
+
+            // 
+            // cmbCharacterClass
+            // 
+            this.cmbCharacterClass.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbCharacterClass.FormattingEnabled = true;
+            this.cmbCharacterClass.Location = new System.Drawing.Point(150, 70);
+            this.cmbCharacterClass.Name = "cmbCharacterClass";
+            this.cmbCharacterClass.Size = new System.Drawing.Size(180, 23);
+            this.cmbCharacterClass.TabIndex = 3;
+
+            // 
+            // btnConfirm (调整继承自基类的按钮位置)
+            // 
+            this.btnConfirm.Location = new System.Drawing.Point(120, 230);
+            this.btnConfirm.TabIndex = 4;
+
+            // 
+            // btnCancel (调整继承自基类的按钮位置)
+            // 
+            this.btnCancel.Location = new System.Drawing.Point(250, 230);
+            this.btnCancel.TabIndex = 5;
+
+            // 
+            // CreateCharacterForm
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(450, 300);
+            this.Controls.Add(this.cmbCharacterClass);
+            this.Controls.Add(this.lblCharacterClass);
+            this.Controls.Add(this.txtCharacterName);
+            this.Controls.Add(this.lblCharacterName);
+            this.Name = "CreateCharacterForm";
             this.Text = "创建角色档案";
-            this.Size = new System.Drawing.Size(450, 350);
-            this.StartPosition = FormStartPosition.CenterScreen;
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
 
-            // 初始化控件
-            lblCharacterName = new Label();
-            txtCharacterName = new TextBox();
-            lblCharacterClass = new Label();
-            cmbCharacterClass = new ComboBox();
-            btnConfirm = new Button();
-            btnCancel = new Button();
-
-            // 设置控件位置和大小
-            lblCharacterName.Location = new System.Drawing.Point(50, 30);
-            lblCharacterName.Size = new System.Drawing.Size(100, 25);
-
-            txtCharacterName.Location = new System.Drawing.Point(150, 30);
-            txtCharacterName.Size = new System.Drawing.Size(180, 25);
-
-            lblCharacterClass.Location = new System.Drawing.Point(50, 70);
-            lblCharacterClass.Size = new System.Drawing.Size(100, 25);
-
-            cmbCharacterClass.Location = new System.Drawing.Point(150, 70);
-            cmbCharacterClass.Size = new System.Drawing.Size(180, 25);
-            cmbCharacterClass.DropDownStyle = ComboBoxStyle.DropDownList;
-
-            // 职业选项将在SetupCharacterClasses方法中添加
-
-            btnConfirm.Location = new System.Drawing.Point(120, 230);
-            btnConfirm.Size = new System.Drawing.Size(80, 30);
-            btnConfirm.Click += BtnConfirm_Click;
-
-            btnCancel.Location = new System.Drawing.Point(250, 230);
-            btnCancel.Size = new System.Drawing.Size(80, 30);
-            btnCancel.Click += BtnCancel_Click;
-
-            // 添加控件到表单
-            this.Controls.Add(lblCharacterName);
-            this.Controls.Add(txtCharacterName);
-            this.Controls.Add(lblCharacterClass);
-            this.Controls.Add(cmbCharacterClass);
-            this.Controls.Add(btnConfirm);
-            this.Controls.Add(btnCancel);
+            // 必须调用 ResumeLayout
+            this.ResumeLayout(false);
+            this.PerformLayout();
         }
 
         private void SetupCharacterClasses() {
-            // 添加职业选项
-            if (cmbCharacterClass != null) {
-                foreach (CharacterClass charClass in Enum.GetValues(typeof(CharacterClass))) {
-                    cmbCharacterClass.Items.Add(charClass);
-                }
-                if (cmbCharacterClass.Items.Count > 0)
-                    cmbCharacterClass.SelectedIndex = 0;
+            // 健壮性检查
+            if (cmbCharacterClass == null) return;
+
+            cmbCharacterClass.Items.Clear();
+            foreach (CharacterClass charClass in Enum.GetValues(typeof(CharacterClass))) {
+                // 此时还未加载本地化文本，先存入 Enum 值，DisplayMember 会处理显示，或者在 UpdateUI 统一处理
+                // 既然你在 UpdateUI 里会清除重加，这里其实可以简化，只做默认初始化
+                cmbCharacterClass.Items.Add(charClass);
             }
+            if (cmbCharacterClass.Items.Count > 0)
+                cmbCharacterClass.SelectedIndex = 0;
         }
 
-        public void UpdateUI() {
+        protected override void UpdateUI() {
+            // 这里的 base.UpdateUI() 会调用 BaseForm 的逻辑，更新确认/取消按钮
+            base.UpdateUI();
+
             this.Text = LanguageManager.GetString("CreateCharacter") ?? "创建";
             lblCharacterName!.Text = LanguageManager.GetString("CharacterName") ?? "角色名称:";
             lblCharacterClass!.Text = LanguageManager.GetString("CharacterClass") ?? "职业:";
-            btnConfirm!.Text = LanguageManager.GetString("Confirm") ?? "确认";
-            btnCancel!.Text = LanguageManager.GetString("Cancel") ?? "取消";
 
-            // 更新职业显示名称
-            if (cmbCharacterClass != null && cmbCharacterClass.Items.Count > 0) {
-                int selectedIndex = cmbCharacterClass.SelectedIndex;
+            // 重新填充下拉框以应用本地化
+            if (cmbCharacterClass != null) {
+                // 记录当前选中的索引，避免刷新后丢失选择
+                int oldIndex = cmbCharacterClass.SelectedIndex;
+                // 如果之前没选中（比如刚初始化），默认为0
+                if (oldIndex < 0) oldIndex = 0;
+
                 cmbCharacterClass.Items.Clear();
 
-                // 添加本地化的职业名称
                 foreach (CharacterClass charClass in Enum.GetValues(typeof(CharacterClass))) {
-                    cmbCharacterClass.Items.Add(DTwoMFTimerHelper.Utils.LanguageManager.GetLocalizedClassName(charClass));
+                    string displayName = LanguageManager.GetLocalizedClassName(charClass);
+                    // 这里可以直接存对象，利用 Tag 或者后续反查，
+                    // 但为了配合你的 GetCharacterClassFromLocalizedName 逻辑，这里存字符串
+                    cmbCharacterClass.Items.Add(displayName);
                 }
 
-                if (selectedIndex >= 0 && selectedIndex < cmbCharacterClass.Items.Count)
-                    cmbCharacterClass.SelectedIndex = selectedIndex;
+                if (cmbCharacterClass.Items.Count > 0) {
+                    // 确保索引不越界
+                    cmbCharacterClass.SelectedIndex = Math.Min(oldIndex, cmbCharacterClass.Items.Count - 1);
+                }
             }
         }
 
-        // 使用LanguageManager中的GetLocalizedClassName方法
-
-        private static CharacterClass GetCharacterClassFromLocalizedName(string localizedName) {
-            // 反向映射
-            foreach (CharacterClass charClass in Enum.GetValues(typeof(CharacterClass))) {
-                if (DTwoMFTimerHelper.Utils.LanguageManager.GetLocalizedClassName(charClass).Equals(localizedName))
-                    return charClass;
-            }
-            return CharacterClass.Barbarian; // 默认值
-        }
-
-        private void BtnConfirm_Click(object? sender, EventArgs e) {
-            // 验证输入
-            if (string.IsNullOrEmpty(CharacterName)) {
-                // 显示错误提示
+        protected override void BtnConfirm_Click(object? sender, EventArgs e) {
+            if (string.IsNullOrWhiteSpace(CharacterName)) {
                 Utils.Toast.Info(LanguageManager.GetString("EnterCharacterName") ?? "请输入角色名称");
+                txtCharacterName!.Focus(); // 聚焦到输入框
                 return;
             }
 
-            // 检查角色是否已存在
-            if (DTwoMFTimerHelper.Utils.DataHelper.FindProfileByName(CharacterName) != null) {
-                // 显示错误提示
+            if (DataHelper.FindProfileByName(CharacterName) != null) {
                 Utils.Toast.Warning(LanguageManager.GetString("CharacterExists") ?? "该角色名称已存在");
+                txtCharacterName!.SelectAll();
+                txtCharacterName!.Focus();
                 return;
             }
 
-            this.DialogResult = DialogResult.OK;
-            this.Close();
+            base.BtnConfirm_Click(sender, e);
         }
 
-        private void BtnCancel_Click(object? sender, EventArgs e) {
-            this.DialogResult = DialogResult.Cancel;
-            this.Close();
-        }
-
-        // 重写SelectedClass以支持本地化
         public CharacterClass? GetSelectedClass() {
             if (cmbCharacterClass?.SelectedItem != null) {
                 string localizedName = cmbCharacterClass.SelectedItem.ToString()!;
                 return GetCharacterClassFromLocalizedName(localizedName);
             }
             return null;
+        }
+
+        private static CharacterClass GetCharacterClassFromLocalizedName(string localizedName) {
+            foreach (CharacterClass charClass in Enum.GetValues(typeof(CharacterClass))) {
+                if (LanguageManager.GetLocalizedClassName(charClass).Equals(localizedName, StringComparison.OrdinalIgnoreCase))
+                    return charClass;
+            }
+            return CharacterClass.Barbarian;
+        }
+
+        // 记得实现 Dispose 释放资源
+        protected override void Dispose(bool disposing) {
+            if (disposing && (components != null)) {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

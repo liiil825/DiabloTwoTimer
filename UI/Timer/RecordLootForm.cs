@@ -1,55 +1,150 @@
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 using DTwoMFTimerHelper.Models;
 using DTwoMFTimerHelper.Services;
 using DTwoMFTimerHelper.Utils;
+using DTwoMFTimerHelper.UI.Common;
 
 namespace DTwoMFTimerHelper.UI.Timer {
-    public partial class RecordLootForm : Form {
+    public partial class RecordLootForm : BaseForm {
+        private TextBox txtLootName = null!;
+        private Label label1 = null!;
+        private CheckBox chkPreviousRun = null!;
+        private readonly IContainer components = null!;
+
         private readonly IProfileService? _profileService;
         private readonly ITimerHistoryService? _timerHistoryService;
 
-        // 定义事件，当掉落记录保存成功时触发
         public event EventHandler? LootRecordSaved;
 
-        public RecordLootForm(IProfileService? profileService, ITimerHistoryService? timerHistoryService) {
+        // 1. 无参构造函数 (VS设计器专用)
+        public RecordLootForm() {
             InitializeComponent();
+        }
 
-            if (profileService == null || timerHistoryService == null) {
-                return;
-            }
-
+        // 2. 依赖注入构造函数 (运行时专用)
+        public RecordLootForm(IProfileService? profileService, ITimerHistoryService? timerHistoryService) : this() {
             _profileService = profileService;
             _timerHistoryService = timerHistoryService;
+        }
 
-            // 设置窗口始终置顶
-            this.TopMost = true;
-            // 添加Shown事件处理，确保窗口显示后获得焦点
-            this.Shown += (sender, e) => {
+        protected override void OnLoad(EventArgs e) {
+            base.OnLoad(e);
+            if (!this.DesignMode) {
+                UpdateUI();
+            }
+        }
+
+        // 添加 OnShown 覆盖代替构造函数里的事件绑定
+        protected override void OnShown(EventArgs e) {
+            base.OnShown(e);
+            if (!this.DesignMode) {
                 this.Activate();
                 txtLootName.Focus();
                 txtLootName.SelectAll();
-            };
+            }
         }
 
-        private void btnSave_Click(object? sender, EventArgs e) {
+        private void InitializeComponent() {
+            this.txtLootName = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.chkPreviousRun = new System.Windows.Forms.CheckBox();
+            this.SuspendLayout();
+            // 
+            // txtLootName
+            // 
+            this.txtLootName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLootName.Location = new System.Drawing.Point(12, 29);
+            this.txtLootName.Name = "txtLootName";
+            this.txtLootName.Size = new System.Drawing.Size(356, 25);
+            this.txtLootName.TabIndex = 0;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 11);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(79, 15);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "Loot Name";
+            // 
+            // chkPreviousRun
+            // 
+            this.chkPreviousRun.AutoSize = true;
+            this.chkPreviousRun.Location = new System.Drawing.Point(12, 67);
+            this.chkPreviousRun.Name = "chkPreviousRun";
+            this.chkPreviousRun.Size = new System.Drawing.Size(117, 19);
+            this.chkPreviousRun.TabIndex = 2;
+            this.chkPreviousRun.Text = "Previous Run";
+            this.chkPreviousRun.UseVisualStyleBackColor = true;
+            // 
+            // btnConfirm (Inherited)
+            // 
+            this.btnConfirm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnConfirm.Location = new System.Drawing.Point(212, 92);
+            this.btnConfirm.Size = new System.Drawing.Size(75, 23);
+            this.btnConfirm.Text = "保存";
+            // 
+            // btnCancel (Inherited)
+            // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnCancel.Location = new System.Drawing.Point(293, 92);
+            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+
+            // 
+            // RecordLootForm
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(380, 127);
+            this.Controls.Add(this.chkPreviousRun);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.txtLootName);
+            this.Name = "RecordLootForm";
+            this.Text = "记录掉落";
+
+            this.Controls.SetChildIndex(this.btnConfirm, 0);
+            this.Controls.SetChildIndex(this.btnCancel, 0);
+            this.Controls.SetChildIndex(this.txtLootName, 0);
+            this.Controls.SetChildIndex(this.label1, 0);
+            this.Controls.SetChildIndex(this.chkPreviousRun, 0);
+
+            this.ResumeLayout(false);
+            this.PerformLayout();
+        }
+
+        protected override void UpdateUI() {
+            base.UpdateUI();
+            this.Text = LanguageManager.GetString("RecordLoot") ?? "记录掉落";
+            txtLootName.PlaceholderText = LanguageManager.GetString("EnterLootName") ?? "输入掉落名称";
+            label1.Text = LanguageManager.GetString("LootNameLabel") ?? "掉落名称:";
+            chkPreviousRun.Text = LanguageManager.GetString("UsePreviousRun") ?? "使用上一次符文掉落";
+            if (btnConfirm != null) btnConfirm.Text = LanguageManager.GetString("Save") ?? "保存";
+        }
+
+        protected override void BtnConfirm_Click(object? sender, EventArgs e) {
             SaveLootRecord();
         }
 
         private void SaveLootRecord() {
             if (string.IsNullOrWhiteSpace(txtLootName.Text)) {
-                // 显示错误提示
                 Utils.Toast.Warning(LanguageManager.GetString("EnterLootNameMessage") ?? "请输入掉落名称");
                 return;
             }
 
-            // 创建新的掉落记录
-            int runCount = _timerHistoryService?.RunCount ?? 0;
+            // 安全检查：如果服务为空（例如从设计器运行或未正确注入），则直接返回
+            if (_timerHistoryService == null || _profileService == null) {
+                return;
+            }
+
+            int runCount = _timerHistoryService.RunCount;
             if (chkPreviousRun.Checked) {
                 runCount = Math.Max(0, runCount - 1);
             }
 
-            string sceneName = _profileService?.CurrentScene ?? "";
+            string sceneName = _profileService.CurrentScene ?? "";
             string englishSceneName = SceneHelper.GetEnglishSceneName(sceneName);
 
             var lootRecord = new LootRecord {
@@ -59,132 +154,28 @@ namespace DTwoMFTimerHelper.UI.Timer {
                 DropTime = DateTime.Now
             };
 
-            // 将掉落记录添加到当前角色档案中
-            var currentProfile = _profileService?.CurrentProfile;
+            var currentProfile = _profileService.CurrentProfile;
             if (currentProfile != null) {
                 currentProfile.LootRecords.Add(lootRecord);
-                Utils.DataHelper.SaveProfile(currentProfile); // 保存修改
+                DataHelper.SaveProfile(currentProfile);
             }
 
-            // 显示保存成功的Toast通知
             Utils.Toast.Success(LanguageManager.GetString("LootRecordSavedSuccessfully") ?? "掉落记录保存成功");
-
-            // 触发记录保存成功事件
             OnLootRecordSaved(EventArgs.Empty);
 
             DialogResult = DialogResult.OK;
             Close();
         }
 
-        private void BtnCancel_Click(object? sender, EventArgs e) {
-            DialogResult = DialogResult.Cancel;
-            Close();
-        }
-
-        private void InitializeComponent() {
-            this.txtLootName = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.chkPreviousRun = new System.Windows.Forms.CheckBox();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.btnCancel = new System.Windows.Forms.Button();
-            this.SuspendLayout();
-            // 
-            // txtLootName
-            // 
-            this.txtLootName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtLootName.Location = new System.Drawing.Point(12, 29);
-            this.txtLootName.Name = "txtLootName";
-            this.txtLootName.Size = new System.Drawing.Size(356, 23);
-            this.txtLootName.TabIndex = 0;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 11);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(104, 15);
-            this.label1.TabIndex = 1;
-            this.label1.Text = LanguageManager.GetString("LootNameLabel");
-            // 
-            // chkPreviousRun
-            // 
-            this.chkPreviousRun.AutoSize = true;
-            this.chkPreviousRun.Location = new System.Drawing.Point(12, 67);
-            this.chkPreviousRun.Name = "chkPreviousRun";
-            this.chkPreviousRun.Size = new System.Drawing.Size(265, 19);
-            this.chkPreviousRun.TabIndex = 2;
-            this.chkPreviousRun.Text = LanguageManager.GetString("PreviousRunCheckbox");
-            this.chkPreviousRun.UseVisualStyleBackColor = true;
-            // 
-            // btnSave
-            // 
-            this.btnSave.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSave.Location = new System.Drawing.Point(212, 92);
-            this.btnSave.Name = "btnSave";
-            this.btnSave.Size = new System.Drawing.Size(75, 23);
-            this.btnSave.TabIndex = 3;
-            this.btnSave.Text = LanguageManager.GetString("SaveButton");
-            this.btnSave.UseVisualStyleBackColor = true;
-            this.btnSave.Click += new System.EventHandler(this.btnSave_Click);
-            // 
-            // btnCancel
-            // 
-            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnCancel.Location = new System.Drawing.Point(293, 92);
-            this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
-            this.btnCancel.TabIndex = 4;
-            this.btnCancel.Text = LanguageManager.GetString("CancelButton");
-            this.btnCancel.UseVisualStyleBackColor = true;
-            this.btnCancel.Click += new System.EventHandler(this.BtnCancel_Click);
-            // 
-            // RecordLootForm
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(380, 127);
-            this.Controls.Add(this.btnCancel);
-            this.Controls.Add(this.btnSave);
-            this.Controls.Add(this.chkPreviousRun);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.txtLootName);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.Name = "RecordLootForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = LanguageManager.GetString("RecordLootFormTitle");
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
-        }
-
-        private System.Windows.Forms.TextBox txtLootName = null!;
-        private System.Windows.Forms.Label label1 = null!;
-        private System.Windows.Forms.CheckBox chkPreviousRun = null!;
-        private System.Windows.Forms.Button btnSave = null!;
-        private System.Windows.Forms.Button btnCancel = null!;
-
-        // 触发LootRecordSaved事件的保护方法
         protected virtual void OnLootRecordSaved(EventArgs e) {
             LootRecordSaved?.Invoke(this, e);
         }
 
-        // 捕获键盘按键事件，处理Esc键关闭窗口和回车键保存
-        protected override bool ProcessCmdKey(ref Message msg, Keys keyData) {
-            // 检查是否按下了Esc键
-            if (keyData == Keys.Escape) {
-                DialogResult = DialogResult.Cancel;
-                Close();
-                return true; // 表示已处理该按键
+        protected override void Dispose(bool disposing) {
+            if (disposing && (components != null)) {
+                components.Dispose();
             }
-            // 检查是否按下了回车键
-            if (keyData == Keys.Enter) {
-                SaveLootRecord();
-                return true; // 表示已处理该按键
-            }
-            return base.ProcessCmdKey(ref msg, keyData);
+            base.Dispose(disposing);
         }
     }
 }

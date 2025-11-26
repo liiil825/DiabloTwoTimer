@@ -215,28 +215,6 @@ namespace DTwoMFTimerHelper.Utils {
         }
 
         /// <summary>
-        /// 获取纯英文的场景名称（移除ACT前缀和语言信息）
-        /// </summary>
-        /// <param name="sceneName">场景名称（可以是带ACT前缀的中文或英文名称）</param>
-        /// <returns>纯英文的场景名称</returns>
-        public static string GetPureEnglishSceneName(string sceneName) {
-            if (string.IsNullOrEmpty(sceneName))
-                return sceneName;
-
-            // 移除ACT前缀（如果有）
-            string pureSceneName = sceneName;
-            if (sceneName.StartsWith("ACT ") || sceneName.StartsWith("Act ") || sceneName.StartsWith("act ")) {
-                int colonIndex = sceneName.IndexOf(':');
-                if (colonIndex > 0) {
-                    pureSceneName = sceneName[(colonIndex + 1)..].Trim();
-                }
-            }
-
-            // 使用DataService获取对应的英文场景名称
-            return DTwoMFTimerHelper.Utils.DataHelper.GetEnglishSceneName(pureSceneName);
-        }
-
-        /// <summary>
         /// 获取本地化的职业名称
         /// </summary>
         /// <param name="charClass">角色职业枚举</param>

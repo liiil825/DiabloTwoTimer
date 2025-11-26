@@ -14,10 +14,9 @@ namespace DTwoMFTimerHelper.UI.Settings {
         public event EventHandler<WindowPositionChangedEventArgs>? WindowPositionChanged;
         public event EventHandler<LanguageChangedEventArgs>? LanguageChanged;
         public event EventHandler<AlwaysOnTopChangedEventArgs>? AlwaysOnTopChanged;
-
-        // 建议合并为一个快捷键更新事件，或者分别定义
         public event EventHandler<AllHotkeysChangedEventArgs>? HotkeysChanged;
         public event EventHandler<TimerSettingsChangedEventArgs>? TimerSettingsChanged;
+
         // 控件引用
         private TabControl tabControl = null!;
         private TabPage tabPageGeneral = null!;
@@ -31,9 +30,16 @@ namespace DTwoMFTimerHelper.UI.Settings {
         private TimerSettingsControl timerSettings = null!;
         private TabPage tabPageTimer = null!;
 
+        // IAppSettings 字段
+        private readonly IAppSettings _appSettings;
+
         public SettingsControl() {
             InitializeComponent();
             RefreshUI();
+        }
+
+        public SettingsControl(IAppSettings appSettings) : this() {
+            _appSettings = appSettings;
         }
 
         private void InitializeComponent() {
@@ -177,20 +183,43 @@ namespace DTwoMFTimerHelper.UI.Settings {
         }
 
         private void BtnConfirmSettings_Click(object? sender, EventArgs e) {
-            // 触发通用设置事件
+            // 直接修改IAppSettings并保存
+            // 更新窗口位置
+            _appSettings.WindowPosition = SettingsManager.WindowPositionToString(generalSettings.SelectedPosition);
+
+            // 更新语言
+            _appSettings.Language = SettingsManager.LanguageToString(generalSettings.SelectedLanguage);
+
+            // 更新始终置顶设置
+            _appSettings.AlwaysOnTop = generalSettings.IsAlwaysOnTop;
+
+            // 更新快捷键设置
+            _appSettings.HotkeyStartOrNext = hotkeySettings.StartOrNextRunHotkey;
+            _appSettings.HotkeyPause = hotkeySettings.PauseHotkey;
+            _appSettings.HotkeyDeleteHistory = hotkeySettings.DeleteHistoryHotkey;
+            _appSettings.HotkeyRecordLoot = hotkeySettings.RecordLootHotkey;
+
+            // 更新计时器设置
+            _appSettings.TimerShowPomodoro = timerSettings.TimerShowPomodoro;
+            _appSettings.TimerShowLootDrops = timerSettings.TimerShowLootDrops;
+            _appSettings.TimerSyncStartPomodoro = timerSettings.TimerSyncStartPomodoro;
+
+            // 保存设置
+            SettingsManager.SaveSettings(_appSettings);
+
+            // 显示成功提示
+            Utils.Toast.Success(Utils.LanguageManager.GetString("SuccessSettingsChanged", "设置修改成功"));
+
+            // 触发所有设置事件，用于其他UI更新
             WindowPositionChanged?.Invoke(this, new WindowPositionChangedEventArgs(generalSettings.SelectedPosition));
             LanguageChanged?.Invoke(this, new LanguageChangedEventArgs(generalSettings.SelectedLanguage));
             AlwaysOnTopChanged?.Invoke(this, new AlwaysOnTopChangedEventArgs(generalSettings.IsAlwaysOnTop));
-
-            // 触发快捷键更新事件 (一次性发送所有快捷键)
             HotkeysChanged?.Invoke(this, new AllHotkeysChangedEventArgs(
                 hotkeySettings.StartOrNextRunHotkey,
                 hotkeySettings.PauseHotkey,
                 hotkeySettings.DeleteHistoryHotkey,
                 hotkeySettings.RecordLootHotkey
             ));
-
-            // 触发计时器设置更新事件
             TimerSettingsChanged?.Invoke(this, new TimerSettingsChangedEventArgs(
                 timerSettings.TimerShowPomodoro,
                 timerSettings.TimerShowLootDrops,
@@ -207,6 +236,8 @@ namespace DTwoMFTimerHelper.UI.Settings {
             public Keys DeleteHotkey { get; } = delete;
             public Keys RecordHotkey { get; } = record;
         }
+
+
 
         public void ApplyWindowPosition(Form form) {
             MoveWindowToPosition(form, generalSettings.SelectedPosition);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DTwoMFTimerHelper.Models;
+using DTwoMFTimerHelper.Services;
 using YamlDotNet.Serialization;
 
 namespace DTwoMFTimerHelper.Utils {
@@ -286,22 +287,21 @@ namespace DTwoMFTimerHelper.Utils {
         /// </summary>
         /// <param name="scene">场景对象</param>
         /// <returns>格式化的场景显示名称</returns>
-        public static string GetSceneDisplayName(FarmingScene scene) {
+        public static string GetSceneDisplayName(FarmingScene scene, IAppSettings settings) {
             string actText = $"ACT {scene.ACT}";
             // 根据当前语言获取场景名称
-            string language = System.Threading.Thread.CurrentThread.CurrentUICulture.Name.StartsWith("zh") ? "Chinese" : "English";
-            string name = scene.GetSceneName(language);
+            // string language = System.Threading.Thread.CurrentThread.CurrentUICulture.Name.StartsWith("zh") ? "Chinese" : "English";
+            string name = scene.GetSceneName(settings.Language);
             return $"{actText}: {name}";
         }
 
-        public static string GetLocalizedShortSceneName(string scene) {
+        public static string GetLocalizedShortSceneName(string scene, IAppSettings settings) {
             _cachedFarmingSpots ??= LoadFarmingSpots();
-            string language = System.Threading.Thread.CurrentThread.CurrentUICulture.Name.StartsWith("zh") ? "Chinese" : "English";
             string pureEnglishSceneName = GetPureSceneName(scene);
 
             FarmingScene? farmingScene = _cachedFarmingSpots.FirstOrDefault(s =>
                 string.Equals(s.EnUS, pureEnglishSceneName, StringComparison.OrdinalIgnoreCase));
-            return language switch {
+            return settings.Language switch {
                 "Chinese" => farmingScene?.ShortZhCN ?? pureEnglishSceneName,
                 "English" => farmingScene?.ShortEnName ?? pureEnglishSceneName,
                 _ => pureEnglishSceneName,

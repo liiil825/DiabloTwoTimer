@@ -208,7 +208,7 @@ namespace DTwoMFTimerHelper.Services {
                 return false;
 
             // 获取场景的纯英文名称（与记录存储格式一致）
-            string pureEnglishSceneName = LanguageManager.GetPureEnglishSceneName(CurrentScene);
+            string pureEnglishSceneName = SceneHelper.GetEnglishSceneName(CurrentScene);
             // 查找同场景、同难度、未完成的记录
             bool hasIncompleteRecord = CurrentProfile.Records.Any(r =>
                 r.SceneName == pureEnglishSceneName &&
@@ -232,7 +232,7 @@ namespace DTwoMFTimerHelper.Services {
         /// 获取场景显示名称列表
         /// </summary>
         public List<string> GetSceneDisplayNames() {
-            return FarmingScenes.Select(scene => SceneHelper.GetSceneDisplayName(scene)).ToList();
+            return FarmingScenes.Select(scene => SceneHelper.GetSceneDisplayName(scene, _appSettings)).ToList();
         }
 
         /// <summary>
@@ -240,7 +240,7 @@ namespace DTwoMFTimerHelper.Services {
         /// </summary>
         public FarmingScene? GetSceneByDisplayName(string displayName) {
             return FarmingScenes.FirstOrDefault(scene =>
-                SceneHelper.GetSceneDisplayName(scene) == displayName);
+                SceneHelper.GetSceneDisplayName(scene, _appSettings) == displayName);
         }
 
         /// <summary>

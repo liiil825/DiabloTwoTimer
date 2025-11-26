@@ -10,20 +10,25 @@ namespace DTwoMFTimerHelper.UI.Profiles {
     public partial class ProfileManager : UserControl {
         private readonly ITimerService _timerService;
         private readonly IProfileService _profileService;
+        private readonly IAppSettings _appSettings;
         private readonly IMainServices _mainServices;
         private readonly IPomodoroTimerService _pomodoroTimerService;
 
         public ProfileManager(
         IProfileService profileService,
+        IAppSettings appSettings,
         ITimerService timerService,
         IPomodoroTimerService pomodoroTimerService,
         IMainServices mainServices) {
             _profileService = profileService;
             _timerService = timerService;
+            _appSettings = appSettings;
             _mainServices = mainServices;
             _pomodoroTimerService = pomodoroTimerService;
 
             InitializeComponent();
+            // 注册语言变更事件
+            LanguageManager.OnLanguageChanged += LanguageManager_OnLanguageChanged;
             LoadFarmingScenes();
             LoadLastRunSettings();
             UpdateUI();
@@ -37,7 +42,7 @@ namespace DTwoMFTimerHelper.UI.Profiles {
         private ComboBox? cmbScene = null!;
         private Label? lblDifficulty = null!;
         private ComboBox? cmbDifficulty = null!;
-        private Button? btnStartStop = null!;
+        private Button? btnStartFarm = null!;
         private Button? btnShowStats = null!;
         private Label? lblCurrentProfile = null!;
         private Label? lblTime = null!;
@@ -74,7 +79,7 @@ namespace DTwoMFTimerHelper.UI.Profiles {
             cmbScene = new ComboBox();
             lblDifficulty = new Label();
             cmbDifficulty = new ComboBox();
-            btnStartStop = new Button();
+            btnStartFarm = new Button();
             btnShowStats = new Button();
             lblCurrentProfile = new Label();
             lblTime = new Label();
@@ -150,16 +155,16 @@ namespace DTwoMFTimerHelper.UI.Profiles {
             cmbDifficulty.TabIndex = 6;
             cmbDifficulty.SelectedIndexChanged += CmbDifficulty_SelectedIndexChanged;
             // 
-            // btnStartStop
+            // btnStartFarm
             // 
-            btnStartStop.Enabled = false;
-            btnStartStop.Location = new System.Drawing.Point(30, 220);
-            btnStartStop.Margin = new Padding(6);
-            btnStartStop.Name = "btnStartStop";
-            btnStartStop.Size = new System.Drawing.Size(130, 50);
-            btnStartStop.TabIndex = 7;
-            btnStartStop.UseVisualStyleBackColor = true;
-            btnStartStop.Click += BtnStartStop_Click;
+            btnStartFarm.Enabled = false;
+            btnStartFarm.Location = new System.Drawing.Point(30, 220);
+            btnStartFarm.Margin = new Padding(6);
+            btnStartFarm.Name = "btnStartFarm";
+            btnStartFarm.Size = new System.Drawing.Size(130, 50);
+            btnStartFarm.TabIndex = 7;
+            btnStartFarm.UseVisualStyleBackColor = true;
+            btnStartFarm.Click += BtnStartFarm_Click;
             // 
             // btnShowStats
             // 
@@ -210,7 +215,7 @@ namespace DTwoMFTimerHelper.UI.Profiles {
             Controls.Add(cmbScene);
             Controls.Add(lblDifficulty);
             Controls.Add(cmbDifficulty);
-            Controls.Add(btnStartStop);
+            Controls.Add(btnStartFarm);
             Controls.Add(lblCurrentProfile);
             Controls.Add(lblTime);
             Controls.Add(lblStats);
@@ -239,6 +244,14 @@ namespace DTwoMFTimerHelper.UI.Profiles {
             // 先初始化难度下拉框
             InitializeDifficultyComboBox();
 
+            // 保存当前选中的场景英文名称
+            string currentSceneName = string.Empty;
+            if (cmbScene != null && cmbScene.SelectedIndex >= 0 && farmingScenes.Count > 0) {
+                // 获取当前选中场景的英文名称，以便重新加载后能找到对应的场景
+                var selectedScene = farmingScenes[cmbScene.SelectedIndex];
+                currentSceneName = selectedScene.EnUS;
+            }
+
             farmingScenes = SceneHelper.LoadFarmingSpots();
 
             cmbScene?.Items.Clear();
@@ -247,13 +260,20 @@ namespace DTwoMFTimerHelper.UI.Profiles {
                 MessageBox.Show("场景列表为空，无法添加到下拉框", "场景加载警告", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
             else {
-                foreach (var scene in farmingScenes) {
-                    string displayName = SceneHelper.GetSceneDisplayName(scene);
+                int selectedIndex = 0;
+                for (int i = 0; i < farmingScenes.Count; i++) {
+                    var scene = farmingScenes[i];
+                    string displayName = SceneHelper.GetSceneDisplayName(scene, _appSettings);
                     cmbScene?.Items.Add(displayName);
+
+                    // 如果当前场景是之前选中的场景，保存索引
+                    if (!string.IsNullOrEmpty(currentSceneName) && scene.EnUS == currentSceneName) {
+                        selectedIndex = i;
+                    }
                 }
 
                 if (cmbScene != null && cmbScene.Items.Count > 0) {
-                    cmbScene.SelectedIndex = 0;
+                    cmbScene.SelectedIndex = selectedIndex;
                 }
 
                 // 只输出到控制台，不再显示弹窗
@@ -308,14 +328,13 @@ namespace DTwoMFTimerHelper.UI.Profiles {
                     currentProfile = profile;
                     if (btnDeleteCharacter != null)
                         btnDeleteCharacter.Enabled = true;
-                    if (btnStartStop != null)
-                        btnStartStop.Enabled = true;
+                    if (btnStartFarm != null)
+                        btnStartFarm.Enabled = true;
                     // 更新界面显示
                     UpdateUI();
                 }
             }
         }
-
 
         // 其他方法保持不变...
         private Models.GameDifficulty GetSelectedDifficulty() {
@@ -349,15 +368,13 @@ namespace DTwoMFTimerHelper.UI.Profiles {
 
         private void UpdateUI() {
             // 更新按钮文本
-            if (btnCreateCharacter != null)
-                btnCreateCharacter.Text = DTwoMFTimerHelper.Utils.LanguageManager.GetString("CreateCharacter");
-            if (btnSwitchCharacter != null)
-                btnSwitchCharacter.Text = DTwoMFTimerHelper.Utils.LanguageManager.GetString("SwitchCharacter");
-            if (btnDeleteCharacter != null)
-                btnDeleteCharacter.Text = DTwoMFTimerHelper.Utils.LanguageManager.GetString("DeleteCharacter");
+            btnCreateCharacter!.Text = DTwoMFTimerHelper.Utils.LanguageManager.GetString("CreateCharacter");
+            btnSwitchCharacter!.Text = DTwoMFTimerHelper.Utils.LanguageManager.GetString("SwitchCharacter");
+            btnDeleteCharacter!.Text = DTwoMFTimerHelper.Utils.LanguageManager.GetString("DeleteCharacter");
+            btnShowStats!.Text = DTwoMFTimerHelper.Utils.LanguageManager.GetString("FullScreenStatistics");
 
             // 根据是否有未完成记录设置开始按钮文本
-            if (btnStartStop != null) {
+            if (btnStartFarm != null) {
                 // 添加日志记录开始检查过程
                 WriteDebugLog("开始检查未完成记录");
 
@@ -372,19 +389,10 @@ namespace DTwoMFTimerHelper.UI.Profiles {
                         WriteDebugLog($"选中难度: {difficulty}");
 
                         // 获取场景的纯英文名称（与记录存储格式一致）
-                        string sceneDisplayName = SceneHelper.GetSceneDisplayName(selectedScene);
+                        string sceneDisplayName = SceneHelper.GetSceneDisplayName(selectedScene, _appSettings);
                         WriteDebugLog($"场景显示名称: {sceneDisplayName}");
 
-                        string pureSceneName = sceneDisplayName;
-                        if (sceneDisplayName.StartsWith("ACT ") || sceneDisplayName.StartsWith("Act ") || sceneDisplayName.StartsWith("act ")) {
-                            int colonIndex = sceneDisplayName.IndexOf(':');
-                            if (colonIndex > 0) {
-                                pureSceneName = sceneDisplayName.Substring(colonIndex + 1).Trim();
-                                WriteDebugLog($"提取纯场景名称: {pureSceneName}");
-                            }
-                        }
-
-                        string pureEnglishSceneName = DTwoMFTimerHelper.Utils.LanguageManager.GetPureEnglishSceneName(sceneDisplayName);
+                        string pureEnglishSceneName = SceneHelper.GetEnglishSceneName(sceneDisplayName);
                         WriteDebugLog($"获取纯英文场景名称: {pureEnglishSceneName}");
 
                         // 记录当前配置文件中的记录数量
@@ -416,16 +424,14 @@ namespace DTwoMFTimerHelper.UI.Profiles {
 
                 // 根据是否有未完成记录或计时器是否暂停设置按钮文本
                 if (hasIncompleteRecord) {
-                    btnStartStop.Text = LanguageManager.GetString("ContinueFarm");
+                    btnStartFarm.Text = LanguageManager.GetString("ContinueFarm");
                 }
                 else {
-                    btnStartStop.Text = LanguageManager.GetString("StartTimer");
+                    btnStartFarm.Text = LanguageManager.GetString("StartTimer");
                 }
             }
-            if (lblScene != null)
-                lblScene.Text = LanguageManager.GetString("SelectScene");
-            if (lblDifficulty != null)
-                lblDifficulty.Text = LanguageManager.GetString("DifficultyLabel");
+            lblScene!.Text = LanguageManager.GetString("SelectScene");
+            lblDifficulty!.Text = LanguageManager.GetString("DifficultyLabel");
 
             // 更新当前角色显示
             if (currentProfile != null) {
@@ -449,8 +455,8 @@ namespace DTwoMFTimerHelper.UI.Profiles {
             // 更新按钮状态
             if (btnDeleteCharacter != null)
                 btnDeleteCharacter.Enabled = currentProfile != null;
-            if (btnStartStop != null)
-                btnStartStop.Enabled = currentProfile != null;
+            if (btnStartFarm != null)
+                btnStartFarm.Enabled = currentProfile != null;
         }
 
         private void BtnCreateCharacter_Click(object? sender, EventArgs e) {
@@ -550,7 +556,7 @@ namespace DTwoMFTimerHelper.UI.Profiles {
             }
         }
 
-        private void BtnStartStop_Click(object? sender, EventArgs e) {
+        private void BtnStartFarm_Click(object? sender, EventArgs e) {
             _mainServices.SetActiveTabPage(Models.TabPage.Timer);
             _timerService.HandleStartFarm();
         }
@@ -560,6 +566,7 @@ namespace DTwoMFTimerHelper.UI.Profiles {
             // 注意：BreakType 在这里不重要，传默认值即可
             var statsForm = new DTwoMFTimerHelper.UI.Pomodoro.BreakForm(
                 _pomodoroTimerService,
+                _appSettings,
                 _profileService,
                 DTwoMFTimerHelper.UI.Pomodoro.BreakFormMode.StatisticsView // <--- 关键：指定为查看模式
             );
@@ -628,7 +635,21 @@ namespace DTwoMFTimerHelper.UI.Profiles {
             if (disposing && (components != null)) {
                 components.Dispose();
             }
+            // 取消注册语言变更事件
+            LanguageManager.OnLanguageChanged -= LanguageManager_OnLanguageChanged;
             base.Dispose(disposing);
+        }
+
+        /// <summary>
+        /// 语言变更事件处理方法
+        /// </summary>
+        private void LanguageManager_OnLanguageChanged(object? sender, EventArgs e) {
+            // 重新初始化难度下拉框，以更新语言
+            InitializeDifficultyComboBox();
+            // 重新加载场景以更新语言
+            LoadFarmingScenes();
+            // 更新UI以反映语言变化
+            UpdateUI();
         }
     }
 }

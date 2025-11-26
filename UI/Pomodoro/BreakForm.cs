@@ -20,6 +20,7 @@ namespace DTwoMFTimerHelper.UI.Pomodoro {
 
     public partial class BreakForm : Form {
         private readonly IPomodoroTimerService _timerService;
+        private readonly IAppSettings _appSettings;
         private readonly BreakType _breakType;
         private readonly IProfileService? _profileService;
         private readonly TimeSettings _timeSettings;
@@ -55,8 +56,9 @@ namespace DTwoMFTimerHelper.UI.Pomodoro {
         };
 
         // 构造函数
-        public BreakForm(IPomodoroTimerService timerService, IProfileService? profileService, BreakFormMode mode, BreakType breakType = BreakType.ShortBreak) {
+        public BreakForm(IPomodoroTimerService timerService, IAppSettings appSettings, IProfileService? profileService, BreakFormMode mode, BreakType breakType = BreakType.ShortBreak) {
             _timerService = timerService;
+            _appSettings = appSettings;
             _profileService = profileService;
             _mode = mode;
             _breakType = breakType;
@@ -285,17 +287,17 @@ namespace DTwoMFTimerHelper.UI.Pomodoro {
                         sessionStart = DateTime.Now.AddMinutes(-cycleMins - 10);
                     }
                     title = ">>> 本轮战况 <<<";
-                    content = _statsService.GetDetailedSummary(_profileService, sessionStart, DateTime.Now);
+                    content = _statsService.GetDetailedSummary(_profileService, _appSettings, sessionStart, DateTime.Now);
                     break;
 
                 case StatViewType.Today:
                     title = ">>> 今日战况 <<<";
-                    content = _statsService.GetDetailedSummary(_profileService, DateTime.Today, DateTime.Now);
+                    content = _statsService.GetDetailedSummary(_profileService, _appSettings, DateTime.Today, DateTime.Now);
                     break;
 
                 case StatViewType.Week:
                     title = ">>> 本周战况 <<<";
-                    content = _statsService.GetDetailedSummary(_profileService, _statsService.GetStartOfWeek(), DateTime.Now);
+                    content = _statsService.GetDetailedSummary(_profileService, _appSettings, _statsService.GetStartOfWeek(), DateTime.Now);
                     break;
             }
 

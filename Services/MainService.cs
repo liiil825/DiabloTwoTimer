@@ -217,10 +217,10 @@ namespace DTwoMFTimerHelper.Services {
         #region Private Methods
         private void InitializeControlInstances() {
             // 修复：传递 this 作为 IMainServices 参数
-            _profileManager = new ProfileManager(_profileService, _timerService, _pomodoroTimerService, this);
+            _profileManager = new ProfileManager(_profileService, _appSettings, _timerService, _pomodoroTimerService, this);
             _timerControl = new TimerControl(_profileService, _timerService, _timerHistoryService, _pomodoroTimerService);
-            _pomodoroControl = new PomodoroControl(_pomodoroTimerService, _profileService);
-            _settingsControl = new SettingsControl();
+            _pomodoroControl = new PomodoroControl(_pomodoroTimerService, _appSettings, _profileService);
+            _settingsControl = new SettingsControl(_appSettings);
             _settingsControl.InitializeData(_appSettings);
         }
 
@@ -267,6 +267,8 @@ namespace DTwoMFTimerHelper.Services {
         }
 
         private void InitializeLanguageSupport() {
+            // 在应用启动时，根据IAppSettings中的Language设置来切换语言
+            LanguageManager.SwitchLanguage(_appSettings.Language == "Chinese" ? LanguageManager.Chinese : LanguageManager.English);
             LanguageManager.OnLanguageChanged += LanguageManager_OnLanguageChanged;
         }
 
@@ -335,16 +337,17 @@ namespace DTwoMFTimerHelper.Services {
         }
 
         private void OnLanguageChanged(object? sender, SettingsControl.LanguageChangedEventArgs e) {
+            // 先更新IAppSettings中的Language属性
+            if (_appSettings != null) {
+                _appSettings.Language = SettingsManager.LanguageToString(e.Language);
+            }
+
+            // 再调用LanguageManager.SwitchLanguage触发语言变更事件
             if (e.Language == SettingsControl.LanguageOption.Chinese) {
                 LanguageManager.SwitchLanguage(LanguageManager.Chinese);
             }
             else {
                 LanguageManager.SwitchLanguage(LanguageManager.English);
-            }
-
-            if (_appSettings != null) {
-                _appSettings.Language = SettingsManager.LanguageToString(e.Language);
-                SettingsManager.SaveSettings(_appSettings);
             }
         }
 
@@ -355,7 +358,6 @@ namespace DTwoMFTimerHelper.Services {
 
             if (_appSettings != null) {
                 _appSettings.AlwaysOnTop = e.IsAlwaysOnTop;
-                SettingsManager.SaveSettings(_appSettings);
             }
         }
 
@@ -366,30 +368,16 @@ namespace DTwoMFTimerHelper.Services {
             _currentDeleteHistoryHotkey = e.DeleteHotkey;
             _currentRecordLootHotkey = e.RecordHotkey;
 
-            // 更新并保存到配置文件
-            if (_appSettings != null) {
-                _appSettings.HotkeyStartOrNext = e.StartHotkey;
-                _appSettings.HotkeyPause = e.PauseHotkey;
-                _appSettings.HotkeyDeleteHistory = e.DeleteHotkey;
-                _appSettings.HotkeyRecordLoot = e.RecordHotkey;
-                SettingsManager.SaveSettings(_appSettings);
-            }
-
             // 重新注册热键使其生效
             RegisterHotkeys();
-
-            // 可选：提示用户保存成功
-            // 显示成功提示
-            Utils.Toast.Success(Utils.LanguageManager.GetString("SuccessSettingsChanged", "设置修改成功"));
         }
 
         private void OnTimerSettingsChanged(object? sender, SettingsControl.TimerSettingsChangedEventArgs e) {
-            // 更新并保存到配置文件
+            // 更新配置文件中的计时器设置
             if (_appSettings != null) {
                 _appSettings.TimerShowPomodoro = e.ShowPomodoro;
                 _appSettings.TimerShowLootDrops = e.ShowLootDrops;
                 _appSettings.TimerSyncStartPomodoro = e.SyncStartPomodoro;
-                SettingsManager.SaveSettings(_appSettings);
             }
 
             // 应用掉落记录显示设置到UI
@@ -403,7 +391,6 @@ namespace DTwoMFTimerHelper.Services {
             // 跳转到计时界面
             SetActiveTabPage(Models.TabPage.Timer);
         }
-
 
         private void OnWindowPositionChanged(object? sender, SettingsControl.WindowPositionChangedEventArgs e) {
             if (_mainForm != null) {
@@ -433,6 +420,7 @@ namespace DTwoMFTimerHelper.Services {
                 _settingsControl.LanguageChanged -= OnLanguageChanged;
                 _settingsControl.AlwaysOnTopChanged -= OnAlwaysOnTopChanged;
                 _settingsControl.HotkeysChanged -= OnHotkeysChanged;
+                _settingsControl.TimerSettingsChanged -= OnTimerSettingsChanged;
             }
 
             LanguageManager.OnLanguageChanged -= LanguageManager_OnLanguageChanged;

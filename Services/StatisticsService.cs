@@ -107,7 +107,7 @@ namespace DTwoMFTimerHelper.Services {
         /// <summary>
         /// 获取详细的统计摘要（多行文本）
         /// </summary>
-        public string GetDetailedSummary(IProfileService profileService, DateTime start, DateTime end) {
+        public string GetDetailedSummary(IProfileService profileService, IAppSettings appSettings, DateTime start, DateTime end) {
             if (profileService.CurrentProfile == null) return LanguageManager.GetString("NoData");
 
             var sb = new StringBuilder();
@@ -131,7 +131,7 @@ namespace DTwoMFTimerHelper.Services {
                 sb.AppendLine($"【{LanguageManager.GetString("SceneData")}】");
                 foreach (var s in sceneStats) {
                     // 格式：崔凡客: 25次 | Avg: 45s | Best: 40s
-                    string localizedSceneName = SceneHelper.GetLocalizedShortSceneName(s.Name);
+                    string localizedSceneName = SceneHelper.GetLocalizedShortSceneName(s.Name, appSettings);
                     sb.AppendLine($"{localizedSceneName}: {s.Count}{LanguageManager.GetString("Times")} | {LanguageManager.GetString("Avg")}: {s.Avg:F1}s | {LanguageManager.GetString("Fastest")}: {s.Fastest:F1}s");
                 }
             }
@@ -152,7 +152,7 @@ namespace DTwoMFTimerHelper.Services {
                 sb.AppendLine($"【{LanguageManager.GetString("LootItems")}】");
                 foreach (var l in loots) {
                     // 格式：崔凡客(25): 28号符文
-                    string localizedSceneName = SceneHelper.GetLocalizedShortSceneName(l.SceneName);
+                    string localizedSceneName = SceneHelper.GetLocalizedShortSceneName(l.SceneName, appSettings);
                     sb.AppendLine($"{localizedSceneName} ({LanguageManager.GetString("Round")} {l.RunCount}): {l.Name}");
                 }
             }

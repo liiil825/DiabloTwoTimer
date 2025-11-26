@@ -8,6 +8,7 @@ namespace DTwoMFTimerHelper.UI.Pomodoro {
         // 注意：这里我们声明为可空，因为无参构造函数中它尚未赋值
         // 但在运行时使用带参构造后，它将不为空
         private readonly IPomodoroTimerService? _timerService;
+        private readonly IAppSettings? _appSettings;
         private BreakForm? _breakForm;
         private readonly IProfileService? _profileService;
 
@@ -17,8 +18,9 @@ namespace DTwoMFTimerHelper.UI.Pomodoro {
         }
 
         // 2. 依赖注入构造函数 (实际运行时使用)
-        public PomodoroControl(IPomodoroTimerService timerService, IProfileService profileService) : this() {
+        public PomodoroControl(IPomodoroTimerService timerService, IAppSettings appSettings, IProfileService profileService) : this() {
             _timerService = timerService;
+            _appSettings = appSettings;
             _profileService = profileService;
 
             // 加载设置并刷新一次静态UI
@@ -167,7 +169,7 @@ namespace DTwoMFTimerHelper.UI.Pomodoro {
                 _breakForm.Close();
             }
 
-            _breakForm = new BreakForm(_timerService, _profileService, BreakFormMode.PomodoroBreak, breakType);
+            _breakForm = new BreakForm(_timerService, _appSettings, _profileService, BreakFormMode.PomodoroBreak, breakType);
             _breakForm.Show(this.FindForm());
         }
 

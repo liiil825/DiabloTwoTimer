@@ -338,7 +338,7 @@ namespace DTwoMFTimerHelper.Services {
                 return;
 
             int actValue = SceneHelper.GetSceneActValue(currentScene);
-            string pureEnglishSceneName = LanguageManager.GetPureEnglishSceneName(currentScene);
+            string pureEnglishSceneName = SceneHelper.GetEnglishSceneName(currentScene);
             var difficulty = _profileService.CurrentDifficulty;
 
             if (string.IsNullOrEmpty(pureEnglishSceneName)) {
@@ -381,8 +381,8 @@ namespace DTwoMFTimerHelper.Services {
             var difficulty = _profileService.CurrentDifficulty;
             double durationSeconds = GetElapsedTime().TotalSeconds;
 
-            // 统一使用LanguageManager.GetPureEnglishSceneName获取场景名称
-            string pureEnglishSceneName = LanguageManager.GetPureEnglishSceneName(currentScene);
+            // 统一使用SceneHelper.GetEnglishSceneName获取场景名称
+            string pureEnglishSceneName = SceneHelper.GetEnglishSceneName(currentScene);
             if (string.IsNullOrEmpty(pureEnglishSceneName)) {
                 pureEnglishSceneName = "UnknownScene";
                 LogManager.WriteDebugLog("TimerService", $"警告: SaveToProfile中pureEnglishSceneName为空，使用默认值 '{pureEnglishSceneName}'");
@@ -455,7 +455,7 @@ namespace DTwoMFTimerHelper.Services {
             if (_profileService.CurrentScene == null)
                 return null;
 
-            string pureEnglishSceneName = LanguageManager.GetPureEnglishSceneName(_profileService.CurrentScene);
+            string pureEnglishSceneName = SceneHelper.GetEnglishSceneName(_profileService.CurrentScene);
             return _profileService.CurrentProfile.Records
                 .Where(r => r.SceneName == pureEnglishSceneName && r.Difficulty == _profileService.CurrentDifficulty && !r.IsCompleted)
                 .OrderByDescending(r => r.StartTime)

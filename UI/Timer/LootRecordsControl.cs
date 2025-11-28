@@ -4,10 +4,10 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Models;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.Models;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.UI.Timer
+namespace DiabloTwoMFTimer.UI.Timer
 {
     public partial class LootRecordsControl : UserControl
     {

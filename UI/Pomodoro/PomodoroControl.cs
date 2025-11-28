@@ -1,9 +1,9 @@
 using System;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Services;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.Services;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.UI.Pomodoro;
+namespace DiabloTwoMFTimer.UI.Pomodoro;
 
 public partial class PomodoroControl : UserControl
 {

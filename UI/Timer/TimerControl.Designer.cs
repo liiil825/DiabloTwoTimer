@@ -4,10 +4,10 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.UI.Pomodoro;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.UI.Pomodoro;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.UI.Timer
+namespace DiabloTwoMFTimer.UI.Timer
 {
     partial class TimerControl
     {

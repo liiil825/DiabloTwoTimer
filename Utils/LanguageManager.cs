@@ -5,9 +5,9 @@ using System.IO;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
-using DTwoMFTimerHelper.Models;
+using DiabloTwoMFTimer.Models;
 
-namespace DTwoMFTimerHelper.Utils;
+namespace DiabloTwoMFTimer.Utils;
 
 public static class LanguageManager
 {

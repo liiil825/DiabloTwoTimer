@@ -1,9 +1,9 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Services;
+using DiabloTwoMFTimer.Services;
 
-namespace DTwoMFTimerHelper.UI;
+namespace DiabloTwoMFTimer.UI;
 public partial class MainForm : Form
 {
     // 服务实例

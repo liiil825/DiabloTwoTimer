@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Models;
-using DTwoMFTimerHelper.Services;
+using DiabloTwoMFTimer.Models;
+using DiabloTwoMFTimer.Services;
 
-namespace DTwoMFTimerHelper.UI.Pomodoro
+namespace DiabloTwoMFTimer.UI.Pomodoro
 {
     // 定义窗口模式
     public enum BreakFormMode

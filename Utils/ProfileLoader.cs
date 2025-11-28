@@ -4,9 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Models;
+using DiabloTwoMFTimer.Models;
 
-namespace DTwoMFTimerHelper.Utils
+namespace DiabloTwoMFTimer.Utils
 {
     public static class ProfileLoader
     {

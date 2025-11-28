@@ -1,14 +1,14 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.UI;
-using DTwoMFTimerHelper.UI.Pomodoro;
-using DTwoMFTimerHelper.UI.Profiles;
-using DTwoMFTimerHelper.UI.Settings;
-using DTwoMFTimerHelper.UI.Timer;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.UI;
+using DiabloTwoMFTimer.UI.Pomodoro;
+using DiabloTwoMFTimer.UI.Profiles;
+using DiabloTwoMFTimer.UI.Settings;
+using DiabloTwoMFTimer.UI.Timer;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.Services
+namespace DiabloTwoMFTimer.Services
 {
     public interface IMainServices
     {

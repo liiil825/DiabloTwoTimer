@@ -43,7 +43,7 @@
    
    1. 打开Visual Studio
    2. 选择"打开项目或解决方案"
-   3. 导航到项目文件夹并选择 `DTwoMFTimerHelper.csproj` 文件
+   3. 导航到项目文件夹并选择 `DiabloTwoMFTimer.csproj` 文件
    4. 按F5键或点击绿色播放按钮运行应用程序
 
 ## 应用程序功能
@@ -62,7 +62,7 @@
 
 - **Program.cs**：应用程序的入口点
 - **MainForm.cs**：主窗口的代码，包含所有UI元素和事件处理程序
-- **DTwoMFTimerHelper.csproj**：项目配置文件，定义了项目类型和依赖项
+- **DiabloTwoMFTimer.csproj**：项目配置文件，定义了项目类型和依赖项
 - **Resources/** 目录：
   - **LanguageManager.cs**：多语言管理类，处理语言切换和JSON资源加载
   - **strings_zh.json**：中文语言JSON文件，包含所有界面元素的中文翻译

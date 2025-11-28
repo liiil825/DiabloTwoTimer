@@ -1,6 +1,6 @@
-using DTwoMFTimerHelper.UI.Components;
+using DiabloTwoMFTimer.UI.Components;
 
-namespace DTwoMFTimerHelper.UI.Pomodoro;
+namespace DiabloTwoMFTimer.UI.Pomodoro;
 partial class PomodoroControl
 {
     /// <summary> 
@@ -111,5 +111,5 @@ partial class PomodoroControl
     private System.Windows.Forms.Button btnStartPomodoro;
     private System.Windows.Forms.Button btnPomodoroSettings;
     private PomodoroTimeDisplayLabel lblPomodoroTime;
-    private DTwoMFTimerHelper.UI.Components.PomodoroStatusDisplay pomodoroStatusDisplay1;
+    private DiabloTwoMFTimer.UI.Components.PomodoroStatusDisplay pomodoroStatusDisplay1;
 }

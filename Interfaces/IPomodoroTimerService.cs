@@ -1,6 +1,6 @@
 using System;
 
-namespace DTwoMFTimerHelper.Services;
+namespace DiabloTwoMFTimer.Services;
 
 public interface IPomodoroTimerService
 {

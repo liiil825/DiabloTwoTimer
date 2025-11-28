@@ -1,8 +1,8 @@
 using System;
 using System.Media;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.Services;
+namespace DiabloTwoMFTimer.Services;
 
 public class PomodoroTimerService : IPomodoroTimerService
 {

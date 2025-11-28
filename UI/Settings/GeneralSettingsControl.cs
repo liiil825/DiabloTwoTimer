@@ -1,10 +1,10 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Services;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.Services;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.UI.Settings
+namespace DiabloTwoMFTimer.UI.Settings
 {
     public partial class GeneralSettingsControl : UserControl
     {

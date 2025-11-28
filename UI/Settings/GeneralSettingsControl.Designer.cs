@@ -3,7 +3,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace DTwoMFTimerHelper.UI.Settings;
+namespace DiabloTwoMFTimer.UI.Settings;
 partial class GeneralSettingsControl
 {
     /// <summary>

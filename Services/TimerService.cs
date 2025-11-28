@@ -2,10 +2,10 @@ using System;
 using System.Linq;
 using System.Timers;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Models;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.Models;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.Services
+namespace DiabloTwoMFTimer.Services
 {
     /// <summary>
     /// 计时器状态枚举

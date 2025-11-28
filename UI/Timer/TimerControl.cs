@@ -2,12 +2,12 @@ using System;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Services;
-using DTwoMFTimerHelper.UI.Pomodoro;
-using DTwoMFTimerHelper.UI.Settings;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.Services;
+using DiabloTwoMFTimer.UI.Pomodoro;
+using DiabloTwoMFTimer.UI.Settings;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.UI.Timer
+namespace DiabloTwoMFTimer.UI.Timer
 {
     public partial class TimerControl : UserControl
     {

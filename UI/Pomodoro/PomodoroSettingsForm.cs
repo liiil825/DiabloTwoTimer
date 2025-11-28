@@ -1,11 +1,11 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Services;
-using DTwoMFTimerHelper.UI.Common;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.Services;
+using DiabloTwoMFTimer.UI.Common;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.UI.Pomodoro
+namespace DiabloTwoMFTimer.UI.Pomodoro
 {
     public partial class PomodoroSettingsForm : BaseForm
     {

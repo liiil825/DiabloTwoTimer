@@ -4,8 +4,8 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
-    <AssemblyName>DTwoMFTimerHelper</AssemblyName>
-    <RootNamespace>DTwoMFTimerHelper</RootNamespace>
+    <AssemblyName>DiabloTwoMFTimer</AssemblyName>
+    <RootNamespace>DiabloTwoMFTimer</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

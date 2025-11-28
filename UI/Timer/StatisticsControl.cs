@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.UI.Timer
+namespace DiabloTwoMFTimer.UI.Timer
 {
     public partial class StatisticsControl : UserControl
     {

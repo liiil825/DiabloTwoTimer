@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Services;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.Services;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.UI.Profiles
+namespace DiabloTwoMFTimer.UI.Profiles
 {
     public partial class ProfileManager : UserControl
     {
@@ -162,7 +162,7 @@ namespace DTwoMFTimerHelper.UI.Profiles
             if (cmbDifficulty != null)
             {
                 if (
-                    Enum.TryParse<DTwoMFTimerHelper.Models.GameDifficulty>(
+                    Enum.TryParse<DiabloTwoMFTimer.Models.GameDifficulty>(
                         lastRunDifficulty.ToString(),
                         out var difficulty
                     )
@@ -171,13 +171,13 @@ namespace DTwoMFTimerHelper.UI.Profiles
                     // 根据难度值设置下拉框索引
                     switch (difficulty)
                     {
-                        case DTwoMFTimerHelper.Models.GameDifficulty.Normal:
+                        case DiabloTwoMFTimer.Models.GameDifficulty.Normal:
                             cmbDifficulty.SelectedIndex = 0;
                             break;
-                        case DTwoMFTimerHelper.Models.GameDifficulty.Nightmare:
+                        case DiabloTwoMFTimer.Models.GameDifficulty.Nightmare:
                             cmbDifficulty.SelectedIndex = 1;
                             break;
-                        case DTwoMFTimerHelper.Models.GameDifficulty.Hell:
+                        case DiabloTwoMFTimer.Models.GameDifficulty.Hell:
                             cmbDifficulty.SelectedIndex = 2;
                             break;
                     }
@@ -242,10 +242,10 @@ namespace DTwoMFTimerHelper.UI.Profiles
         private void UpdateUI()
         {
             // 更新按钮文本
-            btnCreateCharacter!.Text = DTwoMFTimerHelper.Utils.LanguageManager.GetString("CreateCharacter");
-            btnSwitchCharacter!.Text = DTwoMFTimerHelper.Utils.LanguageManager.GetString("SwitchCharacter");
-            btnDeleteCharacter!.Text = DTwoMFTimerHelper.Utils.LanguageManager.GetString("DeleteCharacter");
-            btnShowStats!.Text = DTwoMFTimerHelper.Utils.LanguageManager.GetString("FullScreenStatistics");
+            btnCreateCharacter!.Text = DiabloTwoMFTimer.Utils.LanguageManager.GetString("CreateCharacter");
+            btnSwitchCharacter!.Text = DiabloTwoMFTimer.Utils.LanguageManager.GetString("SwitchCharacter");
+            btnDeleteCharacter!.Text = DiabloTwoMFTimer.Utils.LanguageManager.GetString("DeleteCharacter");
+            btnShowStats!.Text = DiabloTwoMFTimer.Utils.LanguageManager.GetString("FullScreenStatistics");
 
             // 根据是否有未完成记录设置开始按钮文本
             if (btnStartFarm != null)
@@ -469,11 +469,11 @@ namespace DTwoMFTimerHelper.UI.Profiles
         {
             // 创建 BreakForm，使用 StatisticsView 模式
             // 注意：BreakType 在这里不重要，传默认值即可
-            var statsForm = new DTwoMFTimerHelper.UI.Pomodoro.BreakForm(
+            var statsForm = new DiabloTwoMFTimer.UI.Pomodoro.BreakForm(
                 _pomodoroTimerService,
                 _appSettings,
                 _profileService,
-                DTwoMFTimerHelper.UI.Pomodoro.BreakFormMode.StatisticsView // <--- 关键：指定为查看模式
+                DiabloTwoMFTimer.UI.Pomodoro.BreakFormMode.StatisticsView // <--- 关键：指定为查看模式
             );
 
             statsForm.Show(); // 使用 Show() 允许非模态，或者 ShowDialog() 模态显示

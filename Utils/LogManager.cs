@@ -1,8 +1,8 @@
 using System;
 using System.IO;
-using DTwoMFTimerHelper.Models;
+using DiabloTwoMFTimer.Models;
 
-namespace DTwoMFTimerHelper.Utils
+namespace DiabloTwoMFTimer.Utils
 {
     /// <summary>
     /// 日志管理类，提供统一的日志记录功能

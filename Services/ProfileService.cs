@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DTwoMFTimerHelper.Models;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.Models;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.Services
+namespace DiabloTwoMFTimer.Services
 {
     public interface IProfileService
     {

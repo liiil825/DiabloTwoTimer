@@ -4,11 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Models;
+using DiabloTwoMFTimer.Models;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace DTwoMFTimerHelper.Utils
+namespace DiabloTwoMFTimer.Utils
 {
     public static class DataHelper
     {
@@ -295,7 +295,7 @@ namespace DTwoMFTimerHelper.Utils
         // 创建新的角色档案
         public static CharacterProfile CreateNewProfile(
             string name,
-            DTwoMFTimerHelper.Models.CharacterClass characterClass
+            DiabloTwoMFTimer.Models.CharacterClass characterClass
         )
         {
             try

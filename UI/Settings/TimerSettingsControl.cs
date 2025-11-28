@@ -1,9 +1,9 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.UI.Settings
+namespace DiabloTwoMFTimer.UI.Settings
 {
     public partial class TimerSettingsControl : UserControl
     {

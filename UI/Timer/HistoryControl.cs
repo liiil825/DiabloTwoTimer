@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Models;
-using DTwoMFTimerHelper.Services;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.Models;
+using DiabloTwoMFTimer.Services;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.UI.Timer
+namespace DiabloTwoMFTimer.UI.Timer
 {
     public partial class HistoryControl : UserControl
     {

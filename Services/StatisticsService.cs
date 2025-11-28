@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using DTwoMFTimerHelper.Models;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.Models;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.Services
+namespace DiabloTwoMFTimer.Services
 {
     // 统计结果模型：场景数据
     public class SceneStatDto

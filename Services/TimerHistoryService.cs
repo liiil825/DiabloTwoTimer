@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using DTwoMFTimerHelper.Models;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.Models;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.Services
+namespace DiabloTwoMFTimer.Services
 {
     // 历史记录变更类型枚举
     public enum HistoryChangeType
@@ -136,10 +136,10 @@ namespace DTwoMFTimerHelper.Services
                 {
                     // 更新统计信息
                     RunCount = RunHistory.Count;
-                    
+
                     // 重新计算最快时间
                     FastestTime = RunHistory.Count > 0 ? RunHistory.Min() : TimeSpan.MaxValue;
-                    
+
                     // 重新计算平均时间
                     if (RunCount > 0)
                     {
@@ -150,7 +150,7 @@ namespace DTwoMFTimerHelper.Services
                     {
                         AverageTime = TimeSpan.Zero;
                     }
-                    
+
                     OnHistoryDataChanged(HistoryChangeType.FullRefresh, null);
                     LogManager.WriteDebugLog(
                         "TimerHistoryService",

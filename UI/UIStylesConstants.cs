@@ -2,7 +2,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace DTwoMFTimerHelper.UI
+namespace DiabloTwoMFTimer.UI
 {
     /// <summary>
     /// UI样式常量类，集中管理所有UI组件的字体、颜色和样式

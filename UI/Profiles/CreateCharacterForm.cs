@@ -1,11 +1,11 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Models;
-using DTwoMFTimerHelper.UI.Common;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.Models;
+using DiabloTwoMFTimer.UI.Common;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.UI.Profiles
+namespace DiabloTwoMFTimer.UI.Profiles
 {
     public partial class CreateCharacterForm : BaseForm
     {

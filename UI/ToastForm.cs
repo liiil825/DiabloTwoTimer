@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace DTwoMFTimerHelper.UI;
+namespace DiabloTwoMFTimer.UI;
 
 public enum ToastType
 {

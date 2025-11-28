@@ -1,6 +1,6 @@
 using System;
 
-namespace DTwoMFTimerHelper.UI
+namespace DiabloTwoMFTimer.UI
 {
     /// <summary>
     /// UI尺寸常量类，集中管理所有UI组件的宽度和高度

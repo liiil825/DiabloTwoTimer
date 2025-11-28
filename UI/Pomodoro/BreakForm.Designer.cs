@@ -3,7 +3,7 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace DTwoMFTimerHelper.UI.Pomodoro;
+namespace DiabloTwoMFTimer.UI.Pomodoro;
 partial class BreakForm
 {
     /// <summary>

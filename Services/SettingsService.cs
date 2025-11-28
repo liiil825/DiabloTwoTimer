@@ -1,12 +1,12 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.UI.Settings;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.UI.Settings;
+using DiabloTwoMFTimer.Utils;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
-namespace DTwoMFTimerHelper.Services
+namespace DiabloTwoMFTimer.Services
 {
     public interface IAppSettings
     {

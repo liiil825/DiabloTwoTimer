@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DTwoMFTimerHelper.Models;
+namespace DiabloTwoMFTimer.Models;
 
 // 游戏难度枚举
 public enum GameDifficulty

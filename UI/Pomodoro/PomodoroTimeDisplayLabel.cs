@@ -1,9 +1,9 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Services;
+using DiabloTwoMFTimer.Services;
 
-namespace DTwoMFTimerHelper.UI.Pomodoro
+namespace DiabloTwoMFTimer.UI.Pomodoro
 {
     public class PomodoroTimeDisplayLabel : Label
     {

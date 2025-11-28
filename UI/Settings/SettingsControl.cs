@@ -1,10 +1,10 @@
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Services; // 假设存在
-using DTwoMFTimerHelper.Utils; // 假设存在
+using DiabloTwoMFTimer.Services; // 假设存在
+using DiabloTwoMFTimer.Utils; // 假设存在
 
-namespace DTwoMFTimerHelper.UI.Settings
+namespace DiabloTwoMFTimer.UI.Settings
 {
     public partial class SettingsControl : UserControl
     {

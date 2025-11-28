@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 
-namespace DTwoMFTimerHelper.UI.Components
+namespace DiabloTwoMFTimer.UI.Components
 {
     /// <summary>
     /// 番茄钟状态可视化组件

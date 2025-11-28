@@ -1,11 +1,11 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Services;
-using DTwoMFTimerHelper.UI;
+using DiabloTwoMFTimer.Services;
+using DiabloTwoMFTimer.UI;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DTwoMFTimerHelper
+namespace DiabloTwoMFTimer
 {
     public static class ServiceConfiguration
     {

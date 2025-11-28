@@ -1,12 +1,12 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Models;
-using DTwoMFTimerHelper.Services;
-using DTwoMFTimerHelper.UI.Common;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.Models;
+using DiabloTwoMFTimer.Services;
+using DiabloTwoMFTimer.UI.Common;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.UI.Timer
+namespace DiabloTwoMFTimer.UI.Timer
 {
     public partial class RecordLootForm : BaseForm
     {

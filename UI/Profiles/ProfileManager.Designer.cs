@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
-namespace DTwoMFTimerHelper.UI.Profiles
+namespace DiabloTwoMFTimer.UI.Profiles
 {
     partial class ProfileManager
     {

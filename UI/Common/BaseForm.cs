@@ -1,9 +1,9 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
-using DTwoMFTimerHelper.Utils;
+using DiabloTwoMFTimer.Utils;
 
-namespace DTwoMFTimerHelper.UI.Common
+namespace DiabloTwoMFTimer.UI.Common
 {
     /// <summary>
     /// 通用弹窗基类

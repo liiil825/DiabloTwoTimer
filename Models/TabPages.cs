@@ -1,4 +1,4 @@
-namespace DTwoMFTimerHelper.Models
+namespace DiabloTwoMFTimer.Models
 {
     public enum TabPage
     {

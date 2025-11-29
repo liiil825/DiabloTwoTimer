@@ -6,10 +6,6 @@ using System.Windows.Forms;
 namespace DiabloTwoMFTimer.UI.Pomodoro;
 partial class PomodoroSettingsForm
 {
-
-
-
-
     #region Windows Form Designer generated code
 
     /// <summary>

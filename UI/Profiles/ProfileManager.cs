@@ -459,6 +459,7 @@ public partial class ProfileManager : UserControl
 
     private void BtnStartFarm_Click(object? sender, EventArgs e)
     {
+        // 调用 Service 请求切换 Tab，Service 会触发事件，MainForm 再响应切换
         _mainServices.SetActiveTabPage(Models.TabPage.Timer);
         _timerService.HandleStartFarm();
     }

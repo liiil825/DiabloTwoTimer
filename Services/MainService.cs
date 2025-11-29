@@ -41,14 +41,20 @@ public interface IMainServices
     void ReloadHotkeys();
 }
 
-public class MainServices : IMainServices, IDisposable
+public class MainServices(
+    IProfileService profileService,
+    ITimerService timerService,
+    ITimerHistoryService timerHistoryService,
+    IPomodoroTimerService pomodoroTimerService,
+    IAppSettings appSettings
+    ) : IMainServices, IDisposable
 {
     #region Services & Fields
-    private readonly IProfileService _profileService;
-    private readonly ITimerService _timerService;
-    private readonly ITimerHistoryService _timerHistoryService;
-    private readonly IPomodoroTimerService _pomodoroTimerService;
-    private readonly IAppSettings _appSettings;
+    private readonly IProfileService _profileService = profileService;
+    private readonly ITimerService _timerService = timerService;
+    private readonly ITimerHistoryService _timerHistoryService = timerHistoryService;
+    private readonly IPomodoroTimerService _pomodoroTimerService = pomodoroTimerService;
+    private readonly IAppSettings _appSettings = appSettings;
 
     // 仅持有句柄用于注册热键，不持有 Form 对象
     private IntPtr _windowHandle;
@@ -81,22 +87,8 @@ public class MainServices : IMainServices, IDisposable
     public event Action? OnRequestRefreshUI;
     public event Action? OnRequestDeleteHistory;
     public event Action? OnRequestRecordLoot;
-    #endregion
 
-    public MainServices(
-        IProfileService profileService,
-        ITimerService timerService,
-        ITimerHistoryService timerHistoryService,
-        IPomodoroTimerService pomodoroTimerService,
-        IAppSettings appSettings
-    )
-    {
-        _profileService = profileService;
-        _timerService = timerService;
-        _timerHistoryService = timerHistoryService;
-        _pomodoroTimerService = pomodoroTimerService;
-        _appSettings = appSettings;
-    }
+    #endregion
 
     #region Public Methods
 

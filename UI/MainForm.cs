@@ -94,10 +94,10 @@ public partial class MainForm : Form
 
     private void InitializeForm()
     {
-        var width = UISizeConstants.MainFormWidth;
+        var width = UISizeConstants.ClientWidth;
         var height = _settings.TimerShowLootDrops
-            ? UISizeConstants.MainFormHeightWithLoot
-            : UISizeConstants.MainFormHeightWithoutLoot;
+            ? UISizeConstants.ClientHeightWithLoot
+            : UISizeConstants.ClientHeightWithoutLoot;
 
         this.Size = new Size(width, height);
         this.StartPosition = FormStartPosition.Manual;

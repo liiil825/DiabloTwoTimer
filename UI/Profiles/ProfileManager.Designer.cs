@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using DiabloTwoMFTimer.UI.Components;
 
 namespace DiabloTwoMFTimer.UI.Profiles
 {
@@ -25,18 +26,18 @@ namespace DiabloTwoMFTimer.UI.Profiles
 
         private void InitializeComponent()
         {
-            btnCreateCharacter = new Button();
-            btnSwitchCharacter = new Button();
-            btnDeleteCharacter = new Button();
+            btnCreateCharacter = new ThemedButton();
+            btnSwitchCharacter = new ThemedButton();
+            btnDeleteCharacter = new ThemedButton();
             lblScene = new Label();
             cmbScene = new ComboBox();
             lblDifficulty = new Label();
             cmbDifficulty = new ComboBox();
-            btnStartFarm = new Button();
-            btnShowStats = new Button();
-            lblCurrentProfile = new Label();
-            lblTime = new Label();
-            lblStats = new Label();
+            btnStartFarm = new ThemedButton();
+            btnShowStats = new ThemedButton();
+            lblCurrentProfile = new ThemedLabel();
+            lblTime = new ThemedLabel();
+            lblStats = new ThemedLabel();
             SuspendLayout();
             //
             // btnCreateCharacter

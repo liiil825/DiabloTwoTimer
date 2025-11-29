@@ -33,7 +33,7 @@ partial class MainForm
     /// </summary>
     private void InitializeComponent()
     {
-        tabControl = new TabControl();
+        tabControl = new System.Windows.Forms.TabControl();
         tabProfilePage = new System.Windows.Forms.TabPage();
         tabTimerPage = new System.Windows.Forms.TabPage();
         tabPomodoroPage = new System.Windows.Forms.TabPage();
@@ -47,18 +47,16 @@ partial class MainForm
         tabControl.Controls.Add(tabPomodoroPage);
         tabControl.Controls.Add(tabSettingsPage);
         tabControl.Dock = DockStyle.Fill;
-        tabControl.Location = new Point(0, 0);
         tabControl.Margin = new Padding(6);
         tabControl.Name = "tabControl";
         tabControl.SelectedIndex = 0;
-        tabControl.Size = new Size(894, 813);
         tabControl.TabIndex = 1;
         tabControl.SelectedIndexChanged += TabControl_SelectedIndexChanged;
 
         // tabProfilePage
         tabProfilePage.Location = new Point(4, 37);
         tabProfilePage.Name = "tabProfilePage";
-        tabProfilePage.Size = new Size(886, 813);
+        tabProfilePage.Padding = new System.Windows.Forms.Padding(3);
         tabProfilePage.TabIndex = 0;
         tabProfilePage.Text = "Profile";
         tabProfilePage.UseVisualStyleBackColor = true;
@@ -66,28 +64,29 @@ partial class MainForm
         // tabTimerPage
         tabTimerPage.Location = new Point(4, 37);
         tabTimerPage.Name = "tabTimerPage";
-        tabTimerPage.Size = new Size(886, 813);
+        tabTimerPage.Padding = new System.Windows.Forms.Padding(3);
         tabTimerPage.TabIndex = 1;
         tabTimerPage.UseVisualStyleBackColor = true;
 
         // tabPomodoroPage
         tabPomodoroPage.Location = new Point(4, 37);
         tabPomodoroPage.Name = "tabPomodoroPage";
-        tabPomodoroPage.Size = new Size(886, 813);
+        tabPomodoroPage.Padding = new System.Windows.Forms.Padding(3);
         tabPomodoroPage.TabIndex = 2;
         tabPomodoroPage.UseVisualStyleBackColor = true;
 
         // tabSettingsPage
         tabSettingsPage.Location = new Point(4, 37);
         tabSettingsPage.Name = "tabSettingsPage";
-        tabSettingsPage.Size = new Size(886, 837);
+        tabSettingsPage.Padding = new System.Windows.Forms.Padding(3);
         tabSettingsPage.TabIndex = 3;
         tabSettingsPage.UseVisualStyleBackColor = true;
 
         // MainForm
         AutoScaleDimensions = new SizeF(13F, 28F);
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(894, 950);
+        BackColor = DiabloTwoMFTimer.UI.Theme.AppTheme.BackColor;
+        ClientSize = new System.Drawing.Size(UISizeConstants.ClientWidth, UISizeConstants.ClientHeightWithoutLoot);
         Controls.Add(tabControl);
         Margin = new Padding(6);
         Name = "MainForm";

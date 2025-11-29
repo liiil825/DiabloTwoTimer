@@ -58,7 +58,8 @@ static class Program
 
     private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
     {
-        LogAndShowError("domain_error_log.txt", e.ExceptionObject.ToString(), "发生未处理的异常");
+        string exceptionContent = e.ExceptionObject?.ToString() ?? "未知异常（ExceptionObject 为 null）";
+        LogAndShowError("domain_error_log.txt", exceptionContent, "发生未处理的异常");
     }
 
     private static void HandleFatalException(Exception ex)

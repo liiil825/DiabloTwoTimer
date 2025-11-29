@@ -11,6 +11,8 @@ namespace DiabloTwoMFTimer.UI.Timer
 {
     partial class TimerControl
     {
+        private TableLayoutPanel mainLayout;
+        private FlowLayoutPanel topPanel; // 顶部按钮和状态
         // 组件引用
         private StatisticsControl statisticsControl;
         private HistoryControl historyControl;
@@ -28,6 +30,8 @@ namespace DiabloTwoMFTimer.UI.Timer
         {
             System.ComponentModel.ComponentResourceManager resources =
                 new System.ComponentModel.ComponentResourceManager(typeof(TimerControl));
+            mainLayout = new TableLayoutPanel();
+            topPanel = new FlowLayoutPanel();
             btnStatusIndicator = new Label();
             lblTimeDisplay = new Label();
             statisticsControl = new StatisticsControl();

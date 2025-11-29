@@ -2,8 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using DiabloTwoMFTimer.Models;
 using DiabloTwoMFTimer.Services;
+using DiabloTwoMFTimer.Models;
 using YamlDotNet.Serialization;
 
 namespace DiabloTwoMFTimer.Utils;

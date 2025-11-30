@@ -24,7 +24,12 @@ public class TimerService : ITimerService
     // 记录暂停前的状态，用于番茄钟休息后恢复
     private TimerStatus _previousStatusBeforePause = TimerStatus.Stopped;
 
-    public TimerService(IProfileService profileService, ITimerHistoryService historyService, IAppSettings settings, ISceneService sceneService)
+    public TimerService(
+        IProfileService profileService,
+        ITimerHistoryService historyService,
+        IAppSettings settings,
+        ISceneService sceneService
+    )
     {
         _profileService = profileService;
         _historyService = historyService;
@@ -87,7 +92,8 @@ public class TimerService : ITimerService
 
     public void CompleteRun(bool autoStartNext = false)
     {
-        if (IsStopped) return;
+        if (IsStopped)
+            return;
 
         if (_pauseStartTime != DateTime.MinValue)
         {
@@ -110,10 +116,12 @@ public class TimerService : ITimerService
 
         if (autoStartNext)
         {
-            System.Threading.Tasks.Task.Delay(100).ContinueWith(_ =>
-            {
-                Start();
-            });
+            System
+                .Threading.Tasks.Task.Delay(100)
+                .ContinueWith(_ =>
+                {
+                    Start();
+                });
         }
     }
 
@@ -127,13 +135,16 @@ public class TimerService : ITimerService
 
     public void TogglePause()
     {
-        if (IsRunning) Pause();
-        else if (IsPaused) Resume();
+        if (IsRunning)
+            Pause();
+        else if (IsPaused)
+            Resume();
     }
 
     public void Pause()
     {
-        if (!IsRunning) return;
+        if (!IsRunning)
+            return;
 
         _previousStatusBeforePause = _status;
         _status = TimerStatus.Paused;
@@ -150,7 +161,8 @@ public class TimerService : ITimerService
 
     public void Resume()
     {
-        if (!IsPaused) return;
+        if (!IsPaused)
+            return;
 
         _status = TimerStatus.Running;
         _pauseStartTime = DateTime.Now;
@@ -192,8 +204,10 @@ public class TimerService : ITimerService
 
     public TimeSpan GetElapsedTime()
     {
-        if (_startTime == DateTime.MinValue) return TimeSpan.Zero;
-        if (_pauseStartTime == DateTime.MinValue) return _pausedDuration;
+        if (_startTime == DateTime.MinValue)
+            return TimeSpan.Zero;
+        if (_pauseStartTime == DateTime.MinValue)
+            return _pausedDuration;
 
         TimeSpan elapsed = DateTime.Now - _pauseStartTime + _pausedDuration;
         return elapsed > TimeSpan.Zero ? elapsed : TimeSpan.Zero;
@@ -202,8 +216,13 @@ public class TimerService : ITimerService
     public string GetFormattedTime()
     {
         var elapsed = GetElapsedTime();
-        return string.Format("{0:00}:{1:00}:{2:00}:{3}",
-            elapsed.Hours, elapsed.Minutes, elapsed.Seconds, (int)(elapsed.Milliseconds / 100));
+        return string.Format(
+            "{0:00}:{1:00}:{2:00}:{3}",
+            elapsed.Hours,
+            elapsed.Minutes,
+            elapsed.Seconds,
+            (int)(elapsed.Milliseconds / 100)
+        );
     }
 
     public void HandleApplicationClosing()
@@ -254,13 +273,15 @@ public class TimerService : ITimerService
         var currentProfile = _profileService.CurrentProfile;
         string currentScene = _profileService.CurrentScene;
 
-        if (currentProfile == null || string.IsNullOrEmpty(currentScene)) return;
+        if (currentProfile == null || string.IsNullOrEmpty(currentScene))
+            return;
 
         int actValue = _sceneService.GetSceneActValue(currentScene);
         string pureEnglishSceneName = _sceneService.GetEnglishSceneName(currentScene);
         var difficulty = _profileService.CurrentDifficulty;
 
-        if (string.IsNullOrEmpty(pureEnglishSceneName)) pureEnglishSceneName = "UnknownScene";
+        if (string.IsNullOrEmpty(pureEnglishSceneName))
+            pureEnglishSceneName = "UnknownScene";
 
         // 1. 先更新 Profile 的状态属性
         currentProfile.LastRunScene = pureEnglishSceneName;
@@ -304,14 +325,16 @@ public class TimerService : ITimerService
         var currentProfile = _profileService.CurrentProfile;
         string currentScene = _profileService.CurrentScene;
 
-        if (currentProfile == null || string.IsNullOrEmpty(currentScene)) return;
+        if (currentProfile == null || string.IsNullOrEmpty(currentScene))
+            return;
 
         int actValue = _sceneService.GetSceneActValue(currentScene);
         var difficulty = _profileService.CurrentDifficulty;
         double durationSeconds = GetElapsedTime().TotalSeconds;
         string pureEnglishSceneName = _sceneService.GetEnglishSceneName(currentScene);
 
-        if (string.IsNullOrEmpty(pureEnglishSceneName)) pureEnglishSceneName = "UnknownScene";
+        if (string.IsNullOrEmpty(pureEnglishSceneName))
+            pureEnglishSceneName = "UnknownScene";
 
         // 1. 更新 Profile 状态
         currentProfile.LastRunScene = pureEnglishSceneName;
@@ -354,7 +377,8 @@ public class TimerService : ITimerService
     private void UpdateIncompleteRecord(DateTime? updateTime = null)
     {
         var record = FindIncompleteRecordForCurrentScene();
-        if (record == null) return;
+        if (record == null)
+            return;
 
         DateTime now = updateTime ?? DateTime.Now;
         record.DurationSeconds = GetElapsedTime().TotalSeconds;
@@ -373,10 +397,12 @@ public class TimerService : ITimerService
 
         string pureEnglishSceneName = _sceneService.GetEnglishSceneName(_profileService.CurrentScene);
 
-        return _profileService.CurrentProfile.Records
-            .Where(r => r.SceneName == pureEnglishSceneName
-                        && r.Difficulty == _profileService.CurrentDifficulty
-                        && !r.IsCompleted)
+        return _profileService
+            .CurrentProfile.Records.Where(r =>
+                r.SceneName == pureEnglishSceneName
+                && r.Difficulty == _profileService.CurrentDifficulty
+                && !r.IsCompleted
+            )
             .OrderByDescending(r => r.StartTime)
             .FirstOrDefault();
     }
@@ -385,7 +411,8 @@ public class TimerService : ITimerService
     {
         Reset();
         var record = FindIncompleteRecordForCurrentScene();
-        if (record == null) return;
+        if (record == null)
+            return;
 
         _status = TimerStatus.Paused;
         _startTime = record.StartTime;
@@ -402,13 +429,15 @@ public class TimerService : ITimerService
     private void OnProfileChanged(CharacterProfile? profile)
     {
         Reset();
-        if (profile != null) RestoreIncompleteRecord();
+        if (profile != null)
+            RestoreIncompleteRecord();
     }
 
     private void OnSceneChanged(string? scene)
     {
         Reset();
-        if (scene != null) RestoreIncompleteRecord();
+        if (scene != null)
+            RestoreIncompleteRecord();
     }
 
     private void OnDifficultyChanged(GameDifficulty difficulty)
@@ -425,10 +454,12 @@ public class TimerService : ITimerService
             string sceneName = _profileService.CurrentScene ?? "";
             int runCount = _historyService.RunCount + 1;
 
-            if (string.IsNullOrEmpty(characterName) || string.IsNullOrEmpty(sceneName)) return;
+            if (string.IsNullOrEmpty(characterName) || string.IsNullOrEmpty(sceneName))
+                return;
 
             string sceneShortName = _sceneService.GetSceneShortName(sceneName, characterName);
-            if (string.IsNullOrEmpty(sceneShortName)) sceneShortName = "UnknownScene";
+            if (string.IsNullOrEmpty(sceneShortName))
+                sceneShortName = "UnknownScene";
 
             string roomName = $"{characterName}{sceneShortName}{runCount}";
             Clipboard.SetText(roomName);

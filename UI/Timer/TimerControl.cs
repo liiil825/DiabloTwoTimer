@@ -116,8 +116,6 @@ public partial class TimerControl : UserControl
             lootRecordsControl.Visible = _appSettings.TimerShowLootDrops;
             bool isVisible = lootRecordsControl.Visible;
             SetLootRecordsVisible(isVisible);
-
-
         }
     }
 
@@ -197,7 +195,6 @@ public partial class TimerControl : UserControl
         LanguageManager.OnLanguageChanged -= LanguageManager_OnLanguageChanged;
     }
 
-
     private void OnTimeUpdated(string timeString)
     {
         // 直接针对具体的 label 调用 SafeInvoke
@@ -260,6 +257,7 @@ public partial class TimerControl : UserControl
             lootRecordsControl.UpdateLootRecords(_profileService.CurrentProfile, scene);
         }
     }
+
     private void LoadProfileHistoryData()
     {
         // ... 原有日志代码 ...
@@ -461,7 +459,8 @@ public partial class TimerControl : UserControl
     /// <param name="isVisible">是否可见</param>
     public void SetLootRecordsVisible(bool isVisible)
     {
-        if (lootRecordsControl == null) return;
+        if (lootRecordsControl == null)
+            return;
 
         lootRecordsControl.Visible = isVisible;
         // 更新按钮文本
@@ -498,12 +497,10 @@ public partial class TimerControl : UserControl
             }
         }
 
-
         // 2. 动态调整 TableLayoutPanel 的行高
         // 索引：3=History, 5=Loot
         if (isVisible)
         {
-            // 显示掉落时：历史和掉落各分 50% 空间
             // 注意：因为窗体变高了，所以即使是 50% 也足够显示内容
             mainLayout.RowStyles[5] = new RowStyle(SizeType.Percent, 80F);
         }
@@ -511,6 +508,13 @@ public partial class TimerControl : UserControl
         {
             // 隐藏掉落时：历史占满剩余空间 (100%)，掉落高度强行设为 0
             mainLayout.RowStyles[5] = new RowStyle(SizeType.Absolute, 0F);
+        }
+        if (isVisible != _appSettings.TimerShowLootDrops)
+        {
+            _appSettings.TimerShowLootDrops = isVisible;
+            _appSettings.Save();
+            // 发送消息通知其他组件更新
+            _messenger.Publish(new TimerShowLootDropsChangedMessage());
         }
     }
 

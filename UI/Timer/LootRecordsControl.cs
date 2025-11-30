@@ -34,14 +34,21 @@ public partial class LootRecordsControl : UserControl
 
     private void GridLoot_CellValueNeeded(object? sender, DataGridViewCellValueEventArgs e)
     {
-        if (_displayRecords == null || e.RowIndex >= _displayRecords.Count) return;
+        if (_displayRecords == null || e.RowIndex >= _displayRecords.Count)
+            return;
 
         var record = _displayRecords[e.RowIndex];
         switch (e.ColumnIndex)
         {
-            case 0: e.Value = record.RunCount.ToString(); break;
-            case 1: e.Value = record.Name; break;
-            case 2: e.Value = record.DropTime.ToString("MM-dd HH:mm"); break;
+            case 0:
+                e.Value = record.RunCount.ToString();
+                break;
+            case 1:
+                e.Value = record.Name;
+                break;
+            case 2:
+                e.Value = record.DropTime.ToString("MM-dd HH:mm");
+                break;
         }
     }
 
@@ -86,7 +93,8 @@ public partial class LootRecordsControl : UserControl
             return false;
 
         int visualIndex = gridLoot.SelectedRows[0].Index;
-        if (visualIndex < 0 || visualIndex >= _displayRecords.Count) return false;
+        if (visualIndex < 0 || visualIndex >= _displayRecords.Count)
+            return false;
 
         var recordToDelete = _displayRecords[visualIndex];
         bool removed = _currentProfile.LootRecords.Remove(recordToDelete);

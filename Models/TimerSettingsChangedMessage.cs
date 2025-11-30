@@ -14,7 +14,8 @@ public class TimerSettingsChangedMessage
         bool showLootDrops,
         bool syncStartPomodoro,
         bool syncPausePomodoro,
-        bool generateRoomName)
+        bool generateRoomName
+    )
     {
         ShowPomodoro = showPomodoro;
         ShowLootDrops = showLootDrops;

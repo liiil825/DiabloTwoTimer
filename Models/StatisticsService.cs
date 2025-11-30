@@ -2,6 +2,7 @@
 using System;
 
 namespace DiabloTwoMFTimer.Models;
+
 public class SceneStatDto
 {
     public string SceneName { get; set; } = string.Empty;

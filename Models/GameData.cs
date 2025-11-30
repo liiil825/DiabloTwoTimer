@@ -41,6 +41,7 @@ public class FarmingScene
 
     [YamlMember(Alias = "shortZhCN")]
     public string ShortZhCN { get; set; } = string.Empty;
+
     // 根据当前语言获取场景名称
     public string GetSceneName(string language)
     {
@@ -61,4 +62,3 @@ public class FarmingSpotsData
     [YamlMember(Alias = "farmingSpots", ApplyNamingConventions = false)]
     public List<FarmingScene> FarmingSpots { get; set; } = [];
 }
-

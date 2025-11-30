@@ -169,12 +169,7 @@ public partial class ProfileManager : UserControl
         // 尝试加载上次使用的难度
         if (cmbDifficulty != null)
         {
-            if (
-                Enum.TryParse<DiabloTwoMFTimer.Models.GameDifficulty>(
-                    lastRunDifficulty.ToString(),
-                    out var difficulty
-                )
-            )
+            if (Enum.TryParse<DiabloTwoMFTimer.Models.GameDifficulty>(lastRunDifficulty.ToString(), out var difficulty))
             {
                 // 根据难度值设置下拉框索引
                 switch (difficulty)
@@ -324,11 +319,7 @@ public partial class ProfileManager : UserControl
         {
             string className = LanguageManager.GetLocalizedClassName(currentProfile.Class);
             if (lblCurrentProfile != null)
-                lblCurrentProfile.Text = LanguageManager.GetString(
-                    "CurrentCharacter",
-                    currentProfile.Name,
-                    className
-                );
+                lblCurrentProfile.Text = LanguageManager.GetString("CurrentCharacter", currentProfile.Name, className);
         }
         else
         {

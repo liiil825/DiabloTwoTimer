@@ -13,7 +13,8 @@ namespace DiabloTwoMFTimer.Services;
 public class SceneService : ISceneService
 {
     private readonly IAppSettings _appSettings;
-    private string FarmingSpotsPath => Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "FarmingSpots.yaml");
+    private string FarmingSpotsPath =>
+        Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Resources", "FarmingSpots.yaml");
     private List<FarmingScene> _cachedFarmingSpots = [];
 
     // 构造函数注入
@@ -33,9 +34,7 @@ public class SceneService : ISceneService
             if (File.Exists(path))
             {
                 var yaml = File.ReadAllText(path);
-                var deserializer = new DeserializerBuilder()
-                    .IgnoreUnmatchedProperties()
-                    .Build();
+                var deserializer = new DeserializerBuilder().IgnoreUnmatchedProperties().Build();
                 var data = deserializer.Deserialize<FarmingSpotsData>(yaml);
                 _cachedFarmingSpots = data?.FarmingSpots ?? [];
             }
@@ -84,7 +83,10 @@ public class SceneService : ISceneService
     public string GetSceneDisplayName(FarmingScene scene)
     {
         string actText = $"ACT {scene.ACT}";
-        LogManager.WriteDebugLog("SceneService", $"获取场景显示名称: {actText}: {scene.GetSceneName(_appSettings.Language)}");
+        LogManager.WriteDebugLog(
+            "SceneService",
+            $"获取场景显示名称: {actText}: {scene.GetSceneName(_appSettings.Language)}"
+        );
         // 使用注入的 AppSettings 获取语言
         string name = scene.GetSceneName(_appSettings.Language);
         return $"{actText}: {name}";
@@ -141,6 +143,7 @@ public class SceneService : ISceneService
             _ => GameDifficulty.Hell, // 默认返回地狱难度
         };
     }
+
     /// <summary>
     /// 根据场景名称获取对应的英文名称
     /// </summary>
@@ -256,11 +259,7 @@ public class SceneService : ISceneService
         {
             return !string.IsNullOrEmpty(scene.ShortEnName)
                 ? scene.ShortEnName
-                : (
-                    !string.IsNullOrEmpty(scene.ShortZhCN)
-                        ? scene.ShortZhCN
-                        : pureSceneName
-                );
+                : (!string.IsNullOrEmpty(scene.ShortZhCN) ? scene.ShortZhCN : pureSceneName);
         }
     }
 

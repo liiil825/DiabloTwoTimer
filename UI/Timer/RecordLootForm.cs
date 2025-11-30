@@ -24,7 +24,11 @@ public partial class RecordLootForm : BaseForm
     }
 
     // 2. 依赖注入构造函数 (运行时专用)
-    public RecordLootForm(IProfileService profileService, ITimerHistoryService timerHistoryService, ISceneService sceneService)
+    public RecordLootForm(
+        IProfileService profileService,
+        ITimerHistoryService timerHistoryService,
+        ISceneService sceneService
+    )
         : this()
     {
         _profileService = profileService;

@@ -21,7 +21,10 @@ namespace DiabloTwoMFTimer.UI.Components
         public PomodoroStatusDisplay()
         {
             this.SetStyle(ControlStyles.SupportsTransparentBackColor, true);
-            this.SetStyle(ControlStyles.ResizeRedraw | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint, true);
+            this.SetStyle(
+                ControlStyles.ResizeRedraw | ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint,
+                true
+            );
             this.DoubleBuffered = true;
 
             // 2. 设置默认背景色为透明
@@ -108,7 +111,8 @@ namespace DiabloTwoMFTimer.UI.Components
             int smallCount = _totalCompletedCount % 4;
             int totalIconsToDraw = bigCount + smallCount;
 
-            if (totalIconsToDraw == 0) return;
+            if (totalIconsToDraw == 0)
+                return;
 
             // 1. 计算内容总宽度
             // 总宽度 = (图标数量 * 图标大小) + ((图标数量 - 1) * 间距)

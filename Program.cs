@@ -1,9 +1,9 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using Microsoft.Extensions.DependencyInjection;
 using DiabloTwoMFTimer.Services;
 using DiabloTwoMFTimer.UI;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DiabloTwoMFTimer;
 
@@ -40,7 +40,7 @@ static class Program
             // 从而自动创建并注入 ProfileManager, TimerControl, MainServices 等所有依赖
             var mainForm = _serviceProvider.GetRequiredService<MainForm>();
 
-            // 注意：MainServices 的初始化逻辑 (InitializeApplication) 
+            // 注意：MainServices 的初始化逻辑 (InitializeApplication)
             // 现在在 MainForm 的 Shown 事件中触发，因为需要等待窗口句柄创建完成。
 
             Application.Run(mainForm);
@@ -83,12 +83,7 @@ static class Program
         catch
         {
             // 如果连日志都写不进去，就只弹窗
-            MessageBox.Show(
-                $"{title}。\n\n{content}",
-                "应用程序严重错误",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error
-            );
+            MessageBox.Show($"{title}。\n\n{content}", "应用程序严重错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

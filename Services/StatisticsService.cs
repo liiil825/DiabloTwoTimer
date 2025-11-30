@@ -8,19 +8,17 @@ using DiabloTwoMFTimer.Utils;
 
 namespace DiabloTwoMFTimer.Services;
 
-public class StatisticsService(IProfileService profileService, IAppSettings appSettings, ISceneService sceneService) : IStatisticsService
+public class StatisticsService(IProfileService profileService, IAppSettings appSettings, ISceneService sceneService)
+    : IStatisticsService
 {
     private readonly IProfileService _profileService = profileService;
     private readonly IAppSettings _appSettings = appSettings;
     private readonly ISceneService _sceneService = sceneService;
+
     /// <summary>
     /// 获取指定时间段内的场景统计数据
     /// </summary>
-    public List<SceneStatDto> GetSceneStatistics(
-        DateTime startTime,
-        DateTime endTime,
-        bool sortByCount = true
-    )
+    public List<SceneStatDto> GetSceneStatistics(DateTime startTime, DateTime endTime, bool sortByCount = true)
     {
         var profile = _profileService.CurrentProfile;
         if (profile == null || profile.Records == null)
@@ -97,9 +95,7 @@ public class StatisticsService(IProfileService profileService, IAppSettings appS
         if (profile == null)
             return LanguageManager.GetString("NoData");
 
-        var records = profile
-            .Records.Where(r => r.IsCompleted && r.StartTime >= start && r.StartTime <= end)
-            .ToList();
+        var records = profile.Records.Where(r => r.IsCompleted && r.StartTime >= start && r.StartTime <= end).ToList();
         if (records.Count == 0)
             return LanguageManager.GetString("NoData");
 
@@ -113,10 +109,7 @@ public class StatisticsService(IProfileService profileService, IAppSettings appS
     /// <summary>
     /// 获取详细的统计摘要（多行文本）
     /// </summary>
-    public string GetDetailedSummary(
-        DateTime start,
-        DateTime end
-    )
+    public string GetDetailedSummary(DateTime start, DateTime end)
     {
         if (_profileService.CurrentProfile == null)
             return LanguageManager.GetString("NoData");
@@ -172,9 +165,7 @@ public class StatisticsService(IProfileService profileService, IAppSettings appS
             {
                 // 格式：崔凡客(25): 28号符文
                 string localizedSceneName = _sceneService.GetLocalizedShortSceneName(l.SceneName);
-                sb.AppendLine(
-                    $"{localizedSceneName} ({LanguageManager.GetString("Round")} {l.RunCount}): {l.Name}"
-                );
+                sb.AppendLine($"{localizedSceneName} ({LanguageManager.GetString("Round")} {l.RunCount}): {l.Name}");
             }
         }
         // 如果没有掉落，就不显示掉落栏位，或者显示"无"

@@ -1,8 +1,8 @@
 using System;
-using Microsoft.Extensions.DependencyInjection;
+using DiabloTwoMFTimer.Interfaces;
 using DiabloTwoMFTimer.Services;
 using DiabloTwoMFTimer.UI;
-using DiabloTwoMFTimer.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DiabloTwoMFTimer;
 

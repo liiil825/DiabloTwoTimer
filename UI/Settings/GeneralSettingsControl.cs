@@ -16,57 +16,57 @@ public partial class GeneralSettingsControl : UserControl
     public void LoadSettings(IAppSettings settings)
     {
         this.SafeInvoke(() =>
+        {
+            // 1. 设置“总在最前”
+            if (alwaysOnTopCheckBox != null)
             {
-                // 1. 设置“总在最前”
-                if (alwaysOnTopCheckBox != null)
-                {
-                    alwaysOnTopCheckBox.Checked = settings.AlwaysOnTop;
-                }
+                alwaysOnTopCheckBox.Checked = settings.AlwaysOnTop;
+            }
 
-                // 2. 设置语言 (使用 SettingsManager 的转换逻辑)
-                if (groupBoxLanguage != null)
+            // 2. 设置语言 (使用 SettingsManager 的转换逻辑)
+            if (groupBoxLanguage != null)
+            {
+                var langOption = AppSettings.StringToLanguage(settings.Language);
+                if (langOption == SettingsControl.LanguageOption.English)
                 {
-                    var langOption = AppSettings.StringToLanguage(settings.Language);
-                    if (langOption == SettingsControl.LanguageOption.English)
-                    {
-                        englishRadioButton!.Checked = true;
-                    }
-                    else
-                    {
-                        chineseRadioButton!.Checked = true;
-                    }
+                    englishRadioButton!.Checked = true;
                 }
+                else
+                {
+                    chineseRadioButton!.Checked = true;
+                }
+            }
 
-                // 3. 设置窗口位置 (使用 SettingsManager 的转换逻辑)
-                if (groupBoxPosition != null)
+            // 3. 设置窗口位置 (使用 SettingsManager 的转换逻辑)
+            if (groupBoxPosition != null)
+            {
+                var position = AppSettings.StringToWindowPosition(settings.WindowPosition);
+                switch (position)
                 {
-                    var position = AppSettings.StringToWindowPosition(settings.WindowPosition);
-                    switch (position)
-                    {
-                        case SettingsControl.WindowPosition.TopLeft:
-                            radioTopLeft!.Checked = true;
-                            break;
-                        case SettingsControl.WindowPosition.TopCenter:
-                            radioTopCenter!.Checked = true;
-                            break;
-                        case SettingsControl.WindowPosition.TopRight:
-                            radioTopRight!.Checked = true;
-                            break;
-                        case SettingsControl.WindowPosition.BottomLeft:
-                            radioBottomLeft!.Checked = true;
-                            break;
-                        case SettingsControl.WindowPosition.BottomCenter:
-                            radioBottomCenter!.Checked = true;
-                            break;
-                        case SettingsControl.WindowPosition.BottomRight:
-                            radioBottomRight!.Checked = true;
-                            break;
-                        default:
-                            radioTopLeft!.Checked = true;
-                            break;
-                    }
+                    case SettingsControl.WindowPosition.TopLeft:
+                        radioTopLeft!.Checked = true;
+                        break;
+                    case SettingsControl.WindowPosition.TopCenter:
+                        radioTopCenter!.Checked = true;
+                        break;
+                    case SettingsControl.WindowPosition.TopRight:
+                        radioTopRight!.Checked = true;
+                        break;
+                    case SettingsControl.WindowPosition.BottomLeft:
+                        radioBottomLeft!.Checked = true;
+                        break;
+                    case SettingsControl.WindowPosition.BottomCenter:
+                        radioBottomCenter!.Checked = true;
+                        break;
+                    case SettingsControl.WindowPosition.BottomRight:
+                        radioBottomRight!.Checked = true;
+                        break;
+                    default:
+                        radioTopLeft!.Checked = true;
+                        break;
                 }
-            });
+            }
+        });
     }
 
     public void RefreshUI()

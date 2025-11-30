@@ -103,14 +103,17 @@ public class PomodoroTimeDisplayLabel : Label
 
         UpdateColor();
     }
+
     private void UpdateColor()
     {
-        if (_timerService == null) return;
+        if (_timerService == null)
+            return;
 
         // 之前是 Black，现在深色模式下要改为 TextColor (白色)
-        Color targetColor = _timerService.CurrentState == PomodoroTimerState.Work
-            ? AppTheme.TextColor // 正常工作：白色
-            : Color.LightGreen;  // 休息：浅绿色
+        Color targetColor =
+            _timerService.CurrentState == PomodoroTimerState.Work
+                ? AppTheme.TextColor // 正常工作：白色
+                : Color.LightGreen; // 休息：浅绿色
 
         if (this.ForeColor != targetColor)
         {

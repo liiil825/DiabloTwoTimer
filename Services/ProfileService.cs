@@ -136,7 +136,7 @@ public class ProfileService : IProfileService
                 Name = characterName,
                 Class = characterClass,
                 Records = [],
-                LootRecords = []
+                LootRecords = [],
             };
 
             // 4. 保存 (使用 Repository)
@@ -262,9 +262,7 @@ public class ProfileService : IProfileService
     /// </summary>
     public FarmingScene? GetSceneByDisplayName(string displayName)
     {
-        return FarmingScenes.FirstOrDefault(scene =>
-            _sceneService.GetSceneDisplayName(scene) == displayName
-        );
+        return FarmingScenes.FirstOrDefault(scene => _sceneService.GetSceneDisplayName(scene) == displayName);
     }
 
     /// <summary>
@@ -305,7 +303,8 @@ public class ProfileService : IProfileService
     /// </summary>
     public void AddRecord(MFRecord record)
     {
-        if (CurrentProfile == null) return;
+        if (CurrentProfile == null)
+            return;
 
         // 1. 修改内存数据
         CurrentProfile.Records.Add(record);
@@ -322,15 +321,16 @@ public class ProfileService : IProfileService
     /// </summary>
     public void UpdateRecord(MFRecord record)
     {
-        if (CurrentProfile == null) return;
+        if (CurrentProfile == null)
+            return;
 
         // 逻辑来自原来的 DataHelper.UpdateMFRecord
         // 查找内存中对应的记录（通常是同一个引用，但在某些情况下为了安全可以重新查找）
         var existingRecord = CurrentProfile.Records.FirstOrDefault(r =>
-            r.StartTime == record.StartTime &&
-            r.SceneName == record.SceneName &&
-            r.Difficulty == record.Difficulty &&
-            r.IsCompleted == false
+            r.StartTime == record.StartTime
+            && r.SceneName == record.SceneName
+            && r.Difficulty == record.Difficulty
+            && r.IsCompleted == false
         );
 
         if (existingRecord != null)
@@ -344,7 +344,10 @@ public class ProfileService : IProfileService
             // 保存更改
             _repository.Save(CurrentProfile);
 
-            LogManager.WriteDebugLog("ProfileService", $"已更新记录: 场景={record.SceneName}, 持续时间={record.DurationSeconds}");
+            LogManager.WriteDebugLog(
+                "ProfileService",
+                $"已更新记录: 场景={record.SceneName}, 持续时间={record.DurationSeconds}"
+            );
         }
         else
         {
@@ -399,8 +402,10 @@ public class ProfileService : IProfileService
             CurrentScene = _appSettings.LastRunScene;
         }
 
-        if (!string.IsNullOrEmpty(_appSettings.LastUsedDifficulty)
-            && Enum.TryParse<GameDifficulty>(_appSettings.LastUsedDifficulty, out var difficulty))
+        if (
+            !string.IsNullOrEmpty(_appSettings.LastUsedDifficulty)
+            && Enum.TryParse<GameDifficulty>(_appSettings.LastUsedDifficulty, out var difficulty)
+        )
         {
             CurrentDifficulty = difficulty;
         }

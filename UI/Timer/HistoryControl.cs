@@ -38,7 +38,8 @@ public partial class HistoryControl : UserControl
     // Initialize, GridRunHistory_CellValueNeeded 等方法保持不变 ...
     public void Initialize(ITimerHistoryService historyService, IProfileService profileService)
     {
-        if (_isInitialized || historyService == null) return;
+        if (_isInitialized || historyService == null)
+            return;
         _historyService = historyService;
         _profileService = profileService;
         _isInitialized = true;
@@ -49,23 +50,33 @@ public partial class HistoryControl : UserControl
 
     private void GridRunHistory_CellValueNeeded(object? sender, DataGridViewCellValueEventArgs e)
     {
-        if (_historyService == null || _historyService.RunHistory == null) return;
+        if (_historyService == null || _historyService.RunHistory == null)
+            return;
         if (e.RowIndex >= 0 && e.RowIndex < _historyService.RunHistory.Count)
         {
-            if (e.ColumnIndex == 0) e.Value = (e.RowIndex + 1).ToString();
-            else if (e.ColumnIndex == 1) e.Value = FormatTime(_historyService.RunHistory[e.RowIndex]);
+            if (e.ColumnIndex == 0)
+                e.Value = (e.RowIndex + 1).ToString();
+            else if (e.ColumnIndex == 1)
+                e.Value = FormatTime(_historyService.RunHistory[e.RowIndex]);
         }
     }
 
     // ... LoadProfileHistoryData, RefreshGridRowCount, DeleteSelectedRecordAsync 保持不变 ...
-    public bool LoadProfileHistoryData(CharacterProfile? profile, string scene, string characterName, GameDifficulty difficulty)
+    public bool LoadProfileHistoryData(
+        CharacterProfile? profile,
+        string scene,
+        string characterName,
+        GameDifficulty difficulty
+    )
     {
-        if (_historyService == null) return false;
+        if (_historyService == null)
+            return false;
         _currentProfile = profile;
         _currentScene = scene;
         _currentDifficulty = difficulty;
         bool result = _historyService.LoadProfileHistoryData(profile, scene, characterName, difficulty);
-        if (result) RefreshGridRowCount();
+        if (result)
+            RefreshGridRowCount();
         return result;
     }
 
@@ -119,7 +130,12 @@ public partial class HistoryControl : UserControl
         if (_historyService == null || gridRunHistory.SelectedRows.Count == 0 || _currentProfile == null)
             return false;
         int index = gridRunHistory.SelectedRows[0].Index;
-        bool success = _historyService.DeleteHistoryRecordByIndex(_currentProfile, _currentScene!, _currentDifficulty, index);
+        bool success = _historyService.DeleteHistoryRecordByIndex(
+            _currentProfile,
+            _currentScene!,
+            _currentDifficulty,
+            index
+        );
         if (success)
         {
             _profileService.SaveCurrentProfile();
@@ -131,7 +147,8 @@ public partial class HistoryControl : UserControl
     // 响应 Service 数据变更
     private void OnHistoryDataChanged(object? sender, HistoryChangedEventArgs e)
     {
-        if (e == null) return;
+        if (e == null)
+            return;
         switch (e.ChangeType)
         {
             // 注意：这里我们不再在 Add 事件里处理 SelectLastRow，
@@ -145,15 +162,41 @@ public partial class HistoryControl : UserControl
         }
     }
 
-    private string FormatTime(TimeSpan time) => string.Format("{0:00}:{1:00}:{2:00}.{3}", time.Hours, time.Minutes, time.Seconds, (int)(time.Milliseconds / 100));
-    private void UpdateColumnHeaderLanguage() { if (gridRunHistory.Columns.Count > 1) gridRunHistory.Columns[1].HeaderText = Utils.LanguageManager.GetString("Time", "Time"); }
-    private void LanguageManager_OnLanguageChanged(object? sender, EventArgs e) { UpdateColumnHeaderLanguage(); gridRunHistory.Invalidate(); }
+    private string FormatTime(TimeSpan time) =>
+        string.Format(
+            "{0:00}:{1:00}:{2:00}.{3}",
+            time.Hours,
+            time.Minutes,
+            time.Seconds,
+            (int)(time.Milliseconds / 100)
+        );
+
+    private void UpdateColumnHeaderLanguage()
+    {
+        if (gridRunHistory.Columns.Count > 1)
+            gridRunHistory.Columns[1].HeaderText = Utils.LanguageManager.GetString("Time", "Time");
+    }
+
+    private void LanguageManager_OnLanguageChanged(object? sender, EventArgs e)
+    {
+        UpdateColumnHeaderLanguage();
+        gridRunHistory.Invalidate();
+    }
+
     public void AddRunRecord(TimeSpan runTime) => _historyService?.AddRunRecord(runTime);
+
     public void UpdateHistory(List<TimeSpan> runHistory) => _historyService?.UpdateHistory(runHistory);
+
     public void RefreshUI() => RefreshGridRowCount();
+
     protected override void Dispose(bool disposing)
     {
-        if (disposing) { LanguageManager.OnLanguageChanged -= LanguageManager_OnLanguageChanged; if (_historyService != null) _historyService.HistoryDataChanged -= OnHistoryDataChanged; }
+        if (disposing)
+        {
+            LanguageManager.OnLanguageChanged -= LanguageManager_OnLanguageChanged;
+            if (_historyService != null)
+                _historyService.HistoryDataChanged -= OnHistoryDataChanged;
+        }
         base.Dispose(disposing);
     }
 }

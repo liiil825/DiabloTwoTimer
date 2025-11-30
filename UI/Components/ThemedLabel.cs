@@ -1,5 +1,5 @@
-using System.Windows.Forms;
 using System.Drawing;
+using System.Windows.Forms;
 using DiabloTwoMFTimer.UI.Theme;
 
 namespace DiabloTwoMFTimer.UI.Components;
@@ -35,11 +35,11 @@ public class ThemedLabel : Label
 
     // 如果想保留 IsTitle 功能，改写属性：
     /*
-    public bool IsTitle 
-    { 
+    public bool IsTitle
+    {
         get => _isTitle;
-        set 
-        { 
+        set
+        {
             _isTitle = value;
             this.Font = value ? AppTheme.TitleFont : AppTheme.MainFont;
         }

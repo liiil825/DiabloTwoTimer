@@ -12,12 +12,14 @@ public class Messenger : IMessenger
     // 线程安全的字典，存储消息类型 -> 订阅者列表
     private readonly ConcurrentDictionary<Type, List<WeakSubscription>> _subscriptions = new();
 
-    public void Subscribe<TMessage>(Action<TMessage> action) where TMessage : class
+    public void Subscribe<TMessage>(Action<TMessage> action)
+        where TMessage : class
     {
         var messageType = typeof(TMessage);
         var subscription = new WeakSubscription(action);
 
-        _subscriptions.AddOrUpdate(messageType,
+        _subscriptions.AddOrUpdate(
+            messageType,
             // 如果不存在，创建新列表
             _ => new List<WeakSubscription> { subscription },
             // 如果存在，添加到现有列表
@@ -28,10 +30,12 @@ public class Messenger : IMessenger
                     list.Add(subscription);
                 }
                 return list;
-            });
+            }
+        );
     }
 
-    public void Unsubscribe<TMessage>(Action<TMessage> action) where TMessage : class
+    public void Unsubscribe<TMessage>(Action<TMessage> action)
+        where TMessage : class
     {
         var messageType = typeof(TMessage);
         if (_subscriptions.TryGetValue(messageType, out var list))
@@ -48,7 +52,8 @@ public class Messenger : IMessenger
         }
     }
 
-    public void Publish<TMessage>(TMessage message) where TMessage : class
+    public void Publish<TMessage>(TMessage message)
+        where TMessage : class
     {
         var messageType = typeof(TMessage);
         if (_subscriptions.TryGetValue(messageType, out var list))

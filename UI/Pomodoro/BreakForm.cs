@@ -225,26 +225,17 @@ public partial class BreakForm : Form
                     sessionStart = DateTime.Now.AddMinutes(-cycleMins - 10);
                 }
                 title = ">>> 本轮战况 <<<";
-                content = _statsService.GetDetailedSummary(
-                    sessionStart,
-                    DateTime.Now
-                );
+                content = _statsService.GetDetailedSummary(sessionStart, DateTime.Now);
                 break;
 
             case StatViewType.Today:
                 title = ">>> 今日战况 <<<";
-                content = _statsService.GetDetailedSummary(
-                    DateTime.Today,
-                    DateTime.Now
-                );
+                content = _statsService.GetDetailedSummary(DateTime.Today, DateTime.Now);
                 break;
 
             case StatViewType.Week:
                 title = ">>> 本周战况 <<<";
-                content = _statsService.GetDetailedSummary(
-                    _statsService.GetStartOfWeek(),
-                    DateTime.Now
-                );
+                content = _statsService.GetDetailedSummary(_statsService.GetStartOfWeek(), DateTime.Now);
                 break;
         }
 

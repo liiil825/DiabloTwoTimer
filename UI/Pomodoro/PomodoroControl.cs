@@ -74,6 +74,7 @@ public partial class PomodoroControl : UserControl
     {
         this.SafeInvoke(UpdateUI);
     }
+
     private void TimerService_PomodoroBreakStarted(object? sender, PomodoroBreakStartedEventArgs e)
     {
         this.SafeInvoke(() => ShowBreakForm(e.BreakType));
@@ -167,9 +168,7 @@ public partial class PomodoroControl : UserControl
 
             SaveSettings();
             _timerService.Reset();
-            Toast.Success(
-                LanguageManager.GetString("PomodoroSettingsSaved", "Pomodoro settings saved successfully")
-            );
+            Toast.Success(LanguageManager.GetString("PomodoroSettingsSaved", "Pomodoro settings saved successfully"));
         }
     }
 

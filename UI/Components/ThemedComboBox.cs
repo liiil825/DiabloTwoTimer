@@ -18,7 +18,8 @@ public class ThemedComboBox : ComboBox
 
     protected override void OnDrawItem(DrawItemEventArgs e)
     {
-        if (e.Index < 0) return;
+        if (e.Index < 0)
+            return;
 
         e.DrawBackground();
 
@@ -44,6 +45,6 @@ public class ThemedComboBox : ComboBox
         }
 
         // 不画虚线框
-        // e.DrawFocusRectangle(); 
+        // e.DrawFocusRectangle();
     }
 }

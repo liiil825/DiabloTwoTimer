@@ -8,6 +8,7 @@ public class MFRecord
 {
     [YamlMember(Alias = "sceneName")]
     public string SceneName { get; set; } = string.Empty;
+
     [YamlMember(Alias = "difficulty")]
     public GameDifficulty Difficulty { get; set; } = GameDifficulty.Normal;
 
@@ -22,6 +23,7 @@ public class MFRecord
 
     [YamlMember(Alias = "durationSeconds")]
     public double DurationSeconds { get; set; } = 0;
+
     [YamlIgnore]
     public bool IsCompleted => EndTime.HasValue;
 }

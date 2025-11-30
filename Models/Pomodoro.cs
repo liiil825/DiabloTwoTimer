@@ -27,7 +27,12 @@ public class PomodoroTimeSettings
 }
 
 // 番茄钟事件参数类
-public class PomodoroTimerStateChangedEventArgs(PomodoroTimerState state, PomodoroTimerState previousState, bool isRunning, TimeSpan timeLeft) : EventArgs
+public class PomodoroTimerStateChangedEventArgs(
+    PomodoroTimerState state,
+    PomodoroTimerState previousState,
+    bool isRunning,
+    TimeSpan timeLeft
+) : EventArgs
 {
     public PomodoroTimerState State { get; } = state;
     public PomodoroTimerState PreviousState { get; } = previousState;

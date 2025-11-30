@@ -42,7 +42,11 @@ public class ThemedButton : Button
     public int BorderRadius
     {
         get => _borderRadius;
-        set { _borderRadius = value; Invalidate(); }
+        set
+        {
+            _borderRadius = value;
+            Invalidate();
+        }
     }
 
     // --- 鼠标事件处理 (用于切换状态) ---
@@ -95,13 +99,13 @@ public class ThemedButton : Button
         {
             backColor = Color.FromArgb(30, 30, 30);
             borderColor = AppTheme.AccentColor; // 按下：金边
-            textColor = AppTheme.AccentColor;   // 按下：金字
+            textColor = AppTheme.AccentColor; // 按下：金字
         }
         else if (_isHovered)
         {
             backColor = Color.FromArgb(60, 60, 65); // 悬停：稍亮背景
             borderColor = AppTheme.AccentColor; // 悬停：金边
-            textColor = AppTheme.AccentColor;   // 悬停：金字
+            textColor = AppTheme.AccentColor; // 悬停：金字
         }
 
         // 2. 准备绘制区域
@@ -138,14 +142,16 @@ public class ThemedButton : Button
         int d = radius * 2; // 直径
 
         // 简单的防崩溃检查，防止圆角大于按钮尺寸
-        if (d > rect.Width) d = rect.Width;
-        if (d > rect.Height) d = rect.Height;
+        if (d > rect.Width)
+            d = rect.Width;
+        if (d > rect.Height)
+            d = rect.Height;
 
         // 顺时针添加四段圆弧
-        path.AddArc(rect.X, rect.Y, d, d, 180, 90);                   // 左上
-        path.AddArc(rect.Right - d, rect.Y, d, d, 270, 90);           // 右上
-        path.AddArc(rect.Right - d, rect.Bottom - d, d, d, 0, 90);    // 右下
-        path.AddArc(rect.X, rect.Bottom - d, d, d, 90, 90);           // 左下
+        path.AddArc(rect.X, rect.Y, d, d, 180, 90); // 左上
+        path.AddArc(rect.Right - d, rect.Y, d, d, 270, 90); // 右上
+        path.AddArc(rect.Right - d, rect.Bottom - d, d, d, 0, 90); // 右下
+        path.AddArc(rect.X, rect.Bottom - d, d, d, 90, 90); // 左下
         path.CloseFigure();
         return path;
     }

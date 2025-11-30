@@ -36,8 +36,8 @@ public class ThemedDataGridView : DataGridView
 
         DataGridViewCellStyle headerStyle = new DataGridViewCellStyle();
         headerStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-        headerStyle.BackColor = AppTheme.SurfaceColor;      // 表头深灰
-        headerStyle.ForeColor = AppTheme.TextSecondaryColor;// 表头文字灰白
+        headerStyle.BackColor = AppTheme.SurfaceColor; // 表头深灰
+        headerStyle.ForeColor = AppTheme.TextSecondaryColor; // 表头文字灰白
         headerStyle.SelectionBackColor = AppTheme.SurfaceColor; // 表头选中不变色
         headerStyle.SelectionForeColor = AppTheme.TextSecondaryColor;
         headerStyle.Font = new Font("微软雅黑", 9F, FontStyle.Bold);
@@ -49,10 +49,10 @@ public class ThemedDataGridView : DataGridView
         // 4. 单元格（数据行）样式
         DataGridViewCellStyle cellStyle = new DataGridViewCellStyle();
         cellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft;
-        cellStyle.BackColor = AppTheme.BackColor;           // 数据行深黑
-        cellStyle.ForeColor = AppTheme.TextColor;           // 数据文字亮白
-        cellStyle.SelectionBackColor = AppTheme.AccentColor;// 选中背景（暗金）
-        cellStyle.SelectionForeColor = Color.Black;         // 选中文字（黑色）
+        cellStyle.BackColor = AppTheme.BackColor; // 数据行深黑
+        cellStyle.ForeColor = AppTheme.TextColor; // 数据文字亮白
+        cellStyle.SelectionBackColor = AppTheme.AccentColor; // 选中背景（暗金）
+        cellStyle.SelectionForeColor = Color.Black; // 选中文字（黑色）
         cellStyle.Padding = new Padding(5, 0, 0, 0);
         this.DefaultCellStyle = cellStyle;
 

@@ -43,7 +43,20 @@ public partial class SettingsControl : UserControl
         _appSettings = appSettings;
         _messenger = messenger;
         InitializeData(_appSettings);
+        SubscribeMessages();
         this.BackColor = DiabloTwoMFTimer.UI.Theme.AppTheme.BackColor;
+    }
+
+    private void SubscribeMessages()
+    {
+        _messenger.Subscribe<TimerShowLootDropsChangedMessage>(OnTimerShowLootDropsChanged);
+    }
+
+    private void OnTimerShowLootDropsChanged(TimerShowLootDropsChangedMessage _)
+    {
+        LogManager.WriteDebugLog("OnTimerShowLootDropsChanged");
+        generalSettings.LoadSettings(_appSettings);
+        generalSettings.RefreshUI();
     }
 
     public void RefreshUI()
@@ -101,16 +114,17 @@ public partial class SettingsControl : UserControl
         Utils.Toast.Success(Utils.LanguageManager.GetString("SuccessSettingsChanged", "设置修改成功"));
 
         // LanguageChanged?.Invoke(this, new LanguageChangedEventArgs(generalSettings.SelectedLanguage));
-        string langCode = (generalSettings.SelectedLanguage == LanguageOption.Chinese)
-        ? "zh-CN" : "en-US";
+        string langCode = (generalSettings.SelectedLanguage == LanguageOption.Chinese) ? "zh-CN" : "en-US";
         _messenger.Publish(new LanguageChangedMessage(langCode));
-        _messenger.Publish(new TimerSettingsChangedMessage(
-            timerSettings.TimerShowPomodoro,
-            timerSettings.TimerShowLootDrops,
-            timerSettings.TimerSyncStartPomodoro,
-            timerSettings.TimerSyncPausePomodoro,
-            timerSettings.GenerateRoomName
-        ));
+        _messenger.Publish(
+            new TimerSettingsChangedMessage(
+                timerSettings.TimerShowPomodoro,
+                timerSettings.TimerShowLootDrops,
+                timerSettings.TimerSyncStartPomodoro,
+                timerSettings.TimerSyncPausePomodoro,
+                timerSettings.GenerateRoomName
+            )
+        );
         _messenger.Publish(new WindowPositionChangedMessage());
         _messenger.Publish(new AlwaysOnTopChangedMessage());
         _messenger.Publish(new HotkeysChangedMessage());

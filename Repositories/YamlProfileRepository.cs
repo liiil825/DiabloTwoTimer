@@ -38,9 +38,7 @@ public class YamlProfileRepository : IProfileRepository
         }
 
         // 3. 初始化序列化器
-        _serializer = new SerializerBuilder()
-            .WithNamingConvention(CamelCaseNamingConvention.Instance)
-            .Build();
+        _serializer = new SerializerBuilder().WithNamingConvention(CamelCaseNamingConvention.Instance).Build();
     }
 
     /// <summary>
@@ -48,7 +46,8 @@ public class YamlProfileRepository : IProfileRepository
     /// </summary>
     public CharacterProfile? GetByName(string name)
     {
-        if (string.IsNullOrWhiteSpace(name)) return null;
+        if (string.IsNullOrWhiteSpace(name))
+            return null;
 
         string safeFileName = GetSafeFileName(name);
         string filePath = Path.Combine(_profilesDirectory, $"{safeFileName}.yaml");
@@ -113,7 +112,8 @@ public class YamlProfileRepository : IProfileRepository
     /// </summary>
     public void Save(CharacterProfile profile)
     {
-        if (profile == null) throw new ArgumentNullException(nameof(profile));
+        if (profile == null)
+            throw new ArgumentNullException(nameof(profile));
 
         try
         {
@@ -152,7 +152,8 @@ public class YamlProfileRepository : IProfileRepository
     /// </summary>
     public void Delete(CharacterProfile profile)
     {
-        if (profile == null) return;
+        if (profile == null)
+            return;
 
         try
         {
@@ -187,7 +188,8 @@ public class YamlProfileRepository : IProfileRepository
             if (_profileCache.TryGetValue(filePath, out var cachedProfile))
                 return cachedProfile;
 
-            if (!File.Exists(filePath)) return null;
+            if (!File.Exists(filePath))
+                return null;
 
             using var reader = new StreamReader(filePath, Encoding.UTF8);
 
@@ -203,7 +205,10 @@ public class YamlProfileRepository : IProfileRepository
             if (profile != null)
             {
                 profile.Records ??= [];
-                LogManager.WriteDebugLog("YamlProfileRepository", $"加载成功, {profile.Name} 有 {profile.Records.Count} 条记录");
+                LogManager.WriteDebugLog(
+                    "YamlProfileRepository",
+                    $"加载成功, {profile.Name} 有 {profile.Records.Count} 条记录"
+                );
                 profile.LootRecords ??= [];
                 // 如果 Name 为空，尝试用文件名
                 if (string.IsNullOrEmpty(profile.Name))
@@ -229,8 +234,7 @@ public class YamlProfileRepository : IProfileRepository
 
     private static string GetSafeFileName(string name)
     {
-        string safeFileName = Path.GetInvalidFileNameChars()
-            .Aggregate(name, (current, c) => current.Replace(c, '_'));
+        string safeFileName = Path.GetInvalidFileNameChars().Aggregate(name, (current, c) => current.Replace(c, '_'));
         return safeFileName.Replace(" ", "_").ToLower();
     }
 }

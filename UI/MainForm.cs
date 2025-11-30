@@ -53,7 +53,8 @@ public partial class MainForm : Form
         TimerControl timerControl,
         PomodoroControl pomodoroControl,
         SettingsControl settingsControl
-    ) : this()
+    )
+        : this()
     {
         _mainService = mainService;
         _appSettings = settings;

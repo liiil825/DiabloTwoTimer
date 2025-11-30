@@ -170,12 +170,7 @@ public class PomodoroTimerService : IPomodoroTimerService
                 )
                 {
                     // 自定义秒数提示
-                    Toast.Info(
-                        LanguageManager.GetString(
-                            "PomodoroWorkEndingLong",
-                            warningLongTime
-                        )
-                    );
+                    Toast.Info(LanguageManager.GetString("PomodoroWorkEndingLong", warningLongTime));
                 }
                 // 当时间从warningShortTime+1秒变为warningShortTime秒时显示提示
                 else if (
@@ -185,12 +180,7 @@ public class PomodoroTimerService : IPomodoroTimerService
                 )
                 {
                     // 自定义秒数提示
-                    Toast.Info(
-                        LanguageManager.GetString(
-                            "PomodoroWorkEndingShort",
-                            warningShortTime
-                        )
-                    );
+                    Toast.Info(LanguageManager.GetString("PomodoroWorkEndingShort", warningShortTime));
                 }
             }
 
@@ -214,7 +204,8 @@ public class PomodoroTimerService : IPomodoroTimerService
         {
             case PomodoroTimerState.Work:
                 _completedPomodoros++;
-                var breakType = (_completedPomodoros % 4 == 0) ? PomodoroBreakType.LongBreak : PomodoroBreakType.ShortBreak;
+                var breakType =
+                    (_completedPomodoros % 4 == 0) ? PomodoroBreakType.LongBreak : PomodoroBreakType.ShortBreak;
 
                 // 触发完成事件
                 PomodoroCompleted?.Invoke(this, new PomodoroCompletedEventArgs(_completedPomodoros));
@@ -234,7 +225,10 @@ public class PomodoroTimerService : IPomodoroTimerService
                 PomodoroBreakStarted?.Invoke(this, new PomodoroBreakStartedEventArgs(breakType));
 
                 // 自动开始休息计时
-                _currentState = (breakType == PomodoroBreakType.ShortBreak) ? PomodoroTimerState.ShortBreak : PomodoroTimerState.LongBreak;
+                _currentState =
+                    (breakType == PomodoroBreakType.ShortBreak)
+                        ? PomodoroTimerState.ShortBreak
+                        : PomodoroTimerState.LongBreak;
                 _timeLeft = GetBreakTime(breakType);
                 break;
 
@@ -244,10 +238,7 @@ public class PomodoroTimerService : IPomodoroTimerService
                 if (_timerService != null)
                 {
                     // 只有当计时器不是之前就暂停的，并且暂停前的状态是Running时才恢复
-                    if (
-                        !_timerWasPausedBeforeBreak
-                        && _timerService.PreviousStatusBeforePause == TimerStatus.Running
-                    )
+                    if (!_timerWasPausedBeforeBreak && _timerService.PreviousStatusBeforePause == TimerStatus.Running)
                     {
                         _timerService.Resume();
                     }

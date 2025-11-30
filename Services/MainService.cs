@@ -15,7 +15,7 @@ public class MainServices(
     IProfileRepository profileRepository,
     IAppSettings appSettings,
     IMessenger messenger
-    ) : IMainService, IDisposable
+) : IMainService, IDisposable
 {
     #region Services & Fields
     private readonly IProfileRepository _profileRepository = profileRepository;
@@ -109,7 +109,8 @@ public class MainServices(
     /// </summary>
     public void ProcessHotKeyMessage(Message m)
     {
-        if (m.Msg != WM_HOTKEY) return;
+        if (m.Msg != WM_HOTKEY)
+            return;
 
         int id = m.WParam.ToInt32();
 
@@ -206,6 +207,7 @@ public class MainServices(
         // MainService 本身不需要监听语言变化来更新 UI，因为它不再持有 UI 控件
         // 只需要确保设置了正确的语言即可
     }
+
     private void OnTimerSettingsChanged(TimerSettingsChangedMessage _)
     {
         // 收到设置变更，自动切回计时器页面 (保持原有用户体验)
@@ -248,12 +250,16 @@ public class MainServices(
 
     private void RegisterHotKey(Keys keys, int id)
     {
-        if (_windowHandle == IntPtr.Zero) return;
+        if (_windowHandle == IntPtr.Zero)
+            return;
 
         int modifiers = 0;
-        if ((keys & Keys.Alt) == Keys.Alt) modifiers |= MOD_ALT;
-        if ((keys & Keys.Control) == Keys.Control) modifiers |= MOD_CONTROL;
-        if ((keys & Keys.Shift) == Keys.Shift) modifiers |= MOD_SHIFT;
+        if ((keys & Keys.Alt) == Keys.Alt)
+            modifiers |= MOD_ALT;
+        if ((keys & Keys.Control) == Keys.Control)
+            modifiers |= MOD_CONTROL;
+        if ((keys & Keys.Shift) == Keys.Shift)
+            modifiers |= MOD_SHIFT;
 
         int keyCode = (int)(keys & Keys.KeyCode);
         RegisterHotKey(_windowHandle, id, modifiers, keyCode);

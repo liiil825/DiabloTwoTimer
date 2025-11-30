@@ -106,8 +106,7 @@ namespace DiabloTwoMFTimer.UI.Timer
             this.btnStatusIndicator.AutoSize = false;
             this.btnStatusIndicator.Size = new System.Drawing.Size(16, 16);
             this.btnStatusIndicator.BackColor = System.Drawing.Color.Red;
-            // this.btnStatusIndicator.Margin = new System.Windows.Forms.Padding(10, 13, 10, 0);
-            this.btnStatusIndicator.Margin = new System.Windows.Forms.Padding(15, 16, 8, 0);
+            this.btnStatusIndicator.Margin = new System.Windows.Forms.Padding(15, 17, 0, 0);
 
             // 控件：日期
             // labelTime1 (时间)
@@ -116,7 +115,7 @@ namespace DiabloTwoMFTimer.UI.Timer
             this.labelTime1.ForeColor = System.Drawing.Color.LightGray;
             this.labelTime1.Text = "12:00";
             // 文字通常自带一些上边距，Margin Top 给小一点
-            this.labelTime1.Margin = new System.Windows.Forms.Padding(0, 8, 0, 0);
+            this.labelTime1.Margin = new System.Windows.Forms.Padding(8, 12, 0, 0);
 
             // 控件：番茄钟
             this.pomodoroTime.AutoSize = true;
@@ -134,8 +133,8 @@ namespace DiabloTwoMFTimer.UI.Timer
             this.lblTimeDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblTimeDisplay.AutoSize = false; // [核心修复] 必须设为 false
                                                   // 字体改小一点，防止截断
-            this.lblTimeDisplay.Font = new System.Drawing.Font("Microsoft YaHei UI", 28F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, 134);
-            this.lblTimeDisplay.ForeColor = DiabloTwoMFTimer.UI.Theme.AppTheme.AccentColor;
+            this.lblTimeDisplay.Font = DiabloTwoMFTimer.UI.Theme.AppTheme.BigTimeFont;
+            this.lblTimeDisplay.ForeColor = DiabloTwoMFTimer.UI.Theme.AppTheme.AccentColor; // 金色
             this.lblTimeDisplay.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblTimeDisplay.Text = "00:00:00.0";
 

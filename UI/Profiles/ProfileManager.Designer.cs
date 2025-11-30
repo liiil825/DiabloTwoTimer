@@ -25,6 +25,8 @@ namespace DiabloTwoMFTimer.UI.Profiles
 
         private void InitializeComponent()
         {
+            this.BackColor = DiabloTwoMFTimer.UI.Theme.AppTheme.BackColor;
+
             btnCreateCharacter = new ThemedButton();
             btnSwitchCharacter = new ThemedButton();
             btnDeleteCharacter = new ThemedButton();

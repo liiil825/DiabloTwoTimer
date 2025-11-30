@@ -468,35 +468,6 @@ public partial class TimerControl : UserControl
             ? Utils.LanguageManager.GetString("HideLoot", "隐藏掉落")
             : Utils.LanguageManager.GetString("ShowLoot", "显示掉落");
 
-        // 1. 调整主窗体大小
-        if (this.ParentForm != null)
-        {
-            // 使用常量定义的高度
-            int targetHeight = isVisible
-                ? UISizeConstants.ClientHeightWithLoot
-                : UISizeConstants.ClientHeightWithoutLoot;
-
-            // 只有高度不同时才调整，避免闪烁
-            if (this.ParentForm.ClientSize.Height != targetHeight)
-            {
-                this.ParentForm.ClientSize = new Size(this.ParentForm.ClientSize.Width, targetHeight);
-            }
-            var windowPosition = SettingsControl.WindowPosition.BottomLeft; // 默认位置
-            if (!string.IsNullOrEmpty(_appSettings.WindowPosition))
-            {
-                windowPosition = AppSettings.StringToWindowPosition(_appSettings.WindowPosition);
-            }
-
-            if (
-                windowPosition == SettingsControl.WindowPosition.BottomLeft
-                || windowPosition == SettingsControl.WindowPosition.BottomCenter
-                || windowPosition == SettingsControl.WindowPosition.BottomRight
-            )
-            {
-                SettingsControl.MoveWindowToPosition(this.ParentForm, windowPosition);
-            }
-        }
-
         // 2. 动态调整 TableLayoutPanel 的行高
         // 索引：3=History, 5=Loot
         if (isVisible)
@@ -526,6 +497,13 @@ public partial class TimerControl : UserControl
             _appSettings.TimerShowLootDrops = isVisible;
             _appSettings.Save();
             _messenger.Publish(new TimerShowLootDropsChangedMessage());
+            _messenger.Publish(new TimerSettingsChangedMessage(
+                _appSettings.TimerShowPomodoro,
+                isVisible, // 当前最新的 Loot 状态
+                _appSettings.TimerSyncStartPomodoro,
+                _appSettings.TimerSyncPausePomodoro,
+                _appSettings.GenerateRoomName
+            ));
         }
     }
 }

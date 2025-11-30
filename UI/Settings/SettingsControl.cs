@@ -55,8 +55,11 @@ public partial class SettingsControl : UserControl
     private void OnTimerShowLootDropsChanged(TimerShowLootDropsChangedMessage _)
     {
         LogManager.WriteDebugLog("OnTimerShowLootDropsChanged");
-        generalSettings.LoadSettings(_appSettings);
-        generalSettings.RefreshUI();
+        this.SafeInvoke(() =>
+        {
+            // 关键修改：更新 timerSettings 而不是 generalSettings
+            timerSettings.LoadSettings(_appSettings);
+        });
     }
 
     public void RefreshUI()

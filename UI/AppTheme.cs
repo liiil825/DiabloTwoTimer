@@ -13,6 +13,9 @@ public static class AppTheme
     // 强调色 (暗黑金)
     public static Color AccentColor = Color.FromArgb(199, 179, 119);
 
+    // 大字体
+    public static Font BigTimeFont = new("微软雅黑", 24F, FontStyle.Bold);
+
     // 文本颜色
     public static Color TextColor = Color.FromArgb(240, 240, 240);
 
@@ -23,6 +26,6 @@ public static class AppTheme
     public static Color BorderColor = Color.FromArgb(60, 60, 60);
 
     // 字体
-    public static Font MainFont = new Font("微软雅黑", 10F, FontStyle.Regular);
-    public static Font TitleFont = new Font("微软雅黑", 14F, FontStyle.Bold);
+    public static Font MainFont = new("微软雅黑", 10F, FontStyle.Regular);
+    public static Font TitleFont = new("微软雅黑", 14F, FontStyle.Bold);
 }

@@ -111,12 +111,7 @@ public partial class MainForm : Form
 
     private void InitializeForm()
     {
-        var width = UISizeConstants.ClientWidth;
-        var height = _appSettings.TimerShowLootDrops
-            ? UISizeConstants.ClientHeightWithLoot
-            : UISizeConstants.ClientHeightWithoutLoot;
-
-        this.Size = new Size(width, height);
+        AdjustWindowHeight();
         this.StartPosition = FormStartPosition.Manual;
         this.ShowInTaskbar = true;
         this.Visible = true;
@@ -185,19 +180,7 @@ public partial class MainForm : Form
         {
             this.SafeInvoke(() =>
             {
-                // 根据是否显示掉落，调整窗口高度
-                int targetHeight = msg.ShowLootDrops
-                    ? UISizeConstants.ClientHeightWithLoot
-                    : UISizeConstants.ClientHeightWithoutLoot;
-
-                // 只有高度不一致时才调整，避免闪烁
-                if (this.ClientSize.Height != targetHeight)
-                {
-                    this.ClientSize = new Size(UISizeConstants.ClientWidth, targetHeight);
-
-                    // 如果设置了靠底对齐，可能需要重新调整位置(可选)
-                    _mainService.ApplyWindowSettings(this);
-                }
+                AdjustWindowHeight();
             });
         });
     }
@@ -239,11 +222,38 @@ public partial class MainForm : Form
         lootForm.ShowDialog(this);
     }
 
+    private void AdjustWindowHeight()
+    {
+        // 1. 只有在 Timer 页面，且用户开启了显示掉落，才使用大高度
+        bool showLoot = _appSettings.TimerShowLootDrops;
+
+        int targetHeight;
+
+        if (showLoot)
+        {
+            targetHeight = UISizeConstants.ClientHeightWithLoot;
+        }
+        else
+        {
+            targetHeight = UISizeConstants.ClientHeightWithoutLoot;
+        }
+
+        // 2. 执行调整 (避免重复设置导致闪烁)
+        if (this.ClientSize.Height != targetHeight)
+        {
+            this.ClientSize = new Size(UISizeConstants.ClientWidth, targetHeight);
+
+            // 重新应用位置 (防止窗口变大后底部超出屏幕)
+            _mainService.ApplyWindowSettings(this);
+        }
+    }
+
     /// <summary>
     /// UI 事件：Tab 切换
     /// </summary>
     private void TabControl_SelectedIndexChanged(object? sender, EventArgs e)
     {
+        AdjustWindowHeight();
         // 当用户点击 Tab 切换时触发
         if (tabControl.SelectedIndex == (int)Models.TabPage.Timer)
         {

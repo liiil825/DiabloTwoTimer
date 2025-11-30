@@ -37,7 +37,6 @@ public partial class ProfileManager : UserControl
         _sceneService = sceneService;
 
         InitializeComponent();
-        this.BackColor = DiabloTwoMFTimer.UI.Theme.AppTheme.BackColor;
         // 注册语言变更事件
         LanguageManager.OnLanguageChanged += LanguageManager_OnLanguageChanged;
         LoadFarmingScenes();

@@ -16,9 +16,13 @@ public class PomodoroTimeDisplayLabel : Label
     public PomodoroTimeDisplayLabel()
     {
         this.AutoSize = true;
-        this.Font = new Font("微软雅黑", 16F, FontStyle.Bold);
+        // 使用全局统一的大字体
+        this.Font = UI.Theme.AppTheme.BigTimeFont;
+        // 默认前景色为白色（适应深色背景），UpdateColor 会根据状态覆盖它
+        this.ForeColor = UI.Theme.AppTheme.TextColor;
         this.Text = "00:00:0";
         this.DoubleBuffered = true;
+        this.BackColor = System.Drawing.Color.Transparent;
     }
 
     /// <summary>

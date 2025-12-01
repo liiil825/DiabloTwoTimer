@@ -271,35 +271,35 @@ public partial class BreakForm : Form
         pnlToggles.PerformLayout();
         pnlToggles.Left = (totalW - pnlToggles.Width) / 2;
 
-        int currentY = 110; // 起始高度
+        int currentY = 150; // 起始高度
 
         // 2. 提示语 (仅休息模式)
         if (_mode == BreakFormMode.PomodoroBreak)
         {
             lblMessage.Width = totalW - 100;
             lblMessage.Location = new Point(50, currentY);
-            currentY = lblMessage.Bottom + 10;
+            currentY = lblMessage.Bottom + 50;
 
             // 3. 倒计时 (移到这里)
             // 确保 Label AutoSize = true, 居中计算
             lblTimer.Location = new Point(cx - (lblTimer.Width / 2), currentY);
-            currentY = lblTimer.Bottom + 5;
+            currentY = lblTimer.Bottom + 10;
 
             // 4. 番茄状态 (新增)
             pomodoroStatusDisplay.Location = new Point(cx - (pomodoroStatusDisplay.Width / 2), currentY);
-            currentY = pomodoroStatusDisplay.Bottom + 15;
+            currentY = pomodoroStatusDisplay.Bottom + 20;
         }
         else
         {
-            currentY += 20;
+            currentY += 50;
         }
 
         // 5. 总时长 (新增)
         lblDuration.Location = new Point(cx - (lblDuration.Width / 2), currentY);
-        currentY = lblDuration.Bottom + 20;
+        currentY = lblDuration.Bottom + 40;
 
         // --- 底部按钮 ---
-        int btnY = totalH - 100;
+        int btnY = totalH - 200;
         if (_mode == BreakFormMode.PomodoroBreak)
         {
             int spacing = 40;

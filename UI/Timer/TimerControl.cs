@@ -450,7 +450,7 @@ public partial class TimerControl : UserControl
         {
             int runCount = historyControl.RunCount;
             // 如果计时器正在运行，说明已经添加了一条未完成的记录，所以显示次数+1
-            if (_timerService.IsRunning)
+            if (!_timerService.IsStopped)
             {
                 runCount++;
             }

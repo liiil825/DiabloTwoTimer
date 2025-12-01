@@ -31,7 +31,7 @@ farmingSpots:
     shortZhCN: "古代"
   - act: 2
     enUS: "Summoner & Arcane Sanctuary"
-    zhCN: "召唤者与神秘避难所"
+    zhCN: "神秘避难所"
     shortEnName: "Summon"
     shortZhCN: "召唤者"
   - act: 2
@@ -46,7 +46,7 @@ farmingSpots:
     shortZhCN: "巢穴"
   - act: 3
     enUS: "Lower Kurast Super Chest"
-    zhCN: "库拉斯特下层超级箱子"
+    zhCN: "库拉斯特下层"
     shortEnName: "LK"
     shortZhCN: "翻箱子"
   - act: 3
@@ -76,12 +76,12 @@ farmingSpots:
     shortZhCN: "火焰之河"
   - act: 4
     enUS: "Chaos Sanctuary & Diablo"
-    zhCN: "混沌避难所与迪亚波罗"
+    zhCN: "混沌避难所"
     shortEnName: "DRun"
     shortZhCN: "超市"
   - act: 5
     enUS: "Eldritch & Shenk"
-    zhCN: "艾德崔奇与沈克"
+    zhCN: "艾德崔奇"
     shortEnName: "ES"
     shortZhCN: "艾德崔奇"
   - act: 5    
@@ -111,6 +111,6 @@ farmingSpots:
     shortZhCN: "老尼"
   - act: 5
     enUS: "Worldstone Keep & Baal"
-    zhCN: "世界之石要塞与巴尔"
+    zhCN: "世界之石"
     shortEnName: "Baal"
     shortZhCN: "巴尔"

@@ -90,10 +90,12 @@ public partial class BreakForm : System.Windows.Forms.Form
         var btn = new Button
         {
             Text = text,
-            Size = new Size(120, 35),
+            Size = new Size(120, 43),
             Font = new Font("微软雅黑", 10F),
             FlatStyle = FlatStyle.Flat,
             Cursor = Cursors.Hand,
+            TextAlign = ContentAlignment.MiddleCenter, // 显式指定居中
+            UseCompatibleTextRendering = true,
             Tag = type,
         };
         btn.FlatAppearance.BorderSize = 1;

@@ -30,7 +30,7 @@ partial class BreakForm
         pnlHeader = new Panel
         {
             Dock = DockStyle.Top,
-            Height = 100,
+            Height = 110,
             BackColor = Color.Transparent,
         };
 

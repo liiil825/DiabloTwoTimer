@@ -134,5 +134,7 @@
   "PomodoroWarningLongTime": "时间提示1:",
   "PomodoroWarningShortTime": "时间提示2:",
   "UsePreviousRun": "上一轮",
-  "LootRecordSavedSuccessfully": "掉落记录保存成功"
+  "LootRecordSavedSuccessfully": "掉落记录保存成功",
+  "And": "还有",
+  "MoreRecords": "条记录"
 }

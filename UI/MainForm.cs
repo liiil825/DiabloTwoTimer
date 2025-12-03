@@ -78,10 +78,15 @@ public partial class MainForm : System.Windows.Forms.Form
         // 指定索引 4 (即最后一个 Tab) 为功能按钮
         this.tabControl.ActionTabIndex = 4;
 
-        // 绑定点击事件：直接关闭
+        // 绑定点击事件：先切换到计时界面，再最小化窗口
         this.tabControl.ActionTabClicked += (s, e) =>
         {
-            this.Close();
+            // 最小化前先切换到计时界面
+            if (tabControl.SelectedIndex != (int)Models.TabPage.Timer)
+            {
+                tabControl.SelectedIndex = (int)Models.TabPage.Timer;
+            }
+            this.WindowState = FormWindowState.Minimized;
         };
     }
 
@@ -106,10 +111,7 @@ public partial class MainForm : System.Windows.Forms.Form
         AddControlToTab(tabTimerPage, _timerControl);
         AddControlToTab(tabPomodoroPage, _pomodoroControl);
         AddControlToTab(tabSettingsPage, _settingsControl);
-        // 注意：tabClosePage 不需要添加任何控件
     }
-
-    // ... [其余 InitializeForm, SubscribeToEvents, SubscribeToMessages 等方法保持不变] ...
 
     private void InitializeForm()
     {
@@ -166,7 +168,7 @@ public partial class MainForm : System.Windows.Forms.Form
             tabControl.TabPages[(int)Models.TabPage.Timer].Text = LanguageManager.GetString("TabTimer");
             tabControl.TabPages[(int)Models.TabPage.Pomodoro].Text = LanguageManager.GetString("TabPomodoro");
             tabControl.TabPages[(int)Models.TabPage.Settings].Text = LanguageManager.GetString("TabSettings");
-            // Tab 4 始终是 "×"，不需要本地化
+            // Tab 4 始终是 "_"，不需要本地化
         }
 
         _profileManager.RefreshUI();

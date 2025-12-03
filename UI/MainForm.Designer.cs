@@ -28,7 +28,7 @@ partial class MainForm
         this.tabTimerPage = new System.Windows.Forms.TabPage();
         this.tabPomodoroPage = new System.Windows.Forms.TabPage();
         this.tabSettingsPage = new System.Windows.Forms.TabPage();
-        this.tabClosePage = new System.Windows.Forms.TabPage(); // 新增：关闭用的 Tab
+        this.tabMinimizePage = new System.Windows.Forms.TabPage(); // 新增：最小化用的 Tab
 
         this.tabControl.SuspendLayout();
         this.SuspendLayout();
@@ -40,7 +40,7 @@ partial class MainForm
         this.tabControl.Controls.Add(this.tabTimerPage);
         this.tabControl.Controls.Add(this.tabPomodoroPage);
         this.tabControl.Controls.Add(this.tabSettingsPage);
-        this.tabControl.Controls.Add(this.tabClosePage); // 添加到集合中
+        this.tabControl.Controls.Add(this.tabMinimizePage); // 添加到集合中
 
         this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
         this.tabControl.Margin = new System.Windows.Forms.Padding(0);
@@ -96,13 +96,13 @@ partial class MainForm
         this.tabSettingsPage.UseVisualStyleBackColor = true;
 
         // 
-        // tabClosePage (新增)
+        // tabMinimizePage (新增)
         // 
         // 不需要设置 Padding 或 Content，因为它只作为一个按钮使用
-        this.tabClosePage.Name = "tabClosePage";
-        this.tabClosePage.TabIndex = 4;
-        this.tabClosePage.Text = "×"; // 显示 X
-        this.tabClosePage.UseVisualStyleBackColor = true;
+        this.tabMinimizePage.Name = "tabMinimizePage";
+        this.tabMinimizePage.TabIndex = 4;
+        this.tabMinimizePage.Text = "_"; // 显示 _
+        this.tabMinimizePage.UseVisualStyleBackColor = true;
 
         // 
         // MainForm
@@ -134,5 +134,5 @@ partial class MainForm
     private System.Windows.Forms.TabPage tabTimerPage;
     private System.Windows.Forms.TabPage tabPomodoroPage;
     private System.Windows.Forms.TabPage tabSettingsPage;
-    private System.Windows.Forms.TabPage tabClosePage; // 新增声明
+    private System.Windows.Forms.TabPage tabMinimizePage; // 新增声明
 }

@@ -135,5 +135,7 @@
   "PomodoroWarningLongTime": "Warning Long Time:",
   "PomodoroWarningShortTime": "Warning Short Time:",
   "Minutes": "min",
-  "Seconds": "sec"
+  "Seconds": "sec",
+  "And": "and",
+  "MoreRecords": "more records"
 }

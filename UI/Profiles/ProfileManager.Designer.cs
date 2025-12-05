@@ -22,6 +22,7 @@ namespace DiabloTwoMFTimer.UI.Profiles
             cmbDifficulty = new ThemedComboBox();
             btnStartFarm = new ThemedButton();
             btnShowStats = new ThemedButton();
+            btnShowLootHistory = new ThemedButton();
             lblCurrentProfile = new ThemedLabel();
             lblTime = new ThemedLabel();
             lblStats = new ThemedLabel();
@@ -136,7 +137,7 @@ namespace DiabloTwoMFTimer.UI.Profiles
             btnStartFarm.Location = new Point(30, 220);
             btnStartFarm.Margin = new Padding(6);
             btnStartFarm.Name = "btnStartFarm";
-            btnStartFarm.Size = new Size(130, 50);
+            btnStartFarm.Size = new Size(120, 50);
             btnStartFarm.TabIndex = 7;
             btnStartFarm.UseVisualStyleBackColor = true;
             btnStartFarm.Click += BtnStartFarm_Click;
@@ -150,11 +151,26 @@ namespace DiabloTwoMFTimer.UI.Profiles
             btnShowStats.Location = new Point(294, 220);
             btnShowStats.Margin = new Padding(6);
             btnShowStats.Name = "btnShowStats";
-            btnShowStats.Size = new Size(130, 50);
+            btnShowStats.Size = new Size(80, 50);
             btnShowStats.TabIndex = 8;
-            btnShowStats.Text = "全屏统计";
+            btnShowStats.Text = "统计";
             btnShowStats.UseVisualStyleBackColor = false;
             btnShowStats.Click += BtnShowStats_Click;
+            // 
+            // btnShowLootHistory
+            // 
+            btnShowLootHistory.BackColor = Color.Transparent;
+            btnShowLootHistory.BorderRadius = 8;
+            btnShowLootHistory.FlatStyle = FlatStyle.Flat;
+            btnShowLootHistory.Font = new Font("微软雅黑", 10F);
+            btnShowLootHistory.Location = new Point(184, 220);
+            btnShowLootHistory.Margin = new Padding(6);
+            btnShowLootHistory.Name = "btnShowLootHistory";
+            btnShowLootHistory.Size = new Size(80, 50);
+            btnShowLootHistory.TabIndex = 9;
+            btnShowLootHistory.Text = "掉落";
+            btnShowLootHistory.UseVisualStyleBackColor = false;
+            btnShowLootHistory.Click += BtnShowLootHistory_Click;
             // 
             // lblCurrentProfile
             // 
@@ -209,6 +225,7 @@ namespace DiabloTwoMFTimer.UI.Profiles
             Controls.Add(lblDifficulty);
             Controls.Add(cmbDifficulty);
             Controls.Add(btnStartFarm);
+            Controls.Add(btnShowLootHistory);
             Controls.Add(lblCurrentProfile);
             Controls.Add(lblTime);
             Controls.Add(lblStats);
@@ -227,6 +244,7 @@ namespace DiabloTwoMFTimer.UI.Profiles
         private ThemedComboBox cmbDifficulty;
         private ThemedButton btnStartFarm;
         private ThemedButton btnShowStats;
+        private ThemedButton btnShowLootHistory;
         private ThemedLabel lblCurrentProfile;
         private ThemedLabel lblTime;
         private ThemedLabel lblStats;

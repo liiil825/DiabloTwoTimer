@@ -137,5 +137,15 @@
   "Minutes": "min",
   "Seconds": "sec",
   "And": "and",
-  "MoreRecords": "more records"
+  "MoreRecords": "more records",
+  "LootHistoryTitle": "LOOT HISTORY",
+  "LootToday": "Today",
+  "LootThisWeek": "This Week",
+  "LootCustom": "Custom",
+  "LootSearch": "Search",
+  "LootClose": "Close",
+  "LootTableDropTime": "Drop Time",
+  "LootTableItemName": "Item Name",
+  "LootTableScene": "Scene",
+  "LootTableRun": "Run"
 }

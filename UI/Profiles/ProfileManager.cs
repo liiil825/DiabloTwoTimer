@@ -242,7 +242,8 @@ public partial class ProfileManager : UserControl
         btnCreateCharacter!.Text = DiabloTwoMFTimer.Utils.LanguageManager.GetString("CreateCharacter");
         btnSwitchCharacter!.Text = DiabloTwoMFTimer.Utils.LanguageManager.GetString("SwitchCharacter");
         btnDeleteCharacter!.Text = DiabloTwoMFTimer.Utils.LanguageManager.GetString("DeleteCharacter");
-        btnShowStats!.Text = DiabloTwoMFTimer.Utils.LanguageManager.GetString("FullScreenStatistics");
+        btnShowStats!.Text = DiabloTwoMFTimer.Utils.LanguageManager.GetString("Statistics");
+        btnShowLootHistory!.Text = DiabloTwoMFTimer.Utils.LanguageManager.GetString("LootHistory");
 
         // 根据是否有未完成记录设置开始按钮文本
         if (btnStartFarm != null)
@@ -268,9 +269,6 @@ public partial class ProfileManager : UserControl
 
                     string pureEnglishSceneName = _sceneService.GetEnglishSceneName(sceneDisplayName);
                     WriteDebugLog($"获取纯英文场景名称: {pureEnglishSceneName}");
-
-                    // 记录当前配置文件中的记录数量
-                    WriteDebugLog($"当前角色记录数量: {currentProfile.Records.Count}");
 
                     // 查找同场景、同难度、未完成的记录
                     hasIncompleteRecord = currentProfile.Records.Any(r =>
@@ -436,10 +434,7 @@ public partial class ProfileManager : UserControl
             return;
 
         string confirmMsg = $"确定要删除角色: {currentProfile.Name}?";
-        if (
-            DiabloTwoMFTimer.UI.Components.ThemedMessageBox.Show(confirmMsg, "删除角色", MessageBoxButtons.YesNo)
-            == DialogResult.Yes
-        )
+        if (DiabloTwoMFTimer.UI.Components.ThemedMessageBox.Show(confirmMsg, LanguageManager.GetString("DeleteCharacter") ?? "删除角色", MessageBoxButtons.YesNo) == DialogResult.Yes)
         {
             // 使用ProfileService删除角色档案
             bool deleteResult = _profileService.DeleteCharacter(currentProfile);
@@ -459,6 +454,18 @@ public partial class ProfileManager : UserControl
         // 调用 Service 请求切换 Tab，Service 会触发事件，MainForm 再响应切换
         _mainService.SetActiveTabPage(Models.TabPage.Timer);
         _timerService.HandleStartFarm();
+    }
+
+    private void BtnShowLootHistory_Click(object? sender, EventArgs e)
+    {
+        // 实例化全屏历史记录窗体
+        var historyForm = new DiabloTwoMFTimer.UI.Timer.LootHistoryForm(
+            _profileService,
+            _sceneService,
+            _statisticsService
+        );
+
+        historyForm.ShowDialog(); // 模态显示
     }
 
     private void BtnShowStats_Click(object? sender, EventArgs e)

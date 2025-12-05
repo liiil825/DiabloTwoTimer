@@ -128,7 +128,8 @@
   "PomodoroBreakSkipped": "已跳过休息",
   "Minutes": "分",
   "Seconds": "秒",
-  "FullScreenStatistics": "全屏统计",
+  "Statistics": "统计",
+  "LootHistory": "掉落",
   "TimerSyncPausePomodoro": "同步暂停番茄钟",
   "TimerGenerateRoomName": "生成房间名称",
   "PomodoroWarningLongTime": "时间提示1:",
@@ -136,5 +137,15 @@
   "UsePreviousRun": "上一轮",
   "LootRecordSavedSuccessfully": "掉落记录保存成功",
   "And": "还有",
-  "MoreRecords": "条记录"
+  "MoreRecords": "条记录",
+  "LootHistoryTitle": "LOOT HISTORY",
+  "LootToday": "今日",
+  "LootThisWeek": "本周",
+  "LootCustom": "自定义",
+  "LootSearch": "查询",
+  "LootClose": "关闭",
+  "LootTableDropTime": "掉落时间",
+  "LootTableItemName": "物品名称",
+  "LootTableScene": "场景",
+  "LootTableRun": "场次"
 }

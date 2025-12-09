@@ -14,6 +14,8 @@ public partial class TimerSettingsControl : UserControl
     public bool TimerSyncStartPomodoro { get; private set; }
     public bool TimerSyncPausePomodoro { get; private set; }
     public bool GenerateRoomName { get; private set; }
+    public bool ScreenshotOnLoot { get; private set; }
+    public bool HideWindowOnScreenshot { get; private set; }
 
     public TimerSettingsControl()
     {
@@ -60,6 +62,15 @@ public partial class TimerSettingsControl : UserControl
             GenerateRoomName = checkBox.Checked;
         }
     }
+    private void OnScreenshotOnLootChanged(object? sender, EventArgs e)
+    {
+        if (sender is CheckBox checkBox) ScreenshotOnLoot = checkBox.Checked;
+    }
+
+    private void OnHideWindowOnScreenshotChanged(object? sender, EventArgs e)
+    {
+        if (sender is CheckBox checkBox) HideWindowOnScreenshot = checkBox.Checked;
+    }
 
     // 加载设置
     public void LoadSettings(IAppSettings settings)
@@ -75,6 +86,13 @@ public partial class TimerSettingsControl : UserControl
         chkSyncStartPomodoro.Checked = TimerSyncStartPomodoro;
         chkSyncPausePomodoro.Checked = TimerSyncPausePomodoro;
         chkGenerateRoomName.Checked = GenerateRoomName;
+
+        // 加载截图相关设置
+        ScreenshotOnLoot = settings.ScreenshotOnLoot;
+        HideWindowOnScreenshot = settings.HideWindowOnScreenshot;
+
+        chkScreenshotOnLoot.Checked = ScreenshotOnLoot;
+        chkHideWindowOnScreenshot.Checked = HideWindowOnScreenshot;
     }
 
     // 刷新UI（支持国际化）
@@ -84,16 +102,14 @@ public partial class TimerSettingsControl : UserControl
         {
             if (grpTimerSettings == null)
                 return;
-            try
-            {
-                grpTimerSettings.Text = LanguageManager.GetString("TimerSettingsGroup");
-                chkShowPomodoro.Text = LanguageManager.GetString("TimerShowPomodoro");
-                chkShowLootDrops.Text = LanguageManager.GetString("TimerShowLootDrops");
-                chkSyncStartPomodoro.Text = LanguageManager.GetString("TimerSyncStartPomodoro");
-                chkSyncPausePomodoro.Text = LanguageManager.GetString("TimerSyncPausePomodoro");
-                chkGenerateRoomName.Text = LanguageManager.GetString("TimerGenerateRoomName");
-            }
-            catch { }
+            grpTimerSettings.Text = LanguageManager.GetString("TimerSettingsGroup");
+            chkShowPomodoro.Text = LanguageManager.GetString("TimerShowPomodoro");
+            chkShowLootDrops.Text = LanguageManager.GetString("TimerShowLootDrops");
+            chkSyncStartPomodoro.Text = LanguageManager.GetString("TimerSyncStartPomodoro");
+            chkSyncPausePomodoro.Text = LanguageManager.GetString("TimerSyncPausePomodoro");
+            chkGenerateRoomName.Text = LanguageManager.GetString("TimerGenerateRoomName");
+            chkScreenshotOnLoot.Text = LanguageManager.GetString("TimerScreenshotOnLoot");
+            chkHideWindowOnScreenshot.Text = LanguageManager.GetString("TimerHideWindowOnScreenshot");
         });
     }
 }

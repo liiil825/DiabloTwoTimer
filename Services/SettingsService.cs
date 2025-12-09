@@ -49,6 +49,8 @@ public class AppSettings : IAppSettings
     public bool TimerShowPomodoro { get; set; } = true; // 是否显示番茄钟
     public bool TimerSyncStartPomodoro { get; set; } = false; // 开启计时器时是否同步开启番茄钟
     public bool TimerSyncPausePomodoro { get; set; } = false; // 暂停计时器时是否同步暂停番茄钟
+    public bool ScreenshotOnLoot { get; set; } = false;
+    public bool HideWindowOnScreenshot { get; set; } = false;
     public int PomodoroWarningLongTime { get; set; } = 60; // 番茄钟长时间提示（实际值）
     public int PomodoroWarningShortTime { get; set; } = 3; // 番茄钟短时间提示（实际值）
     public bool GenerateRoomName { get; set; } = true; // 是否生成房间名称

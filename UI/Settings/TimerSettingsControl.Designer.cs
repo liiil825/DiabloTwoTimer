@@ -26,6 +26,8 @@ partial class TimerSettingsControl
         this.chkSyncStartPomodoro = new DiabloTwoMFTimer.UI.Components.ThemedCheckBox();
         this.chkSyncPausePomodoro = new DiabloTwoMFTimer.UI.Components.ThemedCheckBox();
         this.chkGenerateRoomName = new DiabloTwoMFTimer.UI.Components.ThemedCheckBox();
+        this.chkScreenshotOnLoot = new DiabloTwoMFTimer.UI.Components.ThemedCheckBox();
+        this.chkHideWindowOnScreenshot = new DiabloTwoMFTimer.UI.Components.ThemedCheckBox();
 
         this.tlpMain.SuspendLayout();
         this.grpTimerSettings.SuspendLayout();
@@ -75,6 +77,8 @@ partial class TimerSettingsControl
         this.flpTimerParams.Controls.Add(this.chkSyncStartPomodoro);
         this.flpTimerParams.Controls.Add(this.chkSyncPausePomodoro);
         this.flpTimerParams.Controls.Add(this.chkGenerateRoomName);
+        this.flpTimerParams.Controls.Add(this.chkScreenshotOnLoot);
+        this.flpTimerParams.Controls.Add(this.chkHideWindowOnScreenshot);
         this.flpTimerParams.Dock = System.Windows.Forms.DockStyle.Fill;
         this.flpTimerParams.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
         this.flpTimerParams.Location = new System.Drawing.Point(3, 20);
@@ -97,6 +101,8 @@ partial class TimerSettingsControl
         SetCheck(chkSyncStartPomodoro, "同步开启番茄钟", this.OnSyncStartPomodoroChanged);
         SetCheck(chkSyncPausePomodoro, "同步暂停番茄钟", this.OnSyncPausePomodoroChanged);
         SetCheck(chkGenerateRoomName, "生成房间名称", this.OnGenerateRoomNameChanged);
+        SetCheck(chkScreenshotOnLoot, "掉落保存截图", this.OnScreenshotOnLootChanged);
+        SetCheck(chkHideWindowOnScreenshot, "截图隐藏界面", this.OnHideWindowOnScreenshotChanged);
 
         // 
         // TimerSettingsControl
@@ -127,4 +133,6 @@ partial class TimerSettingsControl
     private DiabloTwoMFTimer.UI.Components.ThemedCheckBox chkSyncStartPomodoro;
     private DiabloTwoMFTimer.UI.Components.ThemedCheckBox chkSyncPausePomodoro;
     private DiabloTwoMFTimer.UI.Components.ThemedCheckBox chkGenerateRoomName;
+    private DiabloTwoMFTimer.UI.Components.ThemedCheckBox chkScreenshotOnLoot;
+    private DiabloTwoMFTimer.UI.Components.ThemedCheckBox chkHideWindowOnScreenshot;
 }

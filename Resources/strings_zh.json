@@ -118,6 +118,8 @@
   "ContinueFarm": "继续 Farm",
   "ShowLoot": "显示掉落",
   "HideLoot": "隐藏掉落",
+  "TimerScreenshotOnLoot": "掉落保存截图",
+  "TimerHideWindowOnScreenshot": "截图隐藏界面",
   "SuccessSettingsChanged": "设置修改成功",
   "PomodoroWorkEndingLong": "工作时间将在{{0}}秒后结束",
   "PomodoroWorkEndingShort": "工作时间将在{{0}}秒后结束",

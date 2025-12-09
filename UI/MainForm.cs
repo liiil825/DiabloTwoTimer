@@ -162,6 +162,9 @@ public partial class MainForm : System.Windows.Forms.Form
         };
 
         _mainService.OnRequestRecordLoot += () => this.SafeInvoke(ShowRecordLootDialog);
+
+        _messenger.Subscribe<HideMainWindowMessage>(_ => this.SafeInvoke(() => this.Opacity = 0));
+        _messenger.Subscribe<ShowMainWindowMessage>(_ => this.SafeInvoke(() => this.Opacity = 1));
     }
 
     private void SubscribeToMessages()
@@ -192,7 +195,13 @@ public partial class MainForm : System.Windows.Forms.Form
 
     private void ShowRecordLootDialog()
     {
-        using var lootForm = new UI.Timer.RecordLootForm(_profileService, _timerHistoryService, _sceneService);
+        using var lootForm = new UI.Timer.RecordLootForm(
+            _profileService,
+            _timerHistoryService,
+            _sceneService,
+            _appSettings,
+            _messenger // 传入信使
+        );
         lootForm.LootRecordSaved += (s, e) => _timerControl.HandleLootAdded();
         lootForm.ShowDialog(this);
     }

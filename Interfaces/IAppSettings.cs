@@ -25,6 +25,8 @@ public interface IAppSettings
     public bool TimerShowPomodoro { get; set; }
     public bool TimerSyncStartPomodoro { get; set; }
     public bool TimerSyncPausePomodoro { get; set; }
+    public bool ScreenshotOnLoot { get; set; }
+    public bool HideWindowOnScreenshot { get; set; }
 
     // 番茄钟提示时间设置
     public int PomodoroWarningLongTime { get; set; }

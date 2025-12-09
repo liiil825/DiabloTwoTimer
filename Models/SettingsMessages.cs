@@ -19,3 +19,9 @@ public class TimerShowLootDropsChangedMessage { }
 public class SuspendHotkeysMessage { }
 
 public class ResumeHotkeysMessage { }
+
+// 【新增】请求隐藏主窗口消息
+public class HideMainWindowMessage { }
+
+// 【新增】请求显示主窗口消息
+public class ShowMainWindowMessage { }

@@ -117,6 +117,9 @@ public partial class SettingsControl : UserControl
         _appSettings.TimerSyncStartPomodoro = timerSettings.TimerSyncStartPomodoro;
         _appSettings.TimerSyncPausePomodoro = timerSettings.TimerSyncPausePomodoro;
         _appSettings.GenerateRoomName = timerSettings.GenerateRoomName;
+        LogManager.WriteDebugLog("SettingsControl", $"保存设置 timerSettings.ScreenshotOnLoot={timerSettings.ScreenshotOnLoot}");
+        _appSettings.ScreenshotOnLoot = timerSettings.ScreenshotOnLoot;
+        _appSettings.HideWindowOnScreenshot = timerSettings.HideWindowOnScreenshot;
 
         // 保存缩放设置
         float oldScale = _appSettings.UiScale;

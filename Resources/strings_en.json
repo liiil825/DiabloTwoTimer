@@ -90,6 +90,8 @@
   "SelectCharacter": "Select character:",
   "CharacterName": "Name:",
   "CharacterClass": "Class:",
+  "TimerScreenshotOnLoot": "Auto screenshot on loot",
+  "TimerHideWindowOnScreenshot": "Hide window when screenshot",
   "Confirm": "Confirm",
   "Select": "Select",
   "ErrorLoadingProfiles": "Failed to load profiles",

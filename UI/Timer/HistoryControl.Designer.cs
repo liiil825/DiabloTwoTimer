@@ -49,7 +49,7 @@ namespace DiabloTwoMFTimer.UI.Timer
             this.gridRunHistory.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gridRunHistory.Location = new System.Drawing.Point(0, 0);
             this.gridRunHistory.Name = "gridRunHistory";
-            this.gridRunHistory.Size = new System.Drawing.Size(290, 90);
+            this.gridRunHistory.Size = new System.Drawing.Size(Theme.UISizeConstants.ClientWidth, 90);
             this.gridRunHistory.TabIndex = 0;
 
             // 

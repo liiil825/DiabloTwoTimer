@@ -19,6 +19,10 @@ partial class SettingsControl
     {
         this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
         this.tabControl = new DiabloTwoMFTimer.UI.Components.ThemedTabControl();
+        this.tlpSettingsNav = new System.Windows.Forms.TableLayoutPanel();
+        this.btnSetGeneral = new DiabloTwoMFTimer.UI.Components.ThemedButton();
+        this.btnSetHotkeys = new DiabloTwoMFTimer.UI.Components.ThemedButton();
+        this.btnSetTimer = new DiabloTwoMFTimer.UI.Components.ThemedButton();
         this.tabPageGeneral = new System.Windows.Forms.TabPage();
         this.generalSettings = new DiabloTwoMFTimer.UI.Settings.GeneralSettingsControl();
         this.tabPageHotkeys = new System.Windows.Forms.TabPage();
@@ -37,19 +41,40 @@ partial class SettingsControl
         this.panelBottom.SuspendLayout();
         this.SuspendLayout();
 
+
         // 
         // tlpMain
         // 
         this.tlpMain.ColumnCount = 1;
         this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-        this.tlpMain.Controls.Add(this.tabControl, 0, 0);
-        this.tlpMain.Controls.Add(this.panelBottom, 0, 1);
+        // 重要：SettingsControl 之前的 tlpMain 可能包含了 TabControl。
+        // 现在我们需要把 tlpSettingsNav 加在 tlpMain 的最上面，或者让 tlpSettingsNav 和 tabControl 并在 tlpMain 里。
+        // 假设 tlpMain 是垂直布局：
+        // 1. 修改 tlpMain 的行定义，从 2 行改为 3 行
+        this.tlpMain.RowCount = 3;
+        this.tlpMain.RowStyles.Clear();
+        // 行 0：顶部自定义导航栏 (高度写死)
+        this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, Theme.UISizeConstants.TabItemHeight));
+        // 行 1：中部 Tab 内容容器 (自动填满 100%)
+        this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+        // 行 2：底部确认按钮区域 (固定高度)
+        this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, Theme.UISizeConstants.TabItemHeight));
+
+        // 2. 清除控件原有的 Dock=Top，全部改为 Dock=Fill
+        this.tlpSettingsNav.Dock = System.Windows.Forms.DockStyle.Fill;
+        this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+        this.panelBottom.Dock = System.Windows.Forms.DockStyle.Fill;
+
+        // 3. 将控件严格放入对应的“坑位”
+        this.tlpMain.Controls.Add(this.tlpSettingsNav, 0, 0); // 导航放在第 0 行
+        this.tlpMain.Controls.Add(this.tabControl, 0, 1);    // 容器放在第 1 行 (内容区不会再往上跑了)
+        this.tlpMain.Controls.Add(this.panelBottom, 0, 2);   // 按钮放在第 2 行
+
+        // 4. 其他修正：确保 tlpMain 始终 Dock=Fill 填充整个 SettingsControl
         this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+
         this.tlpMain.Location = new System.Drawing.Point(0, 0);
         this.tlpMain.Name = "tlpMain";
-        this.tlpMain.RowCount = 2;
-        this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-        this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 50F)); // 底部固定高度
         this.tlpMain.Size = new System.Drawing.Size(Theme.UISizeConstants.ClientWidth, Theme.UISizeConstants.TabPageHeight);
         this.tlpMain.TabIndex = 0;
 
@@ -65,6 +90,22 @@ partial class SettingsControl
         this.tabControl.SelectedIndex = 0;
         this.tabControl.Size = new System.Drawing.Size(Theme.UISizeConstants.ClientWidth, Theme.UISizeConstants.TabPageHeight);
         this.tabControl.TabIndex = 0;
+        // 
+        // tlpSettingsNav
+        // 
+        this.tlpSettingsNav.ColumnCount = 3;
+        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33F));
+        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33F));
+        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33F));
+        this.tlpSettingsNav.Controls.Add(this.btnSetGeneral, 0, 0);
+        this.tlpSettingsNav.Controls.Add(this.btnSetHotkeys, 1, 0);
+        this.tlpSettingsNav.Controls.Add(this.btnSetTimer, 2, 0);
+        this.tlpSettingsNav.Dock = System.Windows.Forms.DockStyle.Top; // 停靠在顶部
+        this.tlpSettingsNav.Location = new System.Drawing.Point(0, 0);
+        this.tlpSettingsNav.RowCount = 1;
+        this.tlpSettingsNav.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+        // 这里不需要用 TabItemHeight，可以稍微矮一点，或者保持一致
+        this.tlpSettingsNav.Size = new System.Drawing.Size(Theme.UISizeConstants.ClientWidth, Theme.UISizeConstants.TabItemHeight);
 
         // 
         // tabPageGeneral
@@ -182,4 +223,8 @@ partial class SettingsControl
     private GeneralSettingsControl generalSettings;
     private HotkeySettingsControl hotkeySettings;
     private TimerSettingsControl timerSettings;
+    private System.Windows.Forms.TableLayoutPanel tlpSettingsNav;
+    private DiabloTwoMFTimer.UI.Components.ThemedButton btnSetGeneral;
+    private DiabloTwoMFTimer.UI.Components.ThemedButton btnSetHotkeys;
+    private DiabloTwoMFTimer.UI.Components.ThemedButton btnSetTimer;
 }

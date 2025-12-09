@@ -13,6 +13,21 @@ public class ThemedButton : Button
     private int _borderRadius = 8;
     private bool _isHovered = false;
     private bool _isPressed = false;
+    private bool _isSelected = false; // 新增字段
+
+    [Category("Appearance")]
+    public bool IsSelected
+    {
+        get => _isSelected;
+        set
+        {
+            if (_isSelected != value)
+            {
+                _isSelected = value;
+                Invalidate(); // 状态改变时重绘
+            }
+        }
+    }
 
     public ThemedButton()
     {
@@ -81,29 +96,34 @@ public class ThemedButton : Button
     // --- 核心绘制逻辑 ---
     protected override void OnPaint(PaintEventArgs e)
     {
-        // 1. [新增] 安全检查：如果控件不可见或尺寸太小，直接不绘制，防止 AddArc 崩溃
-        if (this.Width <= 1 || this.Height <= 1)
-            return;
+        if (this.Width <= 1 || this.Height <= 1) return;
 
         var g = e.Graphics;
-        g.SmoothingMode = SmoothingMode.AntiAlias; // 开启抗锯齿，圆角才圆润
+        g.SmoothingMode = SmoothingMode.AntiAlias;
 
-        // 2. 确定颜色 (沿用之前的配色逻辑)
+        // --- 1. 确定颜色逻辑 (修改部分) ---
         Color backColor = AppTheme.SurfaceColor;
         Color borderColor = Color.FromArgb(80, 80, 80);
-        Color textColor = AppTheme.TextColor;
+
+        // 默认文字颜色
+        Color textColor = AppTheme.TextSecondaryColor; // 默认改为灰色，突显选中状态
 
         if (!Enabled)
         {
             backColor = Color.FromArgb(40, 40, 40);
-            borderColor = Color.FromArgb(60, 60, 60);
             textColor = Color.Gray;
+        }
+        else if (IsSelected) // 【新增】选中状态优先级最高
+        {
+            // 选中时：背景稍微亮一点，文字变金
+            backColor = AppTheme.SurfaceColor;
+            textColor = AppTheme.AccentColor;
+            borderColor = AppTheme.AccentColor;
         }
         else if (_isPressed)
         {
             backColor = Color.FromArgb(30, 30, 30);
-            borderColor = AppTheme.AccentColor; // 按下：金边
-            textColor = AppTheme.AccentColor; // 按下：金字
+            textColor = AppTheme.AccentColor;
         }
         else if (_isHovered)
         {
@@ -112,26 +132,39 @@ public class ThemedButton : Button
             textColor = AppTheme.AccentColor; // 悬停：金字
         }
 
-        // 3. 准备绘制区域
-        // 注意：Rect 需要减去 1，否则边缘会被切掉一点
+        // --- 2. 绘制背景和边框 ---
         var rect = this.ClientRectangle;
         rect.Width -= 1;
         rect.Height -= 1;
 
-        // 4. 绘制背景和边框
         using (var path = GetRoundedPath(rect, _borderRadius))
         using (var brush = new SolidBrush(backColor))
-        using (var pen = new Pen(borderColor, 1)) // 边框宽度 1
+        using (var pen = new Pen(borderColor, 1))
         {
             g.FillPath(brush, path);
-            g.DrawPath(pen, path);
+            // 如果选中，就不画四周的框了，只画底部的线，显得更现代
+            // 或者保留边框也可以，看你喜好。这里保留边框逻辑。
+            if (!IsSelected)
+            {
+                g.DrawPath(pen, path);
+            }
         }
 
-        // 5. 绘制文字 (居中)
-        // 使用 MeasureString 确保精准居中
+        // --- 3. 【新增】绘制选中状态的金边 (底部线条) ---
+        if (IsSelected)
+        {
+            using (var pen = new Pen(AppTheme.AccentColor, 3)) // 线宽 3
+            {
+                // 在底部画一条线
+                int y = this.Height - 2;
+                g.DrawLine(pen, 5, y, this.Width - 5, y); // 稍微留点左右边距
+            }
+        }
+
+        // --- 4. 绘制文字 ---
         var textSize = g.MeasureString(this.Text, this.Font);
         var textX = (this.Width - textSize.Width) / 2;
-        var textY = (this.Height - textSize.Height) / 2 + 1; // +1 微调视觉重心
+        var textY = (this.Height - textSize.Height) / 2 + 1;
 
         using (var textBrush = new SolidBrush(textColor))
         {

@@ -22,9 +22,7 @@ public static class ScaleHelper
             float baseHeight = 1080f;
 
             // --- 核心修改：非线性计算逻辑 ---
-
             float rawRatio = currentScreenHeight / baseHeight; // 比如 4K 算出来是 2.0
-
             if (rawRatio >= 1.9f) // 针对 4K及以上
             {
                 // 4K 屏幕不要真的放大 2 倍，而是 1.6 倍，这样看起来更精致，不臃肿

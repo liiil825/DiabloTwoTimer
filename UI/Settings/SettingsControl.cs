@@ -4,6 +4,8 @@ using System.Windows.Forms;
 using DiabloTwoMFTimer.Interfaces;
 using DiabloTwoMFTimer.Models;
 using DiabloTwoMFTimer.Services;
+using DiabloTwoMFTimer.UI.Components;
+using DiabloTwoMFTimer.UI.Theme;
 using DiabloTwoMFTimer.Utils;
 
 namespace DiabloTwoMFTimer.UI.Settings;
@@ -32,6 +34,12 @@ public partial class SettingsControl : UserControl
     public SettingsControl()
     {
         InitializeComponent();
+        btnSetGeneral.Click += (s, e) => SwitchTab(0, btnSetGeneral);
+        btnSetHotkeys.Click += (s, e) => SwitchTab(1, btnSetHotkeys);
+        btnSetTimer.Click += (s, e) => SwitchTab(2, btnSetTimer);
+
+        // 默认选中
+        SwitchTab(0, btnSetGeneral);
         RefreshUI();
     }
 
@@ -45,6 +53,17 @@ public partial class SettingsControl : UserControl
 
         InitializeData(_appSettings);
         SubscribeMessages();
+    }
+    private void SwitchTab(int index, ThemedButton activeBtn)
+    {
+        tabControl.SelectedIndex = index;
+
+        // 1. 样式逻辑 (使用 IsSelected)
+        var buttons = new[] { btnSetGeneral, btnSetHotkeys, btnSetTimer };
+        foreach (var btn in buttons)
+        {
+            btn.IsSelected = (btn == activeBtn);
+        }
     }
 
     private void SubscribeMessages()
@@ -65,9 +84,9 @@ public partial class SettingsControl : UserControl
         this.SafeInvoke(() =>
         {
             btnConfirmSettings.Text = LanguageManager.GetString("ConfirmSettings");
-            tabPageGeneral.Text = LanguageManager.GetString("General");
-            tabPageHotkeys.Text = LanguageManager.GetString("Hotkeys");
-            tabPageTimer.Text = LanguageManager.GetString("TimerSettings");
+            btnSetGeneral.Text = LanguageManager.GetString("General");
+            btnSetHotkeys.Text = LanguageManager.GetString("Hotkeys");
+            btnSetTimer.Text = LanguageManager.GetString("TimerSettings");
 
             generalSettings.RefreshUI();
             hotkeySettings.RefreshUI();

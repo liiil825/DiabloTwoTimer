@@ -21,6 +21,17 @@ partial class MainForm
 
     #region Windows Form Designer generated code
 
+    private void ConfigureNavButton(Button btn, string text)
+    {
+        btn.Dock = DockStyle.Fill;
+        btn.Text = text;
+        btn.Margin = new Padding(0); // 紧贴
+        btn.FlatStyle = FlatStyle.Flat;
+        btn.FlatAppearance.BorderSize = 0;
+        // 绑定事件
+        btn.Click += NavButton_Click;
+    }
+
     private void InitializeComponent()
     {
         this.tabControl = new DiabloTwoMFTimer.UI.Components.ThemedTabControl();
@@ -29,6 +40,12 @@ partial class MainForm
         this.tabPomodoroPage = new System.Windows.Forms.TabPage();
         this.tabSettingsPage = new System.Windows.Forms.TabPage();
         this.tabMinimizePage = new System.Windows.Forms.TabPage(); // 新增：最小化用的 Tab
+        this.tlpNavigation = new System.Windows.Forms.TableLayoutPanel();
+        this.btnNavProfile = new DiabloTwoMFTimer.UI.Components.ThemedButton();
+        this.btnNavTimer = new DiabloTwoMFTimer.UI.Components.ThemedButton();
+        this.btnNavPomodoro = new DiabloTwoMFTimer.UI.Components.ThemedButton();
+        this.btnNavSettings = new DiabloTwoMFTimer.UI.Components.ThemedButton();
+        this.btnNavMinimize = new DiabloTwoMFTimer.UI.Components.ThemedButton(); // 新增声明
 
         this.tabControl.SuspendLayout();
         this.SuspendLayout();
@@ -55,6 +72,42 @@ partial class MainForm
         this.tabControl.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
         // -------------------------
         this.tabControl.SelectedIndexChanged += new System.EventHandler(this.TabControl_SelectedIndexChanged);
+
+        this.tlpNavigation.ColumnCount = 5;
+        this.tlpNavigation.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
+        this.tlpNavigation.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
+        this.tlpNavigation.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
+        this.tlpNavigation.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
+        this.tlpNavigation.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 10F));
+
+        this.tlpNavigation.Controls.Add(this.btnNavProfile, 0, 0);
+        this.tlpNavigation.Controls.Add(this.btnNavTimer, 1, 0);
+        this.tlpNavigation.Controls.Add(this.btnNavPomodoro, 2, 0);
+        this.tlpNavigation.Controls.Add(this.btnNavSettings, 3, 0);
+        this.tlpNavigation.Controls.Add(this.btnNavMinimize, 4, 0);
+
+        this.tlpNavigation.Dock = System.Windows.Forms.DockStyle.Top;
+        this.tlpNavigation.Location = new System.Drawing.Point(0, 0);
+        this.tlpNavigation.Name = "tlpNavigation";
+        this.tlpNavigation.RowCount = 1;
+        this.tlpNavigation.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+        // 高度将在构造函数中设置，这里先给个默认值
+        this.tlpNavigation.Size = new System.Drawing.Size(Theme.UISizeConstants.ClientWidth, Theme.UISizeConstants.TabItemHeight);
+        this.tlpNavigation.TabIndex = 0;
+
+        // 配置按钮 (去除边框，设为透明，文字颜色等在 CS 中统一管理)
+        ConfigureNavButton(btnNavProfile, "Profile");
+        ConfigureNavButton(btnNavTimer, "Timer");
+        ConfigureNavButton(btnNavPomodoro, "Tomato");
+        ConfigureNavButton(btnNavSettings, "Settings");
+        ConfigureNavButton(btnNavMinimize, "_"); // 下划线表示最小化
+
+        // 
+        // tabControl
+        // 
+        // 关键：因为 tlpNavigation Dock=Top，tabControl 设为 Fill 会自动填充剩余区域
+        this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+        this.tabControl.Location = new System.Drawing.Point(0, 40); // Y坐标会被自动调整
 
         // 
         // tabProfilePage
@@ -118,7 +171,7 @@ partial class MainForm
 
         // 只添加 tabControl，移除了之前的 btnClose
         this.Controls.Add(this.tabControl);
-
+        this.Controls.Add(this.tlpNavigation);
         this.Margin = new System.Windows.Forms.Padding(6);
         this.Name = "MainForm";
         this.Text = "D2R Helper";
@@ -136,4 +189,10 @@ partial class MainForm
     private System.Windows.Forms.TabPage tabPomodoroPage;
     private System.Windows.Forms.TabPage tabSettingsPage;
     private System.Windows.Forms.TabPage tabMinimizePage; // 新增声明
+    private System.Windows.Forms.TableLayoutPanel tlpNavigation; // 新增导航容器
+    private DiabloTwoMFTimer.UI.Components.ThemedButton btnNavProfile;
+    private DiabloTwoMFTimer.UI.Components.ThemedButton btnNavTimer;
+    private DiabloTwoMFTimer.UI.Components.ThemedButton btnNavPomodoro;
+    private DiabloTwoMFTimer.UI.Components.ThemedButton btnNavSettings;
+    private DiabloTwoMFTimer.UI.Components.ThemedButton btnNavMinimize; // 新增声明
 }

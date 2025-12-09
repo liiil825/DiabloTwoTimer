@@ -40,7 +40,9 @@ partial class TimerSettingsControl
         this.tlpMain.ColumnCount = 1;
         this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
         this.tlpMain.Controls.Add(this.grpTimerSettings, 0, 0);
-        this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+        this.tlpMain.Dock = System.Windows.Forms.DockStyle.Top; // 改为 Top
+        this.tlpMain.AutoSize = true; // 开启自动大小
+        this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
         this.tlpMain.Location = new System.Drawing.Point(0, 0);
         this.tlpMain.Name = "tlpMain";
         this.tlpMain.Padding = new System.Windows.Forms.Padding(10);

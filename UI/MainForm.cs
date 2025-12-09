@@ -4,9 +4,11 @@ using System.Windows.Forms;
 using DiabloTwoMFTimer.Interfaces;
 using DiabloTwoMFTimer.Models;
 using DiabloTwoMFTimer.Services;
+using DiabloTwoMFTimer.UI.Components;
 using DiabloTwoMFTimer.UI.Pomodoro;
 using DiabloTwoMFTimer.UI.Profiles;
 using DiabloTwoMFTimer.UI.Settings;
+using DiabloTwoMFTimer.UI.Theme;
 using DiabloTwoMFTimer.UI.Timer;
 using DiabloTwoMFTimer.Utils;
 
@@ -29,7 +31,8 @@ public partial class MainForm : System.Windows.Forms.Form
     public MainForm()
     {
         InitializeComponent();
-        ConfigureTabControl();
+        this.tlpNavigation.Height = Theme.UISizeConstants.TabItemHeight;
+        UpdateNavButtonStyles(btnNavProfile);
     }
 
     public MainForm(
@@ -61,7 +64,6 @@ public partial class MainForm : System.Windows.Forms.Form
         InitializeForm();
         SubscribeToEvents();
         SubscribeToMessages();
-
         this.Shown += OnMainForm_Shown;
     }
 
@@ -73,13 +75,14 @@ public partial class MainForm : System.Windows.Forms.Form
         _mainService.ApplyWindowSettings(this);
     }
 
-    private void ConfigureTabControl()
+    // 统一的点击事件处理
+    private void NavButton_Click(object sender, EventArgs e)
     {
-        // 指定索引 4 (即最后一个 Tab) 为功能按钮
-        this.tabControl.ActionTabIndex = 4;
-
-        // 绑定点击事件：先切换到计时界面，再最小化窗口
-        this.tabControl.ActionTabClicked += (s, e) =>
+        if (sender == btnNavProfile) tabControl.SelectedIndex = 0;
+        else if (sender == btnNavTimer) tabControl.SelectedIndex = 1;
+        else if (sender == btnNavPomodoro) tabControl.SelectedIndex = 2;
+        else if (sender == btnNavSettings) tabControl.SelectedIndex = 3;
+        else if (sender == btnNavMinimize) // 新增判断
         {
             // 最小化前先切换到计时界面
             if (tabControl.SelectedIndex != (int)Models.TabPage.Timer)
@@ -87,7 +90,21 @@ public partial class MainForm : System.Windows.Forms.Form
                 tabControl.SelectedIndex = (int)Models.TabPage.Timer;
             }
             this.WindowState = FormWindowState.Minimized;
-        };
+        }
+
+        UpdateNavButtonStyles((ThemedButton)sender);
+    }
+
+    // 样式更新：高亮当前，变灰其他
+    private void UpdateNavButtonStyles(ThemedButton activeBtn)
+    {
+        var buttons = new[] { btnNavProfile, btnNavTimer, btnNavPomodoro, btnNavSettings };
+
+        foreach (var btn in buttons)
+        {
+            // 只需要这一行，样式逻辑全在 Button 内部
+            btn.IsSelected = (btn == activeBtn);
+        }
     }
 
     // --- 保持绘制边框，这在无边框窗体中很重要 ---
@@ -161,15 +178,11 @@ public partial class MainForm : System.Windows.Forms.Form
     private void UpdateFormTitleAndTabs()
     {
         this.Text = LanguageManager.GetString("FormTitle");
-
-        if (tabControl != null && tabControl.TabPages.Count >= 4)
-        {
-            tabControl.TabPages[(int)Models.TabPage.Profile].Text = LanguageManager.GetString("TabProfile");
-            tabControl.TabPages[(int)Models.TabPage.Timer].Text = LanguageManager.GetString("TabTimer");
-            tabControl.TabPages[(int)Models.TabPage.Pomodoro].Text = LanguageManager.GetString("TabPomodoro");
-            tabControl.TabPages[(int)Models.TabPage.Settings].Text = LanguageManager.GetString("TabSettings");
-            // Tab 4 始终是 "_"，不需要本地化
-        }
+        btnNavProfile.Text = LanguageManager.GetString("TabProfile");
+        btnNavTimer.Text = LanguageManager.GetString("TabTimer");
+        btnNavPomodoro.Text = LanguageManager.GetString("TabPomodoro");
+        btnNavSettings.Text = LanguageManager.GetString("TabSettings");
+        // Tab 4 始终是 "_"，不需要本地化
 
         _profileManager.RefreshUI();
         _timerControl.RefreshUI();

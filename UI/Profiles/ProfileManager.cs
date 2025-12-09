@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using DiabloTwoMFTimer.Interfaces;
@@ -244,6 +246,7 @@ public partial class ProfileManager : UserControl
         btnDeleteCharacter!.Text = DiabloTwoMFTimer.Utils.LanguageManager.GetString("DeleteCharacter");
         btnShowStats!.Text = DiabloTwoMFTimer.Utils.LanguageManager.GetString("Statistics");
         btnShowLootHistory!.Text = DiabloTwoMFTimer.Utils.LanguageManager.GetString("LootHistory");
+        btnExport!.Text = DiabloTwoMFTimer.Utils.LanguageManager.GetString("Export", "导出");
 
         // 根据是否有未完成记录设置开始按钮文本
         if (btnStartFarm != null)
@@ -512,6 +515,38 @@ public partial class ProfileManager : UserControl
             _profileService.CurrentDifficulty = difficulty;
             // 更新UI - TimerControl会通过事件监听自动更新
             UpdateUI();
+        }
+    }
+
+    private void BtnExport_Click(object? sender, EventArgs e)
+    {
+        try
+        {
+            // 构造档案文件夹路径 (与 YamlProfileRepository 中的路径一致)
+            string profilesPath = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                "DiabloTwoMFTimer",
+                "profiles"
+            );
+
+            // 确保目录存在
+            if (!Directory.Exists(profilesPath))
+            {
+                Directory.CreateDirectory(profilesPath);
+            }
+
+            // 打开文件夹
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = profilesPath,
+                UseShellExecute = true,
+                Verb = "open"
+            });
+        }
+        catch (Exception ex)
+        {
+            LogManager.WriteErrorLog("ProfileManager", "打开档案文件夹失败", ex);
+            Utils.Toast.Error($"无法打开文件夹: {ex.Message}");
         }
     }
 

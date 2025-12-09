@@ -43,7 +43,10 @@ partial class HotkeySettingsControl
         this.tlpMain.ColumnCount = 1;
         this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
         this.tlpMain.Controls.Add(this.grpHotkeys, 0, 0);
-        this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+        // this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
+        this.tlpMain.Dock = System.Windows.Forms.DockStyle.Top; // 改为 Top
+        this.tlpMain.AutoSize = true; // 开启自动大小
+        this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
         this.tlpMain.Location = new System.Drawing.Point(0, 0);
         this.tlpMain.Name = "tlpMain";
         this.tlpMain.Padding = new System.Windows.Forms.Padding(10);
@@ -132,6 +135,7 @@ partial class HotkeySettingsControl
         // 
         this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+        this.AutoScroll = true;
         this.Controls.Add(this.tlpMain);
         this.Name = "HotkeySettingsControl";
         this.Size = new System.Drawing.Size(350, 250);

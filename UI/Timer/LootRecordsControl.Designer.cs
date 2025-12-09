@@ -45,7 +45,7 @@ namespace DiabloTwoMFTimer.UI.Timer
             this.gridLoot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gridLoot.Location = new System.Drawing.Point(0, 0);
             this.gridLoot.Name = "gridLoot";
-            this.gridLoot.Size = new System.Drawing.Size(605, 150);
+            this.gridLoot.Size = new System.Drawing.Size(Theme.UISizeConstants.ClientWidth, 150);
             this.gridLoot.TabIndex = 0;
             this.gridLoot.CellValueNeeded += new System.Windows.Forms.DataGridViewCellValueEventHandler(this.GridLoot_CellValueNeeded);
 
@@ -89,7 +89,7 @@ namespace DiabloTwoMFTimer.UI.Timer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.gridLoot);
             this.Name = "LootRecordsControl";
-            this.Size = new System.Drawing.Size(605, 150);
+            this.Size = new System.Drawing.Size(Theme.UISizeConstants.ClientWidth, 150);
             ((System.ComponentModel.ISupportInitialize)(this.gridLoot)).EndInit();
             this.ResumeLayout(false);
         }

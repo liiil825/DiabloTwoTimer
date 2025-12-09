@@ -28,8 +28,8 @@ public static class AppTheme
     public static Font SmallTitleFont { get; private set; } = null!;
     public static Font TitleFont { get; private set; } = null!;
     public static Font BigTimeFont { get; private set; } = null!;
-    // 普通文本 (1080p下 9pt)
-    private const float BaseMainFontSize = 9F;
+    // 普通文本 (1080p下 10pt)
+    private const float BaseMainFontSize = 10F;
     // 标题文本 (1080p下 12pt)
     private const float BaseTitleFontSize = 12F;
     // 计时器大字 (1080p下 36pt，配合 70px 行高)

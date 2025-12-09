@@ -27,7 +27,7 @@ public partial class GeneralSettingsControl : UserControl
         if (cmbUiScale == null) return;
 
         cmbUiScale.Items.Clear();
-        cmbUiScale.Items.Add(new ScaleOption { Name = "自动适配 (Auto)", Value = 0f });
+        cmbUiScale.Items.Add(new ScaleOption { Name = "Auto", Value = 0f });
         cmbUiScale.Items.Add(new ScaleOption { Name = "100% (1080P)", Value = 1.0f });
         cmbUiScale.Items.Add(new ScaleOption { Name = "150% (2K)", Value = 1.5f });
         cmbUiScale.Items.Add(new ScaleOption { Name = "175%", Value = 1.6f });

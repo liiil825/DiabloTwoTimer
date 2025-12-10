@@ -33,8 +33,8 @@
   "TabTimer": "计时",
   "TabPomodoro": "番茄",
   "TabSettings": "设置",
-  "StartPomodoro": "开始番茄",
-  "PausePomodoro": "暂停番茄",
+  "StartPomodoro": "开始",
+  "PausePomodoro": "暂停",
   "ResetPomodoro": "重置",
   "ConfirmSettings": "确认",
   "WindowPosition": "窗口位置",
@@ -154,5 +154,7 @@
   "LootTableItemName": "物品名称",
   "LootTableScene": "场景",
   "Export": "导出",
+  "Yes": "是",
+  "No": "否",
   "LootTableRun": "场次"
 }

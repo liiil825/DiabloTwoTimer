@@ -38,7 +38,7 @@ partial class BreakForm
         {
             AutoSize = false,
             Size = new Size(300, 40),
-            Font = new Font("微软雅黑", 14F, FontStyle.Bold),
+            Font = Theme.AppTheme.TitleFont,
             ForeColor = Color.Gray,
             TextAlign = ContentAlignment.MiddleLeft,
             Text = _mode == BreakFormMode.PomodoroBreak ? "REST & RECOVER" : "STATISTICS",
@@ -70,7 +70,7 @@ partial class BreakForm
         {
             AutoSize = false,
             Size = new Size(800, 60), // 高度稍微减小
-            Font = new Font("微软雅黑", 22F, FontStyle.Bold),
+            Font = Theme.AppTheme.BigTitleFont,
             ForeColor = Color.White,
             TextAlign = ContentAlignment.MiddleCenter,
             Text = "休息一下",
@@ -80,7 +80,7 @@ partial class BreakForm
         lblTimer = new Label
         {
             AutoSize = true,
-            Font = new Font("Consolas", 36F, FontStyle.Bold), // 字体加大
+            Font = Theme.AppTheme.BigTimeFont,
             ForeColor = Color.LightGreen,
             TextAlign = ContentAlignment.MiddleCenter,
             Text = "00:00",
@@ -98,7 +98,7 @@ partial class BreakForm
         lblDuration = new Label
         {
             AutoSize = true,
-            Font = new Font("微软雅黑", 12F, FontStyle.Regular),
+            Font = Theme.AppTheme.MainFont,
             ForeColor = Color.LightGray,
             TextAlign = ContentAlignment.MiddleCenter,
             Text = "总投入时间: --",
@@ -109,7 +109,7 @@ partial class BreakForm
         {
             AutoSize = false,
             Size = new Size(800, 400),
-            Font = new Font("Consolas", 11F),
+            Font = Theme.AppTheme.ConsoleFont,
             ForeColor = Color.Gold,
             TextAlign = ContentAlignment.TopCenter,
             Text = "Loading...",

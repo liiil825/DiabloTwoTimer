@@ -91,7 +91,7 @@ public partial class BreakForm : System.Windows.Forms.Form
         {
             Text = text,
             Size = new Size(120, 43),
-            Font = new Font("微软雅黑", 10F),
+            Font = Theme.AppTheme.MainFont,
             FlatStyle = FlatStyle.Flat,
             Cursor = Cursors.Hand,
             TextAlign = ContentAlignment.MiddleCenter, // 显式指定居中
@@ -109,7 +109,7 @@ public partial class BreakForm : System.Windows.Forms.Form
         {
             Text = text,
             Size = new Size(160, 50),
-            Font = new Font("微软雅黑", 11F),
+            Font = Theme.AppTheme.MainFont,
             FlatStyle = FlatStyle.Flat,
             ForeColor = Color.White,
             Cursor = Cursors.Hand,

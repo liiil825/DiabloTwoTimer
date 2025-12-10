@@ -2,94 +2,106 @@ namespace DiabloTwoMFTimer.UI.Profiles
 {
     partial class CreateCharacterForm
     {
-        /// <summary>
-        /// Required designer variable.
-        /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
+            if (disposing && (components != null)) components.Dispose();
             base.Dispose(disposing);
         }
 
         private void InitializeComponent()
         {
-            // 使用 Themed 控件
+            this.tlpContent = new System.Windows.Forms.TableLayoutPanel();
             this.lblCharacterName = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
             this.txtCharacterName = new DiabloTwoMFTimer.UI.Components.ThemedTextBox();
             this.lblCharacterClass = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
             this.cmbCharacterClass = new DiabloTwoMFTimer.UI.Components.ThemedComboBox();
+
+            this.pnlContent.SuspendLayout(); // 挂起基类容器
+            this.tlpContent.SuspendLayout();
             this.SuspendLayout();
+
+            // 
+            // tlpContent
+            // 
+            this.tlpContent.AutoSize = true;
+            this.tlpContent.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpContent.ColumnCount = 2;
+            // 第一列：Label (AutoSize)
+            this.tlpContent.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+            // 第二列：Input (Percent 100%) - 占满剩余
+            this.tlpContent.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+
+            this.tlpContent.Controls.Add(this.lblCharacterName, 0, 0);
+            this.tlpContent.Controls.Add(this.txtCharacterName, 1, 0);
+            this.tlpContent.Controls.Add(this.lblCharacterClass, 0, 1);
+            this.tlpContent.Controls.Add(this.cmbCharacterClass, 1, 1);
+
+            this.tlpContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpContent.RowCount = 2;
+            this.tlpContent.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpContent.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpContent.Padding = new System.Windows.Forms.Padding(0);
 
             // 
             // lblCharacterName
             // 
+            this.lblCharacterName.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCharacterName.AutoSize = true;
-            this.lblCharacterName.Location = new System.Drawing.Point(50, 70); // Y坐标稍微下移以适应标题栏
+            this.lblCharacterName.Margin = new System.Windows.Forms.Padding(0, 10, 10, 10);
             this.lblCharacterName.Name = "lblCharacterName";
-            this.lblCharacterName.Size = new System.Drawing.Size(60, 15);
-            this.lblCharacterName.TabIndex = 0;
             this.lblCharacterName.Text = "Name:";
 
             // 
             // txtCharacterName
             // 
-            this.txtCharacterName.Location = new System.Drawing.Point(150, 67);
+            this.txtCharacterName.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtCharacterName.Margin = new System.Windows.Forms.Padding(0, 10, 0, 10);
             this.txtCharacterName.Name = "txtCharacterName";
-            this.txtCharacterName.Size = new System.Drawing.Size(180, 25);
-            this.txtCharacterName.TabIndex = 1;
+            this.txtCharacterName.TabIndex = 0;
 
             // 
             // lblCharacterClass
             // 
+            this.lblCharacterClass.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCharacterClass.AutoSize = true;
-            this.lblCharacterClass.Location = new System.Drawing.Point(50, 113);
+            this.lblCharacterClass.Margin = new System.Windows.Forms.Padding(0, 10, 10, 10);
             this.lblCharacterClass.Name = "lblCharacterClass";
-            this.lblCharacterClass.Size = new System.Drawing.Size(60, 15);
-            this.lblCharacterClass.TabIndex = 2;
             this.lblCharacterClass.Text = "Class:";
 
             // 
             // cmbCharacterClass
             // 
+            this.cmbCharacterClass.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmbCharacterClass.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbCharacterClass.FormattingEnabled = true;
-            this.cmbCharacterClass.Location = new System.Drawing.Point(150, 110);
+            this.cmbCharacterClass.Margin = new System.Windows.Forms.Padding(0, 10, 0, 10);
             this.cmbCharacterClass.Name = "cmbCharacterClass";
-            this.cmbCharacterClass.Size = new System.Drawing.Size(180, 23);
-            this.cmbCharacterClass.TabIndex = 3;
+            this.cmbCharacterClass.TabIndex = 1;
 
             // 
             // CreateCharacterForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(450, 300);
-            this.Controls.Add(this.cmbCharacterClass);
-            this.Controls.Add(this.lblCharacterClass);
-            this.Controls.Add(this.txtCharacterName);
-            this.Controls.Add(this.lblCharacterName);
+            // 只需要设定一个最小宽度，高度自动
+            this.MinimumSize = new System.Drawing.Size(400, 0);
+
+            // 将布局添加到基类的 Content Panel
+            this.pnlContent.Controls.Add(this.tlpContent);
+
             this.Name = "CreateCharacterForm";
-            this.Text = "创建角色档案";
+            this.Text = "Create Character";
 
-            // 重要：保留基类的控件
-            this.Controls.SetChildIndex(this.lblCharacterName, 0);
-            this.Controls.SetChildIndex(this.txtCharacterName, 0);
-            this.Controls.SetChildIndex(this.lblCharacterClass, 0);
-            this.Controls.SetChildIndex(this.cmbCharacterClass, 0);
-
+            this.pnlContent.ResumeLayout(false);
+            this.pnlContent.PerformLayout();
+            this.tlpContent.ResumeLayout(false);
+            this.tlpContent.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
 
+        private System.Windows.Forms.TableLayoutPanel tlpContent;
         private DiabloTwoMFTimer.UI.Components.ThemedLabel lblCharacterName;
         private DiabloTwoMFTimer.UI.Components.ThemedTextBox txtCharacterName;
         private DiabloTwoMFTimer.UI.Components.ThemedLabel lblCharacterClass;

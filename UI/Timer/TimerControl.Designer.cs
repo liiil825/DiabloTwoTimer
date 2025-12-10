@@ -169,11 +169,12 @@ namespace DiabloTwoMFTimer.UI.Timer
             this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
             this.tlpBottom.Controls.Add(this.characterSceneControl, 0, 0);
             this.tlpBottom.Controls.Add(this.toggleLootButton, 1, 0);
-            this.tlpBottom.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpBottom.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpBottom.Dock = System.Windows.Forms.DockStyle.Top;
+            this.tlpBottom.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
+            this.tlpBottom.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpBottom.Name = "tlpBottom";
             this.tlpBottom.RowCount = 1;
-            this.tlpBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpBottom.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
 
             // Character Scene
             this.characterSceneControl.Dock = System.Windows.Forms.DockStyle.Fill;

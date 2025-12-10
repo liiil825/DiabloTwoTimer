@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using DiabloTwoMFTimer.UI.Theme;
+using DiabloTwoMFTimer.Utils;
 
 namespace DiabloTwoMFTimer.UI.Components;
 
@@ -39,6 +40,12 @@ public class ThemedButton : Button
         this.Size = new Size(120, 40);
         this.Cursor = Cursors.Hand;
         this.Font = AppTheme.MainFont;
+        this.AutoSize = true;
+        this.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+
+        // 其他原本的初始化代码...
+        this.FlatStyle = FlatStyle.Flat;
+        this.FlatAppearance.BorderSize = 0;
 
         // 3. 关键：支持透明背景，这样圆角外面的四个角才能透出父容器的颜色
         this.BackColor = Color.Transparent;
@@ -62,6 +69,42 @@ public class ThemedButton : Button
             _borderRadius = value;
             Invalidate();
         }
+    }
+
+    // 核心逻辑：告诉 WinForms 这个控件“想要”多大
+    public override Size GetPreferredSize(Size proposedSize)
+    {
+        // 1. 获取基础文字的大小 (比 MeasureString 更准确)
+        Size textSize = TextRenderer.MeasureText(this.Text, this.Font);
+
+        // 2. 定义留白 (Padding)
+        // 这里直接调用 ScaleHelper，确保 4K 下也是按比例的
+        // 比如：上下各加 8px，左右各加 15px
+        int verticalPadding = ScaleHelper.Scale(8);
+        int horizontalPadding = ScaleHelper.Scale(16);
+
+        // 3. 计算总大小
+        int w = textSize.Width + horizontalPadding;
+        int h = textSize.Height + verticalPadding;
+
+        // 确保不小于最小尺寸（可选，防止按钮太小点不到）
+        // w = Math.Max(w, ScaleHelper.Scale(80)); 
+
+        return new Size(w, h);
+    }
+
+    // 可选：为了确保修改文字或字体时，尺寸能立即更新
+    protected override void OnTextChanged(EventArgs e)
+    {
+        base.OnTextChanged(e);
+        // 通知布局引擎重新计算尺寸
+        this.Invalidate();
+    }
+
+    protected override void OnFontChanged(EventArgs e)
+    {
+        base.OnFontChanged(e);
+        this.Invalidate();
     }
 
     // --- 鼠标事件处理 (用于切换状态) ---

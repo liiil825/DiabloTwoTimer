@@ -1,103 +1,91 @@
-#nullable disable
-
-using System;
-using System.ComponentModel;
-using System.Drawing;
-using System.Windows.Forms;
-
 namespace DiabloTwoMFTimer.UI.Timer
 {
     partial class RecordLootForm
     {
+        private System.ComponentModel.IContainer components = null;
 
-        private TextBox txtLootName;
-        private Label label1;
-        private CheckBox chkPreviousRun;
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null)) components.Dispose();
+            base.Dispose(disposing);
+        }
 
         private void InitializeComponent()
         {
-            this.txtLootName = new DiabloTwoMFTimer.UI.Components.ThemedTextBox();
+            this.tlpContent = new System.Windows.Forms.TableLayoutPanel();
             this.label1 = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
+            this.txtLootName = new DiabloTwoMFTimer.UI.Components.ThemedTextBox();
             this.chkPreviousRun = new DiabloTwoMFTimer.UI.Components.ThemedCheckBox();
+
+            this.pnlContent.SuspendLayout();
+            this.tlpContent.SuspendLayout();
             this.SuspendLayout();
-            //
-            // txtLootName
-            //
-            this.txtLootName.Anchor = (
-                (System.Windows.Forms.AnchorStyles)(
-                    (
-                        (System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right
-                    )
-                )
-            );
-            this.txtLootName.Location = new System.Drawing.Point(12, 29);
-            this.txtLootName.Name = "txtLootName";
-            this.txtLootName.Size = new System.Drawing.Size(356, 25);
-            this.txtLootName.TabIndex = 0;
-            //
+
+            // 
+            // tlpContent
+            // 
+            this.tlpContent.AutoSize = true;
+            this.tlpContent.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpContent.ColumnCount = 1;
+            this.tlpContent.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+
+            this.tlpContent.Controls.Add(this.label1, 0, 0);
+            this.tlpContent.Controls.Add(this.txtLootName, 0, 1);
+            this.tlpContent.Controls.Add(this.chkPreviousRun, 0, 2);
+
+            this.tlpContent.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpContent.RowCount = 3;
+            this.tlpContent.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpContent.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+            this.tlpContent.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
+
+            // 
             // label1
-            //
+            // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 11);
+            this.label1.Margin = new System.Windows.Forms.Padding(0, 0, 0, 5);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(79, 15);
-            this.label1.TabIndex = 1;
             this.label1.Text = "Loot Name";
-            //
+
+            // 
+            // txtLootName
+            // 
+            this.txtLootName.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtLootName.Margin = new System.Windows.Forms.Padding(0, 0, 0, 15);
+            this.txtLootName.Name = "txtLootName";
+            this.txtLootName.TabIndex = 0;
+
+            // 
             // chkPreviousRun
-            //
+            // 
             this.chkPreviousRun.AutoSize = true;
-            this.chkPreviousRun.Location = new System.Drawing.Point(12, 67);
+            this.chkPreviousRun.Margin = new System.Windows.Forms.Padding(0);
             this.chkPreviousRun.Name = "chkPreviousRun";
-            this.chkPreviousRun.Size = new System.Drawing.Size(117, 19);
-            this.chkPreviousRun.TabIndex = 2;
             this.chkPreviousRun.Text = "Previous Run";
-            this.chkPreviousRun.UseVisualStyleBackColor = true;
-            //
-            // btnConfirm (Inherited)
-            //
-            this.btnConfirm.Anchor = (
-                (System.Windows.Forms.AnchorStyles)(
-                    (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)
-                )
-            );
-            this.btnConfirm.Location = new System.Drawing.Point(212, 92);
-            this.btnConfirm.Size = new System.Drawing.Size(75, 23);
-            this.btnConfirm.Text = "保存";
-            //
-            // btnCancel (Inherited)
-            //
-            this.btnCancel.Anchor = (
-                (System.Windows.Forms.AnchorStyles)(
-                    (System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)
-                )
-            );
-            this.btnCancel.Location = new System.Drawing.Point(293, 92);
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.chkPreviousRun.TabIndex = 1;
 
-            //
+            // 
             // RecordLootForm
-            //
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(380, 127);
-            this.Controls.Add(this.chkPreviousRun);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.txtLootName);
+            this.MinimumSize = new System.Drawing.Size(400, 0);
+
+            this.pnlContent.Controls.Add(this.tlpContent);
             this.Name = "RecordLootForm";
-            this.Text = "记录掉落";
+            this.Text = "Record Loot";
 
-            this.Controls.SetChildIndex(this.btnConfirm, 0);
-            this.Controls.SetChildIndex(this.btnCancel, 0);
-            this.Controls.SetChildIndex(this.txtLootName, 0);
-            this.Controls.SetChildIndex(this.label1, 0);
-            this.Controls.SetChildIndex(this.chkPreviousRun, 0);
-
+            this.pnlContent.ResumeLayout(false);
+            this.pnlContent.PerformLayout();
+            this.tlpContent.ResumeLayout(false);
+            this.tlpContent.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
         }
 
-
+        private System.Windows.Forms.TableLayoutPanel tlpContent;
+        private System.Windows.Forms.TextBox txtLootName;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.CheckBox chkPreviousRun;
     }
 }

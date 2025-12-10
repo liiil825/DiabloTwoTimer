@@ -36,7 +36,7 @@ public class PomodoroTimerService : IPomodoroTimerService
         _timerService = timerService;
         _appSettings = appSettings;
         Settings = new PomodoroTimeSettings();
-        _timer = new System.Windows.Forms.Timer { Interval = 100 };
+        _timer = new System.Windows.Forms.Timer { Interval = 60 };
         _timer.Tick += Timer_Tick;
         InitializeTimer();
 

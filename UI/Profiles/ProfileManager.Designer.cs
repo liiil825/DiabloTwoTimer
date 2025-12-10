@@ -119,17 +119,14 @@ namespace DiabloTwoMFTimer.UI.Profiles
             System.Windows.Forms.Padding commonMargin = new System.Windows.Forms.Padding(5, 5, 5, 10);
 
             this.btnCreateCharacter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnCreateCharacter.Height = 40;
             this.btnCreateCharacter.Margin = commonMargin;
             this.btnCreateCharacter.Click += BtnCreateCharacter_Click;
 
             this.btnSwitchCharacter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnSwitchCharacter.Height = 40;
             this.btnSwitchCharacter.Margin = commonMargin;
             this.btnSwitchCharacter.Click += BtnSwitchCharacter_Click;
 
             this.btnDeleteCharacter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnDeleteCharacter.Height = 40;
             this.btnDeleteCharacter.Margin = commonMargin;
             this.btnDeleteCharacter.Click += BtnDeleteCharacter_Click;
 
@@ -218,13 +215,11 @@ namespace DiabloTwoMFTimer.UI.Profiles
 
             // Start Farm
             this.btnStartFarm.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnStartFarm.Height = 50;
             this.btnStartFarm.Margin = commonMargin;
             this.btnStartFarm.Click += BtnStartFarm_Click;
 
             // Export (New)
             this.btnExport.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnExport.Height = 50;
             this.btnExport.Margin = commonMargin;
             this.btnExport.Text = "Export"; // 初始文本
             this.btnExport.Click += BtnExport_Click;

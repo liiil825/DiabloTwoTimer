@@ -56,10 +56,9 @@ public static class ScaleHelper
     {
         float fontFactor = 1.0f;
 
-        // 使用 switch (或者 if-else 阶梯) 来决定字体的倍率
+
         if (ScaleFactor >= 2.1f)
         {
-            // 界面放大 2 倍，字体只放大 1.6 倍，留出更多留白，显得精致
             fontFactor = 1.6f;
         }
         else if (ScaleFactor >= 2f)

@@ -45,6 +45,8 @@ public class AppSettings : IAppSettings
     public int LongBreakMinutes { get; set; } = 15;
     public int LongBreakSeconds { get; set; } = 0;
 
+    public Models.PomodoroMode PomodoroMode { get; set; } = Models.PomodoroMode.Automatic;
+
     // 界面设置
     public bool TimerShowLootDrops { get; set; } = false; // 是否显示掉落记录
     public bool TimerShowPomodoro { get; set; } = true; // 是否显示番茄钟

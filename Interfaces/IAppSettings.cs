@@ -34,6 +34,8 @@ public interface IAppSettings
     public int PomodoroWarningShortTime { get; set; }
     public bool GenerateRoomName { get; set; }
 
+    public Models.PomodoroMode PomodoroMode { get; set; }
+
     // 热键设置
     public Keys HotkeyStartOrNext { get; set; }
     public Keys HotkeyPause { get; set; }

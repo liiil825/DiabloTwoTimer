@@ -26,4 +26,9 @@ public interface IPomodoroTimerService
     void Reset();
     void LoadSettings();
     void SkipBreak();
+
+    // 【新增】
+    void SwitchToNextState(); // 立即结束当前状态，进入下一个
+    void AddMinutes(int minutes); // 增加时间
+    bool CanShowStats { get; } // 是否允许显示统计（仅休息时间）
 }

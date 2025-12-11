@@ -16,6 +16,8 @@ public partial class RecordLootForm : BaseForm
     private readonly ISceneService _sceneService = null!;
     private readonly IAppSettings _appSettings = null!;
     private readonly IMessenger _messenger = null!;
+    private bool _shouldCaptureScreenshot = false;
+    private string _lootNameForCapture = string.Empty;
 
     public event EventHandler? LootRecordSaved;
 
@@ -78,7 +80,6 @@ public partial class RecordLootForm : BaseForm
     {
         SaveLootRecord();
     }
-
     private void SaveLootRecord()
     {
         if (string.IsNullOrWhiteSpace(txtLootName.Text))
@@ -87,9 +88,11 @@ public partial class RecordLootForm : BaseForm
             return;
         }
 
+        // 1. 【修改】不再直接调用 PerformScreenshot，而是标记状态
         if (_appSettings.ScreenshotOnLoot)
         {
-            PerformScreenshot();
+            _shouldCaptureScreenshot = true;
+            _lootNameForCapture = txtLootName.Text.Trim();
         }
 
         int runCount = _timerHistoryService.RunCount + 1;
@@ -123,61 +126,19 @@ public partial class RecordLootForm : BaseForm
         Close();
     }
 
+    protected override void OnFormClosed(FormClosedEventArgs e)
+    {
+        base.OnFormClosed(e);
+
+        if (_shouldCaptureScreenshot && !string.IsNullOrEmpty(_lootNameForCapture))
+        {
+            // 发送消息给 MainForm 处理截图，此时本窗口已经销毁/隐藏，不会挡住截图
+            _messenger.Publish(new ScreenshotRequestedMessage(_lootNameForCapture));
+        }
+    }
+
     protected virtual void OnLootRecordSaved(EventArgs e)
     {
         LootRecordSaved?.Invoke(this, e);
-    }
-
-    private void PerformScreenshot()
-    {
-        bool needHide = _appSettings.HideWindowOnScreenshot;
-
-        try
-        {
-            if (needHide)
-            {
-                // 1. 发送消息通知主窗体隐藏 (解耦)
-                _messenger.Publish(new HideMainWindowMessage());
-
-                // 2. 隐藏自己
-                this.Opacity = 0;
-
-                // 3. 强制刷新与缓冲
-                Application.DoEvents();
-                System.Threading.Thread.Sleep(200);
-            }
-
-            // 4. 截图
-            string lootName = txtLootName.Text.Trim();
-            string? path = ScreenshotHelper.CaptureAndSave(lootName);
-            if (path == null)
-            {
-                Utils.Toast.Error(LanguageManager.GetString("ScreenshotFailed") ?? "截图失败");
-                return;
-            }
-            else
-            {
-                Utils.Toast.Success(LanguageManager.GetString("ScreenshotSavedSuccessfully") ?? "截图保存成功");
-            }
-
-            // ... (可选提示)
-        }
-        catch (Exception ex)
-        {
-            LogManager.WriteErrorLog("RecordLootForm", "截图流程异常", ex);
-        }
-        finally
-        {
-            // 5. 恢复显示
-            if (needHide)
-            {
-                // 恢复自己
-                this.Opacity = 1;
-                // 发送消息通知主窗体恢复
-                _messenger.Publish(new ShowMainWindowMessage());
-
-                Application.DoEvents();
-            }
-        }
     }
 }

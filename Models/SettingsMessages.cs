@@ -23,7 +23,13 @@ public class ResumeHotkeysMessage { }
 // 【新增】请求隐藏主窗口消息
 public class HideMainWindowMessage { }
 
-// 【新增】请求显示主窗口消息
+// 请求显示主窗口消息
 public class ShowMainWindowMessage { }
 
 public class OpacityChangedMessage { }
+
+// 【新增】请求截图消息 (携带掉落名称)
+public class ScreenshotRequestedMessage(string lootName)
+{
+    public string LootName { get; } = lootName;
+}

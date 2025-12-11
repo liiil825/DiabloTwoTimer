@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using DiabloTwoMFTimer.Interfaces;
 using DiabloTwoMFTimer.Models;
@@ -179,6 +180,68 @@ public partial class MainForm : System.Windows.Forms.Form
         _messenger.Subscribe<HideMainWindowMessage>(_ => this.SafeInvoke(() => this.Opacity = 0));
         _messenger.Subscribe<ShowMainWindowMessage>(_ => this.SafeInvoke(() => this.Opacity = _appSettings.Opacity));
         _messenger.Subscribe<TimerSettingsChangedMessage>(msg => this.SafeInvoke(() => AdjustWindowHeight()));
+        _messenger.Subscribe<ScreenshotRequestedMessage>(OnScreenshotRequested);
+    }
+    private void OnScreenshotRequested(ScreenshotRequestedMessage message)
+    {
+        // 使用 BeginInvoke 确保脱离当前的事件调用栈
+        // 使用 async/await 让出 UI 线程，让系统有时间处理 RecordLootForm 关闭后的重绘
+        this.BeginInvoke(new Action(async () =>
+        {
+            try
+            {
+                // 等待 500ms：这对于让刚刚关闭的 RecordLootForm 彻底消失绰绰有余
+                // 此时 UI 线程是空闲的，可以处理 Paint 消息
+                await Task.Delay(500);
+
+                await PerformMainFormScreenshotAsync(message.LootName);
+            }
+            catch (Exception ex)
+            {
+                LogManager.WriteErrorLog("MainForm", "延迟截图失败", ex);
+            }
+        }));
+    }
+
+    private async Task PerformMainFormScreenshotAsync(string lootName)
+    {
+        bool hideWindow = _appSettings.HideWindowOnScreenshot;
+
+        try
+        {
+            // 如果需要隐藏主窗口
+            if (hideWindow)
+            {
+                this.Opacity = 0;
+                // 等待 200ms 让主窗口消失的重绘生效
+                // 使用 Task.Delay 而不是 Thread.Sleep，避免卡死 UI
+                await Task.Delay(200);
+            }
+
+            // 执行截图 (这是耗时操作，但在 UI 线程执行没问题，因为我们已经让出了时间片)
+            string? path = ScreenshotHelper.CaptureAndSave(lootName);
+
+            if (path == null)
+            {
+                Utils.Toast.Error(LanguageManager.GetString("ScreenshotFailed") ?? "截图失败");
+            }
+            else
+            {
+                Utils.Toast.Success(LanguageManager.GetString("ScreenshotSavedSuccessfully") ?? "截图已保存");
+            }
+        }
+        catch (Exception ex)
+        {
+            LogManager.WriteErrorLog("MainForm", "截图流程异常", ex);
+        }
+        finally
+        {
+            // 恢复主窗口显示
+            if (hideWindow)
+            {
+                this.Opacity = _appSettings.Opacity;
+            }
+        }
     }
 
     private void UpdateFormTitleAndTabs()

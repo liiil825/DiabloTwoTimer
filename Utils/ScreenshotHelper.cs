@@ -24,7 +24,7 @@ public static class ScreenshotHelper
             // 2. 处理文件名非法字符
             string safeLootName = string.Join("_", lootName.Split(Path.GetInvalidFileNameChars()));
             string timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            string fileName = $"{timestamp}_{safeLootName}.png";
+            string fileName = $"{safeLootName}_{timestamp}.png";
             string fullPath = Path.Combine(folderPath, fileName);
 
             // 3. 执行截屏 (主屏幕)

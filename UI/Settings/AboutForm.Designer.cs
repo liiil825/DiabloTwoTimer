@@ -53,7 +53,7 @@ namespace DiabloTwoMFTimer.UI.Form
             this.lblAppName.Font = DiabloTwoMFTimer.UI.Theme.AppTheme.BigTitleFont;
             this.lblAppName.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.lblAppName.Name = "lblAppName";
-            this.lblAppName.Text = "Diablo II MF Timer";
+            this.lblAppName.Text = "Diablo II Timer";
             this.lblAppName.Margin = new System.Windows.Forms.Padding(0, 0, 0, 10);
 
             // 

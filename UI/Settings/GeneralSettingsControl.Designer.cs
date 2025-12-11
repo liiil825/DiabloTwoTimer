@@ -57,22 +57,17 @@ partial class GeneralSettingsControl
         this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
 
         // --- 顺序调整 ---
-        // 1. 窗口位置
         this.tlpMain.Controls.Add(this.groupBoxPosition, 0, 0);
-        // 2. 语言
         this.tlpMain.Controls.Add(this.groupBoxLanguage, 0, 1);
-        // 3. 不透明度
-        this.tlpMain.Controls.Add(this.grpOpacity, 0, 2);      // 新增在第2行
-        // 4 界面缩放 (调整到了始终置顶前面)
-        this.tlpMain.Controls.Add(this.grpUiScale, 0, 3);      // 新增在第3行
-        // 4. 始终置顶
+        this.tlpMain.Controls.Add(this.grpOpacity, 0, 2);
+        this.tlpMain.Controls.Add(this.grpUiScale, 0, 3);
         this.tlpMain.Controls.Add(this.alwaysOnTopCheckBox, 0, 4);
 
-        this.tlpMain.Dock = System.Windows.Forms.DockStyle.Top; // 【关键】设为 Top 而不是 Fill，让它能撑开高度
+        this.tlpMain.Dock = System.Windows.Forms.DockStyle.Top;
         this.tlpMain.Location = new System.Drawing.Point(0, 0);
         this.tlpMain.Name = "tlpMain";
-        // 【关键】去除 Padding (Margin)，紧凑布局
-        this.tlpMain.Padding = new System.Windows.Forms.Padding(0);
+        // 【修改点 1】这里改为 10，与 Hotkey/Timer 页面保持一致
+        this.tlpMain.Padding = new System.Windows.Forms.Padding(10);
         this.tlpMain.RowCount = 5;
         this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
         this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
@@ -87,7 +82,8 @@ partial class GeneralSettingsControl
         this.groupBoxPosition.AutoSize = true;
         this.groupBoxPosition.Controls.Add(this.tlpPosition);
         this.groupBoxPosition.Dock = System.Windows.Forms.DockStyle.Fill;
-        this.groupBoxPosition.Location = new System.Drawing.Point(3, 3); // 稍微留点间隙 (3px) 看起来不那么拥挤
+        // Padding 10 之后，这里的 margin 可以稍微小一点，或者保持一致
+        this.groupBoxPosition.Location = new System.Drawing.Point(13, 13);
         this.groupBoxPosition.Name = "groupBoxPosition";
         this.groupBoxPosition.Padding = new System.Windows.Forms.Padding(3, 20, 3, 3);
         this.groupBoxPosition.Size = new System.Drawing.Size(344, 100);
@@ -133,15 +129,15 @@ partial class GeneralSettingsControl
         SetRadio(radioBottomRight, "右下");
 
         // 
-        // grpOpacity (新增)
+        // grpOpacity
         // 
         this.grpOpacity.AutoSize = true;
         this.grpOpacity.Controls.Add(this.cmbOpacity);
         this.grpOpacity.Dock = System.Windows.Forms.DockStyle.Fill;
-        this.grpOpacity.Location = new System.Drawing.Point(3, 175); // 这里的坐标会自动调整，关键是加入 tlp 的顺序
+        this.grpOpacity.Location = new System.Drawing.Point(3, 175);
         this.grpOpacity.Name = "grpOpacity";
         this.grpOpacity.Padding = new System.Windows.Forms.Padding(3, 20, 3, 3);
-        this.grpOpacity.TabIndex = 2; // 索引设为 2
+        this.grpOpacity.TabIndex = 2;
         this.grpOpacity.TabStop = false;
         this.grpOpacity.Text = "窗口透明度";
 
@@ -187,7 +183,7 @@ partial class GeneralSettingsControl
         SetRadio(englishRadioButton, "English");
 
         // 
-        // grpUiScale (调整到了第三位)
+        // grpUiScale
         // 
         this.grpUiScale.AutoSize = true;
         this.grpUiScale.Controls.Add(this.cmbUiScale);
@@ -209,14 +205,14 @@ partial class GeneralSettingsControl
         this.cmbUiScale.TabIndex = 0;
 
         // 
-        // alwaysOnTopCheckBox (调整到了最后)
+        // alwaysOnTopCheckBox
         // 
         this.alwaysOnTopCheckBox.AutoSize = true;
         this.alwaysOnTopCheckBox.Checked = true;
         this.alwaysOnTopCheckBox.CheckState = System.Windows.Forms.CheckState.Checked;
         this.alwaysOnTopCheckBox.Dock = System.Windows.Forms.DockStyle.Fill;
-        this.alwaysOnTopCheckBox.Location = new System.Drawing.Point(13, 241); // 这里的 Location 只是初始值，会被 TableLayout 覆盖
-        this.alwaysOnTopCheckBox.Margin = new System.Windows.Forms.Padding(13, 10, 3, 10);
+        this.alwaysOnTopCheckBox.Location = new System.Drawing.Point(13, 241);
+        this.alwaysOnTopCheckBox.Margin = new System.Windows.Forms.Padding(3, 10, 3, 10);
         this.alwaysOnTopCheckBox.Name = "alwaysOnTopCheckBox";
         this.alwaysOnTopCheckBox.TabIndex = 3;
         this.alwaysOnTopCheckBox.Text = "总在最前";
@@ -226,12 +222,10 @@ partial class GeneralSettingsControl
         // 
         this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        // 【核心】开启自动滚动
         this.AutoScroll = true;
         this.BackColor = DiabloTwoMFTimer.UI.Theme.AppTheme.BackColor;
         this.Controls.Add(this.tlpMain);
         this.Name = "GeneralSettingsControl";
-        // this.Size = new System.Drawing.Size(350, 420);
 
         this.tlpMain.ResumeLayout(false);
         this.tlpMain.PerformLayout();

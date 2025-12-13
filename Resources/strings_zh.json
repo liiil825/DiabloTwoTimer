@@ -174,5 +174,8 @@
   "AuthorLabel": "作者: 极简Lz",
   "CloseOptionTitle": "关闭选项",
   "CloseOptionMessage": "程序将缩小到系统托盘继续运行。\n您希望怎么做？",
-  "CloseOptionExitApp": "直接退出程序"
+  "CloseOptionExitApp": "直接退出程序",
+  "DeleteHistoryConfirm": "确定要删除这条时间记录吗？\n\n序号: {{0}}\n时长: {{1}}",
+  "DeleteLootConfirm": "确定要删除这条掉落记录吗？\n\n物品: {{0}}\n场景: {{1}}\n时间: {{2}}",
+  "DeleteConfirmTitle": "删除确认"
 }

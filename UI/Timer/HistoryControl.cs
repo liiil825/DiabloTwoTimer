@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using DiabloTwoMFTimer.Interfaces;
 using DiabloTwoMFTimer.Models;
 using DiabloTwoMFTimer.Services;
+using DiabloTwoMFTimer.UI.Components;
 using DiabloTwoMFTimer.Utils;
 
 namespace DiabloTwoMFTimer.UI.Timer;
@@ -27,6 +28,8 @@ public partial class HistoryControl : UserControl
     public TimeSpan FastestTime => _historyService?.FastestTime ?? TimeSpan.Zero;
     public TimeSpan AverageTime => _historyService?.AverageTime ?? TimeSpan.Zero;
     public List<TimeSpan> RunHistory => _historyService?.RunHistory ?? [];
+
+    private bool _isDeleting = false;
 
     public HistoryControl()
     {
@@ -147,23 +150,56 @@ public partial class HistoryControl : UserControl
         });
     }
 
-    public async Task<bool> DeleteSelectedRecordAsync()
+    public Task<bool> DeleteSelectedRecordAsync()
     {
+        if (_isDeleting) return Task.FromResult(false);
+
         if (_historyService == null || gridRunHistory.SelectedRows.Count == 0 || _currentProfile == null)
-            return false;
-        int index = gridRunHistory.SelectedRows[0].Index;
-        bool success = _historyService.DeleteHistoryRecordByIndex(
-            _currentProfile,
-            _currentScene!,
-            _currentDifficulty,
-            index
-        );
-        if (success)
+            return Task.FromResult(false);
+
+        try
         {
-            _profileService.SaveCurrentProfile();
-            RefreshGridRowCount();
+            // 【新增】设置标志位
+            _isDeleting = true;
+
+            int index = gridRunHistory.SelectedRows[0].Index;
+            if (index < 0 || index >= _historyService.RunHistory.Count)
+                return Task.FromResult(false);
+
+            var timeSpan = _historyService.RunHistory[index];
+            string timeFormatted = FormatTime(timeSpan);
+            int runNumber = index + 1;
+
+            string message = LanguageManager.GetString("DeleteHistoryConfirm", runNumber, timeFormatted);
+
+            // 显示弹窗
+            var result = ThemedMessageBox.Show(message, LanguageManager.GetString("DeleteConfirmTitle"), MessageBoxButtons.YesNo);
+
+            if (result != DialogResult.Yes)
+            {
+                return Task.FromResult(false);
+            }
+
+            // 执行删除
+            bool success = _historyService.DeleteHistoryRecordByIndex(
+                _currentProfile,
+                _currentScene!,
+                _currentDifficulty,
+                index
+            );
+
+            if (success)
+            {
+                _profileService.SaveCurrentProfile();
+                RefreshGridRowCount();
+            }
+            return Task.FromResult(success);
         }
-        return await Task.FromResult(success);
+        finally
+        {
+            // 【新增】重置标志位
+            _isDeleting = false;
+        }
     }
 
     private void OnHistoryDataChanged(object? sender, HistoryChangedEventArgs e)

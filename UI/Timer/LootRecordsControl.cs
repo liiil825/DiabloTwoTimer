@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using DiabloTwoMFTimer.Interfaces;
 using DiabloTwoMFTimer.Models;
+using DiabloTwoMFTimer.UI.Components;
 using DiabloTwoMFTimer.Utils;
 
 namespace DiabloTwoMFTimer.UI.Timer;
@@ -18,6 +19,8 @@ public partial class LootRecordsControl : UserControl
 
     private List<LootRecord> _displayRecords = [];
     private string _currentScene = string.Empty;
+    // 【新增】防抖标志位
+    private bool _isDeleting = false;
 
     public event EventHandler? InteractionOccurred = null;
 
@@ -124,25 +127,52 @@ public partial class LootRecordsControl : UserControl
         });
     }
 
-    public async Task<bool> DeleteSelectedLootAsync()
+    public Task<bool> DeleteSelectedLootAsync()
     {
+        if (_isDeleting) return Task.FromResult(false);
         if (_currentProfile == null || gridLoot.SelectedRows.Count == 0)
-            return false;
+            return Task.FromResult(false);
 
-        int visualIndex = gridLoot.SelectedRows[0].Index;
-        if (visualIndex < 0 || visualIndex >= _displayRecords.Count)
-            return false;
-
-        var recordToDelete = _displayRecords[visualIndex];
-        bool removed = _currentProfile.LootRecords.Remove(recordToDelete);
-
-        if (removed)
+        try
         {
-            _profileService.SaveCurrentProfile();
-            UpdateLootRecords(_currentProfile, _currentScene);
-            return true;
+            // 【新增】设置标志位
+            _isDeleting = true;
+
+            int visualIndex = gridLoot.SelectedRows[0].Index;
+            if (visualIndex < 0 || visualIndex >= _displayRecords.Count)
+                return Task.FromResult(false);
+
+            var recordToDelete = _displayRecords[visualIndex];
+
+            // 构建信息
+            string sceneName = _sceneService.GetLocalizedShortSceneName(recordToDelete.SceneName);
+            string dropTime = recordToDelete.DropTime.ToString("yyyy-MM-dd HH:mm:ss");
+            string message = LanguageManager.GetString("DeleteLootConfirm", recordToDelete.Name, sceneName, dropTime);
+
+            // 显示弹窗 (模态)
+            var result = ThemedMessageBox.Show(message, LanguageManager.GetString("DeleteConfirmTitle"), MessageBoxButtons.YesNo);
+
+            if (result != DialogResult.Yes)
+            {
+                return Task.FromResult(false);
+            }
+
+            // 执行删除
+            bool removed = _currentProfile.LootRecords.Remove(recordToDelete);
+
+            if (removed)
+            {
+                _profileService.SaveCurrentProfile();
+                UpdateLootRecords(_currentProfile, _currentScene);
+                return Task.FromResult(true);
+            }
+            return Task.FromResult(false);
         }
-        return await Task.FromResult(false);
+        finally
+        {
+            // 【新增】无论结果如何，必须重置标志位
+            _isDeleting = false;
+        }
     }
 
     public void ClearSelection()

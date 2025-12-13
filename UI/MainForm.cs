@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -6,6 +7,7 @@ using DiabloTwoMFTimer.Interfaces;
 using DiabloTwoMFTimer.Models;
 using DiabloTwoMFTimer.Services;
 using DiabloTwoMFTimer.UI.Components;
+using DiabloTwoMFTimer.UI.Form;
 using DiabloTwoMFTimer.UI.Pomodoro;
 using DiabloTwoMFTimer.UI.Profiles;
 using DiabloTwoMFTimer.UI.Settings;
@@ -28,6 +30,9 @@ public partial class MainForm : System.Windows.Forms.Form
     private readonly TimerControl _timerControl = null!;
     private readonly PomodoroControl _pomodoroControl = null!;
     private readonly SettingsControl _settingsControl = null!;
+    private NotifyIcon _notifyIcon = null!;
+    private ContextMenuStrip _trayMenu = null!;
+    private System.ComponentModel.IContainer _components = null!;
 
     public MainForm()
     {
@@ -63,6 +68,7 @@ public partial class MainForm : System.Windows.Forms.Form
 
         InitializeChildControls();
         InitializeForm();
+        InitializeSystemTray();
         SubscribeToEvents();
         SubscribeToMessages();
         Utils.Toast.RegisterUiInvoker(action => this.SafeInvoke(action));
@@ -84,14 +90,42 @@ public partial class MainForm : System.Windows.Forms.Form
         else if (sender == btnNavTimer) tabControl.SelectedIndex = 1;
         else if (sender == btnNavPomodoro) tabControl.SelectedIndex = 2;
         else if (sender == btnNavSettings) tabControl.SelectedIndex = 3;
-        else if (sender == btnNavMinimize) // 新增判断
+        else if (sender == btnNavMinimize) // 现在文字是 'x'
         {
-            // 最小化前先切换到计时界面
-            if (tabControl.SelectedIndex != (int)Models.TabPage.Timer)
+            using var form = new CloseOptionForm();
+            // 因为继承了 BaseForm，它已经自带了 ShowDialog 逻辑和 DialogResult 处理
+            var result = form.ShowDialog(this);
+
+            // BaseForm 的 "确认" 按钮会返回 DialogResult.OK
+            if (result == DialogResult.OK)
             {
-                tabControl.SelectedIndex = (int)Models.TabPage.Timer;
+                if (form.IsCloseAppSelected)
+                {
+                    // 用户勾选了退出 -> 彻底关闭
+                    _mainService.HandleApplicationClosing();
+                    Application.Exit();
+                }
+                else
+                {
+                    // 用户默认操作 -> 最小化到托盘
+
+                    // 1. 恢复按钮高亮到 Timer 或当前页 (防止 'x' 按钮一直亮着)
+                    if (tabControl.SelectedIndex != (int)Models.TabPage.Timer)
+                    {
+                        tabControl.SelectedIndex = (int)Models.TabPage.Timer;
+                        UpdateNavButtonStyles(btnNavTimer);
+                    }
+                    else
+                    {
+                        UpdateNavButtonStyles(btnNavTimer);
+                    }
+
+                    // 2. 执行最小化 (这会触发 Resize 事件从而隐藏窗口)
+                    this.WindowState = FormWindowState.Minimized;
+                }
             }
-            this.WindowState = FormWindowState.Minimized;
+            // 如果点击 BaseForm 的 "取消" 或 "X"，返回 Cancel，这里什么都不做，直接返回
+            return; // 重要：阻止执行函数末尾的 UpdateNavButtonStyles((ThemedButton)sender);
         }
 
         UpdateNavButtonStyles((ThemedButton)sender);
@@ -139,6 +173,70 @@ public partial class MainForm : System.Windows.Forms.Form
         this.ShowInTaskbar = true;
         this.Opacity = _appSettings.Opacity;
         this.TopMost = _appSettings.AlwaysOnTop;
+    }
+
+    // 【新增】初始化托盘图标的具体逻辑
+    private void InitializeSystemTray()
+    {
+        _components = new Container();
+
+        // 1. 创建右键菜单
+        _trayMenu = new ContextMenuStrip(_components);
+        var exitItem = new ToolStripMenuItem("退出程序");
+        exitItem.Click += (s, e) =>
+        {
+            // 彻底退出程序
+            _mainService.HandleApplicationClosing();
+            Application.Exit();
+        };
+        _trayMenu.Items.Add(exitItem);
+
+        // 2. 创建托盘图标
+        _notifyIcon = new NotifyIcon(_components)
+        {
+            Text = "D2R Timer", // 鼠标悬停时显示的文字
+            Icon = new Icon("Resources\\d2r.ico"), // 复用你的图标，确保路径正确
+            Visible = true, // 初始是否可见，建议设为 true，或者仅在最小化时 true
+            ContextMenuStrip = _trayMenu
+        };
+
+        // 3. 绑定双击事件：还原窗口
+        _notifyIcon.MouseDoubleClick += (s, e) =>
+        {
+            RestoreFromTray();
+        };
+
+        // 4. 绑定窗体大小改变事件（用于检测最小化）
+        this.Resize += OnMainForm_Resize;
+    }
+
+    // 【新增】核心逻辑：最小化时隐藏窗口
+    private void OnMainForm_Resize(object? sender, EventArgs e)
+    {
+        if (this.WindowState == FormWindowState.Minimized)
+        {
+            // 隐藏任务栏图标
+            this.ShowInTaskbar = false;
+            // 隐藏主窗口
+            this.Hide();
+            // 确保托盘图标可见
+            _notifyIcon.Visible = true;
+
+            // 可选：显示一个气泡提示
+            // _notifyIcon.ShowBalloonTip(2000, "D2R Helper", "程序已运行在系统托盘", ToolTipIcon.Info);
+        }
+    }
+
+    // 【新增】核心逻辑：从托盘还原
+    private void RestoreFromTray()
+    {
+        if (!this.Visible)
+        {
+            this.Show();
+            this.ShowInTaskbar = true;
+            this.WindowState = FormWindowState.Normal;
+            this.Activate(); // 激活窗口到最前
+        }
     }
 
     private void SubscribeToEvents()

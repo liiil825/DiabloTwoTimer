@@ -73,10 +73,23 @@ public partial class BaseForm : System.Windows.Forms.Form
     {
         // 增加空值检查，防止设计器报错
         if (btnConfirm != null)
+        {
             btnConfirm.Text = LanguageManager.GetString("Confirm") ?? ConfirmButtonText;
 
+            btnConfirm.BackColor = AppTheme.ButtonBackColor;       // 石质背景
+            btnConfirm.ForeColor = AppTheme.AccentColor;           // 暗金文字 (突出显示)
+            // btnConfirm.FlattenStyle();
+        }
+
         if (btnCancel != null)
+        {
             btnCancel.Text = LanguageManager.GetString("Cancel") ?? CancelButtonText;
+
+            // 【新增】设置取消按钮样式
+            btnCancel.BackColor = AppTheme.ButtonBackColor;        // 石质背景 (保持统一)
+            btnCancel.ForeColor = AppTheme.TextSecondaryColor;     // 灰色文字 (弱化显示)
+            // btnCancel.FlattenStyle();
+        }
 
         if (lblTitle != null)
             lblTitle.Text = Text;

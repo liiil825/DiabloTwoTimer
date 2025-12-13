@@ -8,6 +8,8 @@ public static class AppTheme
     // 背景色 (深灰)
     public static Color BackColor = Color.FromArgb(32, 32, 32);
 
+    public static Color ButtonBackColor { get; } = Color.FromArgb(50, 45, 40);
+
     // 容器背景色 (稍亮)
     public static Color SurfaceColor = Color.FromArgb(45, 45, 48);
 

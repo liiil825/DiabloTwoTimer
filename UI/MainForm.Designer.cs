@@ -12,9 +12,11 @@ partial class MainForm
 
     protected override void Dispose(bool disposing)
     {
-        if (disposing && (components != null))
+        if (disposing)
         {
-            components.Dispose();
+            if (_notifyIcon != null) _notifyIcon.Dispose();
+            if (_components != null) _components.Dispose();
+            if (components != null) components.Dispose();
         }
         base.Dispose(disposing);
     }
@@ -100,7 +102,7 @@ partial class MainForm
         ConfigureNavButton(btnNavTimer, "Timer");
         ConfigureNavButton(btnNavPomodoro, "Tomato");
         ConfigureNavButton(btnNavSettings, "Settings");
-        ConfigureNavButton(btnNavMinimize, "_"); // 下划线表示最小化
+        ConfigureNavButton(btnNavMinimize, "x"); // 下划线表示最小化
 
         // 
         // tabControl

@@ -167,5 +167,8 @@
   "VisitGithub": "GitHub Repository",
   "VisitBilibili": "Bilibili Channel",
   "VersionLabel": "Version: {{0}}",
-  "AuthorLabel": "Author: 极简Lz"
+  "AuthorLabel": "Author: 极简Lz",
+  "CloseOptionTitle": "Close Options",
+  "CloseOptionMessage": "The application will minimize to system tray and continue running.What would you like to do?",
+  "CloseOptionExitApp": "Exit Application"
 }

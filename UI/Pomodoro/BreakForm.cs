@@ -386,7 +386,9 @@ public partial class BreakForm : System.Windows.Forms.Form
                 string durationText =
                     totalSeconds < 60
                         ? $"{ts.Seconds}秒"
-                        : (totalSeconds < 3600 ? $"{ts.Minutes}分 {ts.Seconds}秒" : $"{ts.Hours}小时 {ts.Minutes}分");
+                        : (totalSeconds < 3600
+                            ? $"{ts.Minutes}分 {ts.Seconds}秒"
+                            : $"{(int)ts.TotalHours}小时 {ts.Minutes}分"); // 修改了这里
 
                 lblDuration.Text = $"累计游戏时长: {durationText}";
             }

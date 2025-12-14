@@ -20,6 +20,18 @@ public class KeyMapNode
     /// </summary>
     public string? Action { get; set; }
 
+    // --- 新增字段 Start ---
+    /// <summary>
+    /// 是否需要用户输入参数 (例如 "SetOpacity" 需要输入数值)
+    /// </summary>
+    public bool RequiresInput { get; set; } = false;
+
+    /// <summary>
+    /// 输入提示文本 (例如 "请输入透明度 (0-100)...")
+    /// </summary>
+    public string? InputHint { get; set; }
+    // --- 新增字段 End ---
+
     /// <summary>
     /// 子菜单节点
     /// </summary>

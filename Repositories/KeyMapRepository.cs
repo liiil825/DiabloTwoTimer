@@ -138,8 +138,10 @@ public class KeyMapRepository : IKeyMapRepository
                     new()
                     {
                         Key = "e",
-                        Text = "增加一分钟 (Add One Minute)",
-                        Action = "Pomodoro.PlusOneMinute",
+                        Text = "增加 (Add)",
+                        Action = "Pomodoro.AddMinutes",
+                        RequiresInput = true,
+                        InputHint = "输入 1 - 59 (分钟)之间的数值",
                     },
                     new()
                     {
@@ -225,6 +227,14 @@ public class KeyMapRepository : IKeyMapRepository
                         Key = "w",
                         Text = "恢复窗口 (Restore)",
                         Action = "App.Restore",
+                    },
+                    new KeyMapNode
+                    {
+                        Key = "e",
+                        Text = "设置透明度 (SetOpacity)",
+                        Action = "App.SetOpacity",
+                        RequiresInput = true,
+                        InputHint = "输入 0.1 - 1.0 之间的数值",
                     },
                     new()
                     {

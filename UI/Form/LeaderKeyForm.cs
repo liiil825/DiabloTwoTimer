@@ -16,54 +16,57 @@ namespace DiabloTwoMFTimer.UI.Form;
 public partial class LeaderKeyForm : System.Windows.Forms.Form
 {
     private readonly ICommandDispatcher? _commandDispatcher;
-
-    // UI 控件
-    private FlowLayoutPanel _breadcrumbPanel = null!; // 面包屑导航栏
-    private FlowLayoutPanel _itemsPanel = null!; // 按键选项区域
-
-    // 状态数据
-    private readonly Stack<KeyMapNode> _pathStack = new(); // 记录当前路径
-    private List<KeyMapNode> _currentNodes = null!; // 当前显示的节点列表
-
-    // 【新增】根节点缓存，用于重置状态时恢复
-    private List<KeyMapNode> _rootNodes = new();
-
     private readonly IKeyMapRepository _keyMapRepository;
 
-    // 构造函数
+    // UI 控件
+    private FlowLayoutPanel _breadcrumbPanel = null!;
+    private FlowLayoutPanel _itemsPanel = null!;
+    // 【新增】输入框
+    private ThemedTextBox _inputTextBox = null!;
+    private Label _inputHintLabel = null!;
+    private Panel _inputContainer = null!;
+
+    // 状态数据
+    private readonly Stack<KeyMapNode> _pathStack = new();
+    private List<KeyMapNode> _currentNodes = null!;
+    private List<KeyMapNode> _rootNodes = new();
+
+    // 【新增】当前等待输入的节点
+    private KeyMapNode? _pendingInputNode = null;
+
+    private new System.Windows.Forms.Timer _animTimer = null!;
+    private bool _isClosing = false;
+    private const double TARGET_OPACITY = 0.95; // 目标透明度
+    private const double ANIMATION_SPEED = 0.15; // 动画速度 (越大越快)
+
     public LeaderKeyForm(ICommandDispatcher? commandDispatcher = null, IKeyMapRepository? keyMapRepository = null)
     {
         _commandDispatcher = commandDispatcher ?? throw new ArgumentNullException(nameof(commandDispatcher));
         _keyMapRepository = keyMapRepository ?? throw new ArgumentNullException(nameof(keyMapRepository));
 
-        // 1. 窗体基础设置
         this.FormBorderStyle = FormBorderStyle.None;
         this.ShowInTaskbar = false;
         this.TopMost = true;
         this.StartPosition = FormStartPosition.Manual;
-        this.BackColor = AppTheme.Colors.Background; // 深灰背景
-        this.Opacity = 0.95; // 稍微一点透明度，增加现代感
+        this.BackColor = AppTheme.Colors.Background;
+        this.Opacity = 0.95;
         this.DoubleBuffered = true;
 
-        // 2. 初始化 UI
-        InitializeControls();
+        _animTimer = new System.Windows.Forms.Timer { Interval = 10 }; // 10ms 刷新一次，保证流畅
+        _animTimer.Tick += AnimationTimer_Tick;
 
-        // 3. 加载初始数据
+        InitializeControls();
         RefreshData();
-        // RefreshData 内部会调用 ResetState -> RefreshUI，所以这里不需要再调 RefreshUI
     }
 
     private void InitializeControls()
     {
-        // 计算尺寸：宽度全屏，高度 20%
         var screen = Screen.PrimaryScreen?.Bounds ?? new Rectangle(0, 0, 1920, 1080);
         this.Width = screen.Width;
         this.Height = (int)(screen.Height * 0.2);
-
-        // 定位到底部
         this.Location = new Point(screen.X, screen.Bottom - this.Height);
 
-        // --- 顶部：面包屑导航 ---
+        // --- 1. 面包屑 ---
         _breadcrumbPanel = new FlowLayoutPanel
         {
             Dock = DockStyle.Top,
@@ -73,7 +76,7 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
             BackColor = AppTheme.Colors.ControlBackground,
         };
 
-        // --- 底部：按键列表 ---
+        // --- 2. 列表面板 ---
         _itemsPanel = new FlowLayoutPanel
         {
             Dock = DockStyle.Fill,
@@ -82,21 +85,82 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
             AutoScroll = true,
         };
 
+        // --- 3. 输入容器 (默认隐藏) ---
+        _inputContainer = new Panel
+        {
+            Dock = DockStyle.Fill,
+            Visible = false,
+            Padding = new Padding(0, 30, 0, 0) // 垂直居中一点
+        };
+
+        _inputHintLabel = new ThemedLabel
+        {
+            Text = "请输入参数...",
+            Font = new Font(AppTheme.Fonts.FontFamily, 14, FontStyle.Regular),
+            AutoSize = true,
+            Location = new Point(screen.Width / 2 - 100, 20),
+            Anchor = AnchorStyles.Top
+        };
+
+        _inputTextBox = new ThemedTextBox
+        {
+            Font = new Font("Consolas", 16),
+            Size = new Size(400, 40),
+            Location = new Point(screen.Width / 2 - 200, 60),
+        };
+        _inputTextBox.KeyDown += InputTextBox_KeyDown;
+
+        _inputContainer.Controls.Add(_inputHintLabel);
+        _inputContainer.Controls.Add(_inputTextBox);
+
+        // 调整控件层级
         this.Controls.Add(_itemsPanel);
+        this.Controls.Add(_inputContainer); // 放在 itemsPanel 同级
         this.Controls.Add(_breadcrumbPanel);
     }
 
-    /// <summary>
-    /// 核心方法：刷新界面显示
-    /// </summary>
+    private void AnimationTimer_Tick(object? sender, EventArgs e)
+    {
+        if (_isClosing)
+        {
+            // 淡出 (Fade Out)
+            if (this.Opacity > 0)
+            {
+                this.Opacity -= ANIMATION_SPEED;
+            }
+            else
+            {
+                _animTimer.Stop();
+                base.Hide(); // 真正隐藏窗体
+                _isClosing = false;
+                ResetState(); // 隐藏后重置状态
+            }
+        }
+        else
+        {
+            // 淡入 (Fade In)
+            if (this.Opacity < TARGET_OPACITY)
+            {
+                this.Opacity += ANIMATION_SPEED;
+            }
+            else
+            {
+                this.Opacity = TARGET_OPACITY;
+                _animTimer.Stop();
+            }
+        }
+    }
+
     private void RefreshUI()
     {
+        // 如果正在输入模式，不需要刷新列表
+        if (_inputContainer.Visible) return;
+
         _breadcrumbPanel.SuspendLayout();
         _itemsPanel.SuspendLayout();
 
         // 1. 更新面包屑
         _breadcrumbPanel.Controls.Clear();
-        // 添加根节点标志
         AddBreadcrumbItem("Leader");
         foreach (var node in _pathStack.Reverse())
         {
@@ -107,24 +171,19 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
         // 2. 更新按键列表
         _itemsPanel.Controls.Clear();
 
-        // 排序：有 Key 的排前面，按字母顺序
         if (_currentNodes != null)
         {
-            foreach (var node in _currentNodes.OrderBy(n => n.Key))
+            // 【修改】直接遍历，移除 .OrderBy(n => n.Key)
+            // 这样顺序将完全取决于 KeyMapRepository 加载出来的 List 顺序 (YAML顺序)
+            foreach (var node in _currentNodes)
             {
                 var itemControl = CreateItemControl(node);
                 _itemsPanel.Controls.Add(itemControl);
             }
 
-            // 如果没有子节点了
             if (_currentNodes.Count == 0)
             {
-                var lbl = new ThemedLabel
-                {
-                    Text = "没有可用操作",
-                    AutoSize = true,
-                    ForeColor = Color.Gray,
-                };
+                var lbl = new ThemedLabel { Text = "没有可用操作", AutoSize = true, ForeColor = Color.Gray };
                 _itemsPanel.Controls.Add(lbl);
             }
         }
@@ -188,28 +247,38 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
 
     protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
     {
-        // 1. 处理 ESC
+        // 输入模式下，将所有按键交给 TextBox 处理 (除了 ESC)
+        if (_inputContainer.Visible)
+        {
+            if (keyData == Keys.Escape)
+            {
+                ExitInputMode();
+                return true;
+            }
+            return false; // 让 TextBox 正常处理输入
+        }
+
+        // 导航模式下处理 ESC
         if (keyData == Keys.Escape)
         {
             if (_pathStack.Count > 0)
             {
                 _pathStack.Pop();
-                // 重新获取上一层的节点列表
                 if (_pathStack.Count > 0)
                     _currentNodes = _pathStack.Peek().Children ?? [];
                 else
-                    _currentNodes = _rootNodes; // 返回根节点
+                    _currentNodes = _rootNodes;
 
                 RefreshUI();
             }
             else
             {
-                this.Hide();
+                CloseWithAnimation();
             }
             return true;
         }
 
-        // 2. 将按键转换为字符
+        // 字符匹配
         string keyChar = GetCharFromKeys(keyData);
         if (!string.IsNullOrEmpty(keyChar))
         {
@@ -222,18 +291,22 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
 
     private void HandleInput(string key)
     {
-        if (_currentNodes == null)
-            return;
+        if (_currentNodes == null) return;
 
-        // 查找匹配的节点
         var targetNode = _currentNodes.FirstOrDefault(n => n.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
-
-        if (targetNode == null)
-            return;
+        if (targetNode == null) return;
 
         if (targetNode.IsLeaf)
         {
-            ExecuteAction(targetNode);
+            // 【修改】检查是否需要输入参数
+            if (targetNode.RequiresInput)
+            {
+                EnterInputMode(targetNode);
+            }
+            else
+            {
+                ExecuteAction(targetNode);
+            }
         }
         else
         {
@@ -246,20 +319,70 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
         }
     }
 
-    private void ExecuteAction(KeyMapNode node)
+    // --- 新增：输入模式逻辑 ---
+
+    private void EnterInputMode(KeyMapNode node)
     {
-        this.Hide();
+        _pendingInputNode = node;
+
+        // 界面切换
+        _itemsPanel.Visible = false;
+        _inputContainer.Visible = true;
+
+        // 设置提示
+        _inputHintLabel.Text = string.IsNullOrEmpty(node.InputHint)
+            ? $"请输入 [{node.Text}] 的参数:"
+            : node.InputHint;
+
+        // 居中调整 (简单计算)
+        _inputHintLabel.Left = (this.Width - _inputHintLabel.Width) / 2;
+
+        _inputTextBox.Clear();
+        _inputTextBox.Focus();
+    }
+
+    private void ExitInputMode()
+    {
+        _pendingInputNode = null;
+        _inputContainer.Visible = false;
+        _itemsPanel.Visible = true;
+        _inputTextBox.Clear();
+        // 恢复焦点到窗体以便接收 ProcessCmdKey
+        this.Focus();
+    }
+
+    private void InputTextBox_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.KeyCode == Keys.Enter)
+        {
+            e.SuppressKeyPress = true; // 防止嘟嘟声
+            if (_pendingInputNode != null)
+            {
+                string inputVal = _inputTextBox.Text;
+                ExecuteAction(_pendingInputNode, inputVal);
+            }
+        }
+    }
+
+    // 【修改】增加 args 参数
+    private void ExecuteAction(KeyMapNode node, object? args = null)
+    {
+        CloseWithAnimation();
+        // 确保隐藏后状态复原，下次打开不残留输入框
+        ExitInputMode();
 
         if (_commandDispatcher != null && !string.IsNullOrEmpty(node.Action))
         {
-            _ = _commandDispatcher.ExecuteAsync(node.Action);
+            _ = _commandDispatcher.ExecuteAsync(node.Action, args);
         }
         else
         {
-            ThemedMessageBox.Show($"[演示模式] 执行命令:\n{node.Action}\n\n描述: {node.Text}", "Leader Key Action");
+            string msg = $"[演示模式] 执行命令:\n{node.Action}";
+            if (args != null) msg += $"\n参数: {args}";
+            ThemedMessageBox.Show(msg, "Leader Key Action");
         }
 
-        LogManager.WriteDebugLog("LeaderKeyForm", $"执行操作: {node.Action}");
+        LogManager.WriteDebugLog("LeaderKeyForm", $"执行操作: {node.Action} 参数: {args}");
         ResetState();
     }
 
@@ -277,7 +400,7 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
     protected override void OnDeactivate(EventArgs e)
     {
         base.OnDeactivate(e);
-        this.Hide();
+        CloseWithAnimation();
         ResetState();
     }
 
@@ -312,9 +435,29 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
     {
         base.OnVisibleChanged(e);
 
+        // 当窗体变为可见时
         if (this.Visible)
         {
+            // 确保从 0 开始淡入
+            this.Opacity = 0;
+            _isClosing = false;
+
+            // 如果之前有重置逻辑，确保在这里调用或保留
             ResetState();
+
+            _animTimer.Start();
+        }
+    }
+
+    /// <summary>
+    /// 优雅关闭：淡出动画
+    /// </summary>
+    private void CloseWithAnimation()
+    {
+        if (!_isClosing)
+        {
+            _isClosing = true;
+            _animTimer.Start();
         }
     }
 }

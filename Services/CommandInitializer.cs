@@ -118,10 +118,17 @@ public class CommandInitializer
 
         _dispatcher.Register(
             "Pomodoro.PlusOneMinute",
-            () =>
+            (arg) =>
             {
-                _pomodoroTimerService.AddMinutes(1);
-                Utils.Toast.Info("已增加 1 分钟");
+                if (int.TryParse(arg?.ToString(), out int minutes) && minutes > 0 && minutes <= 59)
+                {
+                    _pomodoroTimerService.AddMinutes(minutes);
+                    Utils.Toast.Info($"已增加 {minutes} 分钟");
+                }
+                else
+                {
+                    Utils.Toast.Error("请输入 1 - 59 之间的数值");
+                }
             }
         );
 
@@ -173,7 +180,22 @@ public class CommandInitializer
                 _messenger.Publish(new RestoreFromTrayMessage());
             }
         );
-        // _dispatcher.Register("App.Minimize", () => _mainService.MinimizeToTray());
+
+        _dispatcher.Register("App.SetOpacity", (arg) =>
+        {
+            if (double.TryParse(arg?.ToString(), out double val))
+            {
+                // 调用调整透明度的逻辑
+                if (val < 0.1 || val > 1.0)
+                {
+                    Utils.Toast.Error("透明度值必须在 0.1-1.0 之间");
+                    return;
+                }
+                _appSettings.Opacity = val;
+                _messenger.Publish(new OpacityChangedMessage());
+                Utils.Toast.Info($"已设置透明度为 {val}");
+            }
+        });
 
         // 导航：切换 Tab
         _dispatcher.Register("Nav.Timer", () => _mainService.SetActiveTabPage(Models.TabPage.Timer));

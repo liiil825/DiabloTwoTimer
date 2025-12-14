@@ -58,22 +58,44 @@ public class CommandInitializer
             _mainService.SetActiveTabPage(Models.TabPage.Timer);
             _timerService.StartOrNextRun();
         }); // Next 是同步的
+        _dispatcher.Register("Timer.Toggle", () =>
+        {
+            _mainService.SetActiveTabPage(Models.TabPage.Timer);
+            _timerService.TogglePause();
+        });
 
-        // 番茄钟相关
-        _dispatcher.Register("Pomodoro.Start", () =>
+        // 1. 切换状态 (核心逻辑：运行则暂停，否则开始)
+        _dispatcher.Register("Pomodoro.Toggle", () =>
         {
-            _mainService.SetActiveTabPage(Models.TabPage.Pomodoro);
-            _pomodoroTimerService.Start();
+            if (_pomodoroTimerService.IsRunning)
+            {
+                _pomodoroTimerService.Pause();
+                Utils.Toast.Info("番茄钟已暂停");
+            }
+            else
+            {
+                _pomodoroTimerService.Start();
+                Utils.Toast.Success("番茄钟已启动");
+            }
         });
-        _dispatcher.Register("Pomodoro.Pause", () =>
+
+
+        // 打开设置 (通过发消息)
+        _dispatcher.Register("Pomodoro.ShowSettings", () =>
         {
-            _mainService.SetActiveTabPage(Models.TabPage.Pomodoro);
-            _pomodoroTimerService.Pause();
+            _messenger.Publish(new ShowPomodoroSettingsMessage());
         });
-        _dispatcher.Register("Pomodoro.Reset", () =>
+
+        // 打开休息界面 (通过发消息)
+        _dispatcher.Register("Pomodoro.ShowBreakForm", () =>
         {
-            _mainService.SetActiveTabPage(Models.TabPage.Pomodoro);
-            _pomodoroTimerService.Reset();
+            _messenger.Publish(new ShowPomodoroBreakFormMessage());
+        });
+
+        _dispatcher.Register("Pomodoro.PlusOneMinute", () =>
+        {
+            _pomodoroTimerService.AddMinutes(1);
+            Utils.Toast.Info("已增加 1 分钟");
         });
 
         // --- 记录操作 ---

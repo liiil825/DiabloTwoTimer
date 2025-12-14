@@ -84,8 +84,8 @@ public class KeyMapRepository : IKeyMapRepository
             new KeyMapNode
             {
                 Key = "d",
-                Text = "暂停 (Pause)",
-                Action = "Timer.Pause"
+                Text = "切换暂停 (Toggle Pause)",
+                Action = "Timer.Toggle"
             },
             new KeyMapNode
             {
@@ -104,8 +104,11 @@ public class KeyMapRepository : IKeyMapRepository
                 Text = "番茄钟 (Pomodoro)",
                 Children =
                 [
-                    new() { Key = "s", Text = "启动 (Start)", Action = "Pomodoro.Start" },
+                    new() { Key = "q", Text = "切换 (Toggle)", Action = "Pomodoro.Toggle" },
                     new() { Key = "p", Text = "暂停 (Pause)", Action = "Pomodoro.Pause" },
+                    new() { Key = "w", Text = "休息 (Break)", Action = "Pomodoro.ShowBreakForm" },
+                    new() { Key = "e", Text = "增加一分钟 (Add One Minute)", Action = "Pomodoro.PlusOneMinute" },
+                    new() { Key = "t", Text = "设置 (Settings)", Action = "Pomodoro.ShowSettings" },
                     new() { Key = "r", Text = "重置 (Reset)", Action = "Pomodoro.Reset" }
                 ]
             },

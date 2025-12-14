@@ -1,5 +1,5 @@
 using System;
-using System.Threading.Tasks; // 必须引用
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using DiabloTwoMFTimer.Interfaces;
 using DiabloTwoMFTimer.Models;
@@ -9,6 +9,7 @@ namespace DiabloTwoMFTimer.UI.Pomodoro;
 
 public partial class PomodoroControl : UserControl
 {
+    private readonly IMessenger _messenger = null!;
     private readonly IPomodoroTimerService _timerService = null!;
     private readonly IAppSettings _appSettings = null!;
     private readonly IProfileService _profileService = null!;
@@ -25,6 +26,7 @@ public partial class PomodoroControl : UserControl
         IPomodoroTimerService timerService,
         IAppSettings appSettings,
         IProfileService profileService,
+        IMessenger messenger,
         IStatisticsService statsService
     )
         : this()
@@ -33,10 +35,12 @@ public partial class PomodoroControl : UserControl
         _appSettings = appSettings;
         _profileService = profileService;
         _statsService = statsService;
+        _messenger = messenger;
 
         LoadSettings();
         lblPomodoroTime.BindService(_timerService);
         SubscribeEvents();
+        SubscribeToMessages();
 
         // 绑定新增按钮事件
         this.btnNextState.Click += (s, e) => _timerService.SwitchToNextState();
@@ -49,21 +53,91 @@ public partial class PomodoroControl : UserControl
     private void SubscribeEvents()
     {
         _timerService.PomodoroTimerStateChanged += TimerService_PomodoroTimerStateChanged;
-        _timerService.PomodoroCompleted += TimerService_PomodoroCompleted;
         _timerService.PomodoroBreakStarted += TimerService_PomodoroBreakStarted;
-        _timerService.PomodoroBreakSkipped += TimerService_PomodoroBreakSkipped;
     }
 
-    protected override void OnHandleDestroyed(EventArgs e)
+    private void UnSubscribeEvents()
     {
         _timerService.PomodoroTimerStateChanged -= TimerService_PomodoroTimerStateChanged;
-        _timerService.PomodoroCompleted -= TimerService_PomodoroCompleted;
         _timerService.PomodoroBreakStarted -= TimerService_PomodoroBreakStarted;
-        _timerService.PomodoroBreakSkipped -= TimerService_PomodoroBreakSkipped;
-        base.OnHandleDestroyed(e);
+    }
+
+    /// <summary>
+    /// 【重构】集中订阅全局消息
+    /// </summary>
+    private void SubscribeToMessages()
+    {
+        // 注意：这里使用命名方法 OnShowSettings，而不是 Lambda 表达式
+        // 这样在 Unsubscribe 时才能正确移除
+        _messenger.Subscribe<ShowPomodoroSettingsMessage>(OnShowSettings);
+        _messenger.Subscribe<ShowPomodoroBreakFormMessage>(OnShowBreakForm);
+    }
+
+    /// <summary>
+    /// 【重构】集中取消订阅全局消息
+    /// </summary>
+    private void UnSubscribeToMessages()
+    {
+        _messenger.Unsubscribe<ShowPomodoroSettingsMessage>(OnShowSettings);
+        _messenger.Unsubscribe<ShowPomodoroBreakFormMessage>(OnShowBreakForm);
+    }
+
+    private void OnShowSettings(ShowPomodoroSettingsMessage msg)
+    {
+        this.SafeInvoke(ShowSettingsDialog);
+    }
+
+    private void OnShowBreakForm(ShowPomodoroBreakFormMessage msg)
+    {
+        var breakType = (_timerService.CompletedPomodoros % 4 == 0)
+            ? PomodoroBreakType.LongBreak
+            : PomodoroBreakType.ShortBreak;
+        var mode = BreakFormMode.PomodoroBreak;
+        if (_timerService.CurrentState == PomodoroTimerState.Work)
+        {
+            //    breakType = PomodoroBreakType.
+            mode = BreakFormMode.StatisticsView;
+        }
+
+        AsyncShowBreakForm(breakType, mode);
     }
 
     #region 事件处理
+
+    // 提取出的公用方法
+    private void ShowSettingsDialog()
+    {
+        using var settingsForm = new PomodoroSettingsForm(
+            _appSettings,
+            _timerService.Settings.WorkTimeMinutes,
+            _timerService.Settings.WorkTimeSeconds,
+            _timerService.Settings.ShortBreakMinutes,
+            _timerService.Settings.ShortBreakSeconds,
+            _timerService.Settings.LongBreakMinutes,
+            _timerService.Settings.LongBreakSeconds,
+            _appSettings.PomodoroWarningLongTime,
+            _appSettings.PomodoroWarningShortTime
+        );
+
+        if (settingsForm.ShowDialog(this.FindForm()) == DialogResult.OK)
+        {
+            _timerService.Settings.WorkTimeMinutes = settingsForm.WorkTimeMinutes;
+            _timerService.Settings.WorkTimeSeconds = settingsForm.WorkTimeSeconds;
+            _timerService.Settings.ShortBreakMinutes = settingsForm.ShortBreakMinutes;
+            _timerService.Settings.ShortBreakSeconds = settingsForm.ShortBreakSeconds;
+            _timerService.Settings.LongBreakMinutes = settingsForm.LongBreakMinutes;
+            _timerService.Settings.LongBreakSeconds = settingsForm.LongBreakSeconds;
+
+            _appSettings.PomodoroWarningLongTime = settingsForm.WarningLongTime;
+            _appSettings.PomodoroWarningShortTime = settingsForm.WarningShortTime;
+
+            _timerService.LoadSettings(); // 确保重新加载模式等设置
+
+            SaveSettings();
+            _timerService.Reset();
+            Toast.Success(LanguageManager.GetString("PomodoroSettingsSaved", "Pomodoro settings saved successfully"));
+        }
+    }
 
     private void TimerService_PomodoroTimerStateChanged(object? sender, PomodoroTimerStateChangedEventArgs e)
     {
@@ -73,6 +147,11 @@ public partial class PomodoroControl : UserControl
     // 【核心修复】异步处理弹窗，防止卡死 UI
     private void TimerService_PomodoroBreakStarted(object? sender, PomodoroBreakStartedEventArgs e)
     {
+        AsyncShowBreakForm(e.BreakType, BreakFormMode.PomodoroBreak);
+    }
+
+    private void AsyncShowBreakForm(PomodoroBreakType breakType, BreakFormMode mode = BreakFormMode.PomodoroBreak)
+    {
         // 使用 BeginInvoke 脱离当前执行栈（特别是从 Hook/Hotkey 进来的调用）
         this.BeginInvoke(new Action(async () =>
         {
@@ -80,7 +159,7 @@ public partial class PomodoroControl : UserControl
             {
                 // 延迟 100ms：让出 CPU 给游戏和系统消息循环，避免资源竞争导致卡死
                 await Task.Delay(100);
-                ShowBreakForm(e.BreakType);
+                ShowBreakForm(breakType, mode);
             }
             catch (Exception ex)
             {
@@ -88,10 +167,6 @@ public partial class PomodoroControl : UserControl
             }
         }));
     }
-
-    private void TimerService_PomodoroCompleted(object? sender, PomodoroCompletedEventArgs e) { }
-
-    private void TimerService_PomodoroBreakSkipped(object? sender, EventArgs e) { }
 
     #endregion
 
@@ -158,39 +233,10 @@ public partial class PomodoroControl : UserControl
 
     private void BtnPomodoroSettings_Click(object sender, EventArgs e)
     {
-        using var settingsForm = new PomodoroSettingsForm(
-            _appSettings,
-            _timerService.Settings.WorkTimeMinutes,
-            _timerService.Settings.WorkTimeSeconds,
-            _timerService.Settings.ShortBreakMinutes,
-            _timerService.Settings.ShortBreakSeconds,
-            _timerService.Settings.LongBreakMinutes,
-            _timerService.Settings.LongBreakSeconds,
-            _appSettings.PomodoroWarningLongTime,
-            _appSettings.PomodoroWarningShortTime
-        );
-
-        if (settingsForm.ShowDialog(this.FindForm()) == DialogResult.OK)
-        {
-            _timerService.Settings.WorkTimeMinutes = settingsForm.WorkTimeMinutes;
-            _timerService.Settings.WorkTimeSeconds = settingsForm.WorkTimeSeconds;
-            _timerService.Settings.ShortBreakMinutes = settingsForm.ShortBreakMinutes;
-            _timerService.Settings.ShortBreakSeconds = settingsForm.ShortBreakSeconds;
-            _timerService.Settings.LongBreakMinutes = settingsForm.LongBreakMinutes;
-            _timerService.Settings.LongBreakSeconds = settingsForm.LongBreakSeconds;
-
-            _appSettings.PomodoroWarningLongTime = settingsForm.WarningLongTime;
-            _appSettings.PomodoroWarningShortTime = settingsForm.WarningShortTime;
-
-            _timerService.LoadSettings(); // 确保重新加载模式等设置
-
-            SaveSettings();
-            _timerService.Reset();
-            Toast.Success(LanguageManager.GetString("PomodoroSettingsSaved", "Pomodoro settings saved successfully"));
-        }
+        ShowSettingsDialog();
     }
 
-    private void ShowBreakForm(PomodoroBreakType breakType)
+    private void ShowBreakForm(PomodoroBreakType breakType, BreakFormMode mode = BreakFormMode.PomodoroBreak)
     {
         if (_breakForm != null && !_breakForm.IsDisposed)
         {
@@ -202,7 +248,7 @@ public partial class PomodoroControl : UserControl
             _appSettings,
             _profileService,
             _statsService,
-            BreakFormMode.PomodoroBreak,
+            mode,
             breakType
         );
         _breakForm.Show(this.FindForm());

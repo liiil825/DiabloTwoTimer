@@ -13,6 +13,8 @@ partial class PomodoroControl
         {
             components.Dispose();
         }
+        UnSubscribeEvents();
+        UnSubscribeToMessages();
         base.Dispose(disposing);
     }
 

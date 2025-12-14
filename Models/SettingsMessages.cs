@@ -36,5 +36,12 @@ public class ScreenshotRequestedMessage(string lootName)
 
 public class ShowLeaderKeyFormMessage { }
 
-public class ShowBreakFormMessage { }
-public class ShowPomodoroSettingsFormMessage { }
+/// <summary>
+/// 请求打开番茄钟设置界面
+/// </summary>
+public class ShowPomodoroSettingsMessage { }
+
+/// <summary>
+/// 请求打开番茄钟休息界面
+/// </summary>
+public class ShowPomodoroBreakFormMessage { }

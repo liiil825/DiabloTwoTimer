@@ -155,6 +155,17 @@ public partial class TimerControl : UserControl
         });
     }
 
+    // 处理切换掉落记录可见性消息
+    private void OnToggleLootVisibility(ToggleLootVisibilityMessage message)
+    {
+        // Messenger 可能在任意线程回调，必须使用 SafeInvoke
+        this.SafeInvoke(() =>
+        {
+            // 调用现有的 ToggleLootButton_Click 逻辑
+            ToggleLootButton_Click(null, EventArgs.Empty);
+        });
+    }
+
     // 事件
     public event EventHandler? TimerStateChanged;
 
@@ -178,6 +189,7 @@ public partial class TimerControl : UserControl
         _profileService.CurrentDifficultyChangedEvent += OnDifficultyChanged;
 
         _messenger.Subscribe<TimerSettingsChangedMessage>(OnTimerSettingsChanged);
+        _messenger.Subscribe<ToggleLootVisibilityMessage>(OnToggleLootVisibility);
 
         // 注册语言变更事件
         LanguageManager.OnLanguageChanged += LanguageManager_OnLanguageChanged;
@@ -199,6 +211,7 @@ public partial class TimerControl : UserControl
         _profileService.CurrentDifficultyChangedEvent -= OnDifficultyChanged;
 
         _messenger.Unsubscribe<TimerSettingsChangedMessage>(OnTimerSettingsChanged);
+        _messenger.Unsubscribe<ToggleLootVisibilityMessage>(OnToggleLootVisibility);
         LanguageManager.OnLanguageChanged -= LanguageManager_OnLanguageChanged;
     }
 

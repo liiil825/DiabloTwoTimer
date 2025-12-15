@@ -169,6 +169,12 @@ public class KeyMapRepository : IKeyMapRepository
                         Text = "添加掉落 (Loot)",
                         Action = "Loot.Add",
                     },
+                                        new()
+                    {
+                        Key = "w",
+                        Text = "切换显示 (Toggle Loot Visibility)",
+                        Action = "Loot.ToggleVisibility",
+                    },
                     new()
                     {
                         Key = "d",

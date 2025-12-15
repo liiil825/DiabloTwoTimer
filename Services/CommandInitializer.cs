@@ -153,6 +153,15 @@ public class CommandInitializer
             }
         );
 
+        _dispatcher.Register(
+            "Loot.ToggleVisibility",
+            () =>
+            {
+                _mainService.SetActiveTabPage(Models.TabPage.Timer);
+                _messenger.Publish(new ToggleLootVisibilityMessage());
+            }
+        );
+
         // --- 系统/导航 ---
         _dispatcher.Register(
             "App.Exit",

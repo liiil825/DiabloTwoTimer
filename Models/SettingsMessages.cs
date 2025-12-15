@@ -57,3 +57,6 @@ public class MinimizeToTrayMessage { }
 public class RestoreFromTrayMessage { }
 
 public class ShowRecordLootFormMessage { }
+
+// 请求切换掉落记录可见性消息
+public class ToggleLootVisibilityMessage { }

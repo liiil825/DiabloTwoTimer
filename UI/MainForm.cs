@@ -278,6 +278,30 @@ public partial class MainForm : System.Windows.Forms.Form
                 }
             });
         };
+
+        // 添加删除最后一个时间记录的事件
+        _mainService.OnRequestDeleteLastHistory += () =>
+        {
+            this.SafeInvoke(() =>
+            {
+                if (tabControl.SelectedIndex == (int)Models.TabPage.Timer)
+                {
+                    _ = _timerControl.DeleteLastHistoryRecordAsync();
+                }
+            });
+        };
+
+        // 添加删除最后一个掉落记录的事件
+        _mainService.OnRequestDeleteLastLoot += () =>
+        {
+            this.SafeInvoke(() =>
+            {
+                if (tabControl.SelectedIndex == (int)Models.TabPage.Timer)
+                {
+                    _ = _timerControl.DeleteLastLootRecordAsync();
+                }
+            });
+        };
     }
 
     private void SubscribeToMessages()

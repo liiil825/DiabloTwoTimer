@@ -76,37 +76,37 @@ public class KeyMapRepository : IKeyMapRepository
             new KeyMapNode
             {
                 Key = "q",
-                Text = "开始 (Start)",
+                Text = "开始/下一场",
                 Action = "Timer.Next",
             },
             new KeyMapNode
             {
                 Key = "w",
-                Text = "切换暂停 (Toggle Pause)",
+                Text = "切换暂停",
                 Action = "Timer.Toggle",
             },
             new KeyMapNode
             {
                 Key = "t",
-                Text = "计时器 (Timer)",
+                Text = "计时器",
                 Children =
                 [
                     new()
                     {
                         Key = "s",
-                        Text = "启动 (Start)",
+                        Text = "启动",
                         Action = "Timer.Start",
                     },
                     new()
                     {
                         Key = "p",
-                        Text = "暂停 (Pause)",
+                        Text = "暂停",
                         Action = "Timer.Pause",
                     },
                     new()
                     {
                         Key = "r",
-                        Text = "重置 (Reset)",
+                        Text = "重置",
                         Action = "Timer.Reset",
                     },
                 ],
@@ -114,31 +114,39 @@ public class KeyMapRepository : IKeyMapRepository
             new KeyMapNode
             {
                 Key = "e",
-                Text = "番茄钟 (Pomodoro)",
+                Text = "番茄钟",
                 Children =
                 [
                     new()
                     {
                         Key = "q",
-                        Text = "切换 (Toggle)",
+                        Text = "切换开始/暂停",
                         Action = "Pomodoro.Toggle",
                     },
                     new()
                     {
                         Key = "p",
-                        Text = "暂停 (Pause)",
+                        Text = "暂停",
                         Action = "Pomodoro.Pause",
                     },
                     new()
                     {
                         Key = "w",
-                        Text = "休息 (Break)",
+                        Text = "展示休息页",
                         Action = "Pomodoro.ShowBreakForm",
                     },
                     new()
                     {
+                        Key = "s",
+                        Text = "切换模式",
+                        Action = "Pomodoro.SetMode",
+                        RequiresInput = true,
+                        InputHint = "输入 1 - 3 之间的数值",
+                    },
+                    new()
+                    {
                         Key = "e",
-                        Text = "增加 (Add)",
+                        Text = "增加时间",
                         Action = "Pomodoro.AddMinutes",
                         RequiresInput = true,
                         InputHint = "输入 1 - 59 (分钟)之间的数值",
@@ -146,19 +154,19 @@ public class KeyMapRepository : IKeyMapRepository
                     new()
                     {
                         Key = "t",
-                        Text = "设置 (Settings)",
+                        Text = "设置",
                         Action = "Pomodoro.ShowSettings",
                     },
                     new()
                     {
                         Key = "d",
-                        Text = "切换状态 (Switch State)",
+                        Text = "切换状态",
                         Action = "Pomodoro.SwitchToNextState",
                     },
                     new()
                     {
                         Key = "r",
-                        Text = "重置 (Reset)",
+                        Text = "重置",
                         Action = "Pomodoro.Reset",
                     },
                 ],
@@ -166,91 +174,129 @@ public class KeyMapRepository : IKeyMapRepository
             new KeyMapNode
             {
                 Key = "r",
-                Text = "记录 (Record)",
+                Text = "记录",
                 Children =
                 [
                     new()
                     {
                         Key = "q",
-                        Text = "添加掉落 (Loot)",
+                        Text = "添加掉落",
                         Action = "Loot.Add",
                     },
                     new()
                     {
                         Key = "w",
-                        Text = "切换显示 (Toggle Loot Visibility)",
+                        Text = "切换显示",
                         Action = "Loot.ToggleVisibility",
                     },
                     new()
                     {
+                        Key = "f",
+                        Text = "删除最后时间记录",
+                        Action = "Record.DeleteLastHistory",
+                    },
+                    new()
+                    {
+                        Key = "g",
+                        Text = "删除最后掉落",
+                        Action = "Record.DeleteLastLoot",
+                    },
+                    new()
+                    {
                         Key = "d",
-                        Text = "删除上一次 (Delete Last)",
-                        Action = "Record.DeleteLast",
+                        Text = "删除选中记录",
+                        Action = "Record.DeleteSelected",
+                    },
+                ],
+            },
+            new KeyMapNode
+            {
+                Key = "s",
+                Text = "展示",
+                Children =
+                [
+                    new()
+                    {
+                        Key = "q",
+                        Text = "掉落",
+                        Action = "Character.ShowLootHistory",
+                    },
+                    new()
+                    {
+                        Key = "w",
+                        Text = "统计",
+                        Action = "Pomodoro.ShowBreakForm",
                     },
                 ],
             },
             new KeyMapNode
             {
                 Key = "c",
-                Text = "角色 (Character)",
+                Text = "角色",
                 Children =
                 [
                     new()
                     {
                         Key = "q",
-                        Text = "创建角色 (Create)",
+                        Text = "创建",
                         Action = "Character.Create",
                     },
                     new()
                     {
                         Key = "w",
-                        Text = "切换角色 (Switch)",
+                        Text = "切换",
                         Action = "Character.Switch",
                     },
                     new()
                     {
                         Key = "e",
-                        Text = "导出角色 (Export)",
+                        Text = "导出",
                         Action = "Character.Export",
                     },
                     new()
                     {
                         Key = "s",
-                        Text = "切换场景 (Switch Scene)",
+                        Text = "切换场景",
                         Action = "Scene.Switch",
                         RequiresInput = true,
                         InputHint = "输入场景的英文短名称 (如: Coun, Pit, Gamble)",
+                    },
+                    new()
+                    {
+                        Key = "d",
+                        Text = "删除",
+                        Action = "Character.Delete",
                     },
                 ],
             },
             new KeyMapNode
             {
                 Key = "g", // Go / Goto
-                Text = "导航 (Go)",
+                Text = "导航",
                 Children =
                 [
                     new()
                     {
                         Key = "q",
-                        Text = "角色页 (Char)",
+                        Text = "角色页",
                         Action = "Nav.Profile",
                     },
                     new()
                     {
                         Key = "w",
-                        Text = "计时页 (Timer)",
+                        Text = "计时页",
                         Action = "Nav.Timer",
                     },
                     new()
                     {
                         Key = "e",
-                        Text = "番茄钟 (Pomodoro)",
+                        Text = "番茄钟",
                         Action = "Nav.Pomodoro",
                     },
                     new()
                     {
                         Key = "r",
-                        Text = "设置 (Settings)",
+                        Text = "设置",
                         Action = "Nav.Settings",
                     },
                 ],
@@ -258,26 +304,26 @@ public class KeyMapRepository : IKeyMapRepository
             new KeyMapNode
             {
                 Key = "x",
-                Text = "窗口操作 (Window)",
+                Text = "窗口操作",
                 Children =
                 [
                     new KeyMapNode
                     {
                         Key = "q",
-                        Text = "最小化到托盘 (Minimize)",
+                        Text = "最小化到托盘",
                         Action = "App.Minimize",
                     },
                     // 恢复窗口
                     new KeyMapNode
                     {
                         Key = "w",
-                        Text = "恢复窗口 (Restore)",
+                        Text = "恢复窗口",
                         Action = "App.Restore",
                     },
                     new KeyMapNode
                     {
                         Key = "e",
-                        Text = "设置透明度 (SetOpacity)",
+                        Text = "设置透明度",
                         Action = "App.SetOpacity",
                         RequiresInput = true,
                         InputHint = "输入 0.1 - 1.0 之间的数值",
@@ -285,7 +331,7 @@ public class KeyMapRepository : IKeyMapRepository
                     new KeyMapNode
                     {
                         Key = "r",
-                        Text = "设置位置 (SetPosition)",
+                        Text = "设置位置",
                         Action = "App.SetPosition",
                         RequiresInput = true,
                         InputHint = "0 左上 1 右上 2 左下 3 右下",
@@ -293,7 +339,7 @@ public class KeyMapRepository : IKeyMapRepository
                     new KeyMapNode
                     {
                         Key = "t",
-                        Text = "设置大小 (SetSize)",
+                        Text = "设置大小",
                         Action = "App.SetSize",
                         RequiresInput = true,
                         InputHint = "输入 1.0 - 2.5 之间的数值,注意修改后需要重新启动程序",
@@ -301,7 +347,7 @@ public class KeyMapRepository : IKeyMapRepository
                     new()
                     {
                         Key = "x",
-                        Text = "退出程序 (Quit)",
+                        Text = "退出程序",
                         Action = "App.Exit",
                     },
                 ],

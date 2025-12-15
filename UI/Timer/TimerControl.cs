@@ -269,25 +269,13 @@ public partial class TimerControl : UserControl
         SaveShowLootSetting();
         LoadProfileHistoryData();
         UpdateCharacterSceneInfo();
-
-        if (lootRecordsControl != null && profile != null && _profileService != null)
-        {
-            string currentScene = _profileService.CurrentScene ?? string.Empty;
-            // 传递 profile 对象
-            lootRecordsControl.UpdateLootRecords(profile, currentScene);
-            InitializeLootRecordsVisibility();
-        }
+        UpdateLootRecords();
+        InitializeLootRecordsVisibility();
     }
 
     private void OnSceneChanged(string scene)
     {
-        LoadProfileHistoryData();
-        UpdateCharacterSceneInfo();
-        // 场景切换也需要刷新 Loot 显示过滤
-        if (lootRecordsControl != null && _profileService?.CurrentProfile != null)
-        {
-            lootRecordsControl.UpdateLootRecords(_profileService.CurrentProfile, scene);
-        }
+        HandleContextChanged();
     }
 
     private void LoadProfileHistoryData()
@@ -297,22 +285,15 @@ public partial class TimerControl : UserControl
         {
             var profile = _profileService.CurrentProfile;
             var scene = _profileService.CurrentScene;
-            var characterName = profile?.Name ?? "";
             var difficulty = _profileService.CurrentDifficulty;
             LogManager.WriteDebugLog(
                 "TimerControl",
-                $"LoadProfileHistoryData: profile={profile?.Name}, scene={scene}, characterName={characterName}, difficulty={difficulty}"
+                $"LoadProfileHistoryData: profile={profile?.Name}, scene={scene}, difficulty={difficulty}"
             );
             // ... 原有加载历史逻辑 ...
-            historyControl.LoadProfileHistoryData(profile, scene, characterName, difficulty);
-
-            // 更新 Loot
-            if (lootRecordsControl != null && profile != null)
-            {
-                string currentScene = _profileService.CurrentScene ?? string.Empty;
-                lootRecordsControl.UpdateLootRecords(profile, currentScene);
-            }
+            historyControl.LoadProfileHistoryData(profile, scene, difficulty);
             ClearAllSelections();
+            historyControl?.ScrollToBottom();
         }
     }
 
@@ -334,7 +315,7 @@ public partial class TimerControl : UserControl
         historyControl?.SelectLastRow();
     }
 
-    // 修改 3b: 新增处理掉落添加的方法 (供 MainForm 调用)
+    // 新增处理掉落添加的方法 (供 MainForm 调用)
     public void HandleLootAdded()
     {
         this.SafeInvoke(() =>
@@ -350,7 +331,7 @@ public partial class TimerControl : UserControl
         });
     }
 
-    // 【修改 5】 路由删除逻辑
+    // 路由删除逻辑
     public async Task<bool> DeleteSelectedRecordAsync()
     {
         // 逻辑：如果 Loot 控件拥有焦点，则删除 Loot；否则默认删除 History
@@ -372,22 +353,57 @@ public partial class TimerControl : UserControl
         return false;
     }
 
-    // ... UpdateUI, UpdateStatistics 保持不变 ...
+    // 删除最后一个时间记录
+    public async Task<bool> DeleteLastHistoryRecordAsync()
+    {
+        if (historyControl != null && historyControl.RunHistory.Count > 0)
+        {
+            // 选择最后一行
+            historyControl.SelectLastRow();
+            // 删除选中的记录
+            return await historyControl.DeleteSelectedRecordAsync();
+        }
+        return false;
+    }
 
-    // 【修改 6】 UpdateLootRecords 辅助方法更新
+    // 删除最后一个掉落记录
+    public async Task<bool> DeleteLastLootRecordAsync()
+    {
+        if (lootRecordsControl != null)
+        {
+            // 选择最后一行
+            lootRecordsControl.SelectLastRow();
+            // 删除选中的记录
+            return await lootRecordsControl.DeleteSelectedLootAsync();
+        }
+        return false;
+    }
+
+    // UpdateLootRecords 辅助方法更新
     private void UpdateLootRecords()
     {
         if (lootRecordsControl != null && _profileService != null && _profileService.CurrentProfile != null)
         {
             string currentScene = _profileService.CurrentScene ?? string.Empty;
             lootRecordsControl.UpdateLootRecords(_profileService.CurrentProfile, currentScene);
+            lootRecordsControl.ScrollToBottom();
         }
     }
 
     private void OnDifficultyChanged(Models.GameDifficulty difficulty)
     {
+        HandleContextChanged();
+    }
+
+    /// <summary>
+    /// 处理场景或难度变化的统一方法
+    /// </summary>
+    private void HandleContextChanged()
+    {
         LoadProfileHistoryData();
         UpdateCharacterSceneInfo();
+        UpdateStatistics();
+        UpdateLootRecords();
     }
 
     private void OnTimerReset()

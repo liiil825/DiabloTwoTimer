@@ -307,16 +307,20 @@ public class ProfileService : IProfileService
         // 根据shortEnName查找场景
         var scene = _sceneService.GetSceneByShortEnName(shortEnName);
         if (scene == null)
+        {
+            Utils.Toast.Error($"未找到场景: {shortEnName}");
             return false;
+        }
 
         // 更新当前场景
         CurrentScene = scene.EnUS;
+        Utils.Toast.Success($"已切换到场景: {scene.GetSceneName(scene.EnUS)}");
         return true;
     }
 
     #endregion
 
-    #region Record Management (新增区域)
+    #region Record Management
 
     /// <summary>
     /// 添加一条新的 MF 记录并保存

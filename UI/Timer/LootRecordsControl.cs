@@ -70,11 +70,15 @@ public partial class LootRecordsControl : UserControl
 
         string pureEnglishCurrentScene = _sceneService.GetEnglishSceneName(_currentScene);
 
-        var query = string.IsNullOrEmpty(_currentScene)
-            ? _currentProfile.LootRecords
-            : _currentProfile.LootRecords.Where(r => r.SceneName == pureEnglishCurrentScene);
+        var query = _currentProfile.LootRecords.AsEnumerable();
 
-        _displayRecords = query.OrderBy(r => r.DropTime).ToList();
+        // 场景过滤
+        if (!string.IsNullOrEmpty(_currentScene))
+        {
+            query = query.Where(r => r.SceneName == pureEnglishCurrentScene);
+        }
+
+        _displayRecords = [.. query.OrderBy(r => r.DropTime)];
 
         RefreshGrid();
     }

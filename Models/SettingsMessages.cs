@@ -53,10 +53,16 @@ public class MinimizeToTrayMessage { }
 
 /// <summary>
 /// 请求从系统托盘恢复
-/// </summary>
+/// 请求从系统托盘恢复
 public class RestoreFromTrayMessage { }
 
 public class ShowRecordLootFormMessage { }
+
+// 番茄钟模式变更消息
+public class PomodoroModeChangedMessage(Models.PomodoroMode newMode)
+{
+    public Models.PomodoroMode NewMode { get; } = newMode;
+}
 
 // 请求切换掉落记录可见性消息
 public class ToggleLootVisibilityMessage { }
@@ -69,3 +75,9 @@ public class SwitchCharacterMessage { }
 
 // 请求导出角色消息
 public class ExportCharacterMessage { }
+
+// 请求显示掉落历史消息
+public class ShowLootHistoryMessage { }
+
+// 请求删除角色消息
+public class DeleteCharacterMessage { }

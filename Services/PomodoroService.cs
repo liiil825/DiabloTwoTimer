@@ -301,17 +301,26 @@ public class PomodoroTimerService : IPomodoroTimerService
         double totalSeconds = _timeLeft.TotalSeconds;
         int warnLong = _appSettings?.PomodoroWarningLongTime ?? 60;
         int warnShort = _appSettings?.PomodoroWarningShortTime ?? 3;
+        var pomodoroMode = _appSettings?.PomodoroMode ?? PomodoroMode.Automatic;
 
         // 只有在整秒附近才触发，避免多次触发
         if (Math.Abs(totalSeconds - warnLong) < 0.05)
         {
             LogManager.WriteDebugLog("Pomodoro", $"工作时间警告：{warnLong}秒");
-            Toast.Info(LanguageManager.GetString("PomodoroWorkEndingLong", warnLong));
+            var message = LanguageManager.GetString("PomodoroWorkEndingLong", warnLong);
+            if (pomodoroMode == PomodoroMode.Automatic)
+                Toast.Warning(message);
+            else
+                Toast.Info(message);
         }
         else if (Math.Abs(totalSeconds - warnShort) < 0.05)
         {
             LogManager.WriteDebugLog("Pomodoro", $"工作时间警告：{warnShort}秒");
-            Toast.Info(LanguageManager.GetString("PomodoroWorkEndingShort", warnShort));
+            var message = LanguageManager.GetString("PomodoroWorkEndingShort", warnShort);
+            if (pomodoroMode == PomodoroMode.Automatic)
+                Toast.Warning(message);
+            else
+                Toast.Info(message);
         }
     }
 

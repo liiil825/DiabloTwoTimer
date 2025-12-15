@@ -57,6 +57,30 @@ public class MainServices(
     public event Action<Models.TabPage>? OnRequestTabChange;
     public event Action? OnRequestRefreshUI;
     public event Action? OnRequestDeleteHistory;
+    public event Action? OnRequestDeleteLastHistory;
+    public event Action? OnRequestDeleteLastLoot;
+    #endregion
+
+    #region Public Methods
+
+    // 请求删除选中的记录
+    public void RequestDeleteSelectedRecord()
+    {
+        OnRequestDeleteHistory?.Invoke();
+    }
+
+    // 请求删除最后一个时间记录
+    public void RequestDeleteLastHistory()
+    {
+        OnRequestDeleteLastHistory?.Invoke();
+    }
+
+    // 请求删除最后一个掉落记录
+    public void RequestDeleteLastLoot()
+    {
+        OnRequestDeleteLastLoot?.Invoke();
+    }
+
     #endregion
 
     #region Public Methods
@@ -263,5 +287,17 @@ public class MainServices(
     {
         UnregisterHotKeys();
         _messenger.Unsubscribe<TimerSettingsChangedMessage>(OnTimerSettingsChanged);
+    }
+
+    // 设置番茄钟模式
+    public void SetPomodoroMode(Models.PomodoroMode mode)
+    {
+        _appSettings.PomodoroMode = mode;
+        _appSettings.Save();
+        _messenger.Publish(new Models.PomodoroModeChangedMessage(mode));
+
+        // 显示成功提示
+        string modeName = LanguageManager.GetString($"PomodoroMode_{mode}");
+        Utils.Toast.Success($"番茄钟模式已设置为: {modeName}");
     }
 }

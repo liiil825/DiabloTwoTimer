@@ -110,7 +110,6 @@ public class CommandInitializer
             }
         );
 
-        // 打开休息界面 (通过发消息)
         _dispatcher.Register(
             "Pomodoro.ShowBreakForm",
             () =>
@@ -145,8 +144,36 @@ public class CommandInitializer
         );
 
         // --- 记录操作 ---
-        // 注意：删除操作涉及到 UI 确认，通常是通过 MainService 发出请求，MainForm 监听并弹窗
-        // _dispatcher.Register("Record.DeleteLast", () => _mainService.RequestDeleteHistory());
+        // 删除选中的记录
+        _dispatcher.Register(
+            "Record.DeleteSelected",
+            () =>
+            {
+                _mainService.SetActiveTabPage(Models.TabPage.Timer);
+                _mainService.RequestDeleteSelectedRecord();
+            }
+        );
+
+        // 删除最后一个时间记录
+        _dispatcher.Register(
+            "Record.DeleteLastHistory",
+            () =>
+            {
+                _mainService.SetActiveTabPage(Models.TabPage.Timer);
+                _mainService.RequestDeleteLastHistory();
+            }
+        );
+
+        // 删除最后一个掉落记录
+        _dispatcher.Register(
+            "Record.DeleteLastLoot",
+            () =>
+            {
+                _mainService.SetActiveTabPage(Models.TabPage.Timer);
+                _mainService.RequestDeleteLastLoot();
+            }
+        );
+
         _dispatcher.Register(
             "Loot.Add",
             () =>
@@ -289,6 +316,24 @@ public class CommandInitializer
             }
         );
 
+        _dispatcher.Register(
+            "Character.ShowLootHistory",
+            () =>
+            {
+                _mainService.SetActiveTabPage(Models.TabPage.Profile);
+                _messenger.Publish(new ShowLootHistoryMessage());
+            }
+        );
+
+        _dispatcher.Register(
+            "Character.Delete",
+            () =>
+            {
+                _mainService.SetActiveTabPage(Models.TabPage.Profile);
+                _messenger.Publish(new DeleteCharacterMessage());
+            }
+        );
+
         // 场景操作
         _dispatcher.Register(
             "Scene.Switch",
@@ -297,15 +342,11 @@ public class CommandInitializer
                 string? shortEnName = arg?.ToString();
                 if (!string.IsNullOrEmpty(shortEnName))
                 {
-                    bool success = _profileService.SwitchSceneByShortEnName(shortEnName);
-                    if (success)
-                    {
-                        Utils.Toast.Success($"已切换到场景: {shortEnName}");
-                    }
-                    else
-                    {
-                        Utils.Toast.Error($"未找到场景: {shortEnName}");
-                    }
+                    _profileService.SwitchSceneByShortEnName(shortEnName);
+                }
+                else
+                {
+                    Utils.Toast.Error($"未输入场景名称");
                 }
             }
         );
@@ -314,6 +355,32 @@ public class CommandInitializer
         _dispatcher.Register(
             "System.Screenshot",
             () => _messenger.Publish(new ScreenshotRequestedMessage("LeaderKeyShot"))
+        );
+
+        // 修改番茄钟模式
+        _dispatcher.Register(
+            "Pomodoro.SetMode",
+            (arg) =>
+            {
+                if (int.TryParse(arg?.ToString(), out int modeNumber))
+                {
+                    // 将用户输入的数字 (1-3) 转换为对应的枚举值 (0-2)
+                    int enumValue = modeNumber - 1;
+                    if (enumValue >= 0 && enumValue <= 2)
+                    {
+                        var newMode = (Models.PomodoroMode)enumValue;
+                        _mainService.SetPomodoroMode(newMode);
+                    }
+                    else
+                    {
+                        Utils.Toast.Error("请输入 1-3 之间的数字");
+                    }
+                }
+                else
+                {
+                    Utils.Toast.Error("请输入有效的数字");
+                }
+            }
         );
     }
 }

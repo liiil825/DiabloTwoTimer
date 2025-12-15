@@ -56,6 +56,8 @@ public partial class ProfileManager : UserControl
         _messenger.Subscribe<CreateCharacterMessage>(OnCreateCharacterRequested);
         _messenger.Subscribe<SwitchCharacterMessage>(OnSwitchCharacterRequested);
         _messenger.Subscribe<ExportCharacterMessage>(OnExportCharacterRequested);
+        _messenger.Subscribe<ShowLootHistoryMessage>(OnShowLootHistoryRequested);
+        _messenger.Subscribe<DeleteCharacterMessage>(OnDeleteCharacterRequested);
     }
 
     // MF记录功能相关字段
@@ -666,6 +668,24 @@ public partial class ProfileManager : UserControl
 
             // 更新UI
             UpdateUI();
+        });
+    }
+
+    // 处理显示掉落历史请求
+    private void OnShowLootHistoryRequested(ShowLootHistoryMessage message)
+    {
+        this.SafeInvoke(() =>
+        {
+            BtnShowLootHistory_Click(null, EventArgs.Empty);
+        });
+    }
+
+    // 处理删除角色请求
+    private void OnDeleteCharacterRequested(DeleteCharacterMessage message)
+    {
+        this.SafeInvoke(() =>
+        {
+            BtnDeleteCharacter_Click(null, EventArgs.Empty);
         });
     }
 }

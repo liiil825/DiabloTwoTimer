@@ -32,8 +32,20 @@ public interface IMainService
 
     // 请求删除历史记录 (对应原来的 DeleteSelectedRecordAsync)
     event Action? OnRequestDeleteHistory;
+    void RequestDeleteSelectedRecord();
+
+    // 请求删除最后一个时间记录
+    event Action? OnRequestDeleteLastHistory;
+    void RequestDeleteLastHistory();
+
+    // 请求删除最后一个掉落记录
+    event Action? OnRequestDeleteLastLoot;
+    void RequestDeleteLastLoot();
 
     void ReloadHotkeys();
 
     void UpdateWindowHandle(IntPtr newHandle);
+
+    // 设置番茄钟模式
+    void SetPomodoroMode(Models.PomodoroMode mode);
 }

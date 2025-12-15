@@ -97,6 +97,7 @@ public partial class PomodoroControl : UserControl
         // 这样在 Unsubscribe 时才能正确移除
         _messenger.Subscribe<ShowPomodoroSettingsMessage>(OnShowSettings);
         _messenger.Subscribe<ShowPomodoroBreakFormMessage>(OnShowBreakForm);
+        _messenger.Subscribe<PomodoroModeChangedMessage>(OnPomodoroModeChanged);
     }
 
     /// <summary>
@@ -106,6 +107,16 @@ public partial class PomodoroControl : UserControl
     {
         _messenger.Unsubscribe<ShowPomodoroSettingsMessage>(OnShowSettings);
         _messenger.Unsubscribe<ShowPomodoroBreakFormMessage>(OnShowBreakForm);
+        _messenger.Unsubscribe<PomodoroModeChangedMessage>(OnPomodoroModeChanged);
+    }
+
+    /// <summary>
+    /// 处理番茄钟模式变更消息
+    /// </summary>
+    /// <param name="message">模式变更消息</param>
+    private void OnPomodoroModeChanged(PomodoroModeChangedMessage message)
+    {
+        this.SafeInvoke(() => UpdateModeMark(message.NewMode));
     }
 
     private void OnShowSettings(ShowPomodoroSettingsMessage msg)
@@ -217,22 +228,36 @@ public partial class PomodoroControl : UserControl
         btnShowStats.Enabled = _timerService.CanShowStats;
         btnNextState.Enabled = _timerService.IsRunning;
 
-        switch (_appSettings.PomodoroMode)
+        UpdateModeMark();
+    }
+
+    /// <summary>
+    /// 更新模式标记
+    /// </summary>
+    private void UpdateModeMark()
+    {
+        UpdateModeMark(_appSettings.PomodoroMode);
+    }
+
+    /// <summary>
+    /// 更新模式标记
+    /// </summary>
+    /// <param name="mode">新的模式</param>
+    private void UpdateModeMark(Models.PomodoroMode mode)
+    {
+        switch (mode)
         {
-            case PomodoroMode.Automatic:
+            case Models.PomodoroMode.Automatic:
                 _lblModeMark.Text = "I";
-                // 可选：专注模式下高亮
                 _lblModeMark.ForeColor = AppTheme.Colors.Primary;
-                // 如果有 ToolTip，可以加上: _toolTip.SetToolTip(_lblModeMark, "Focus (专注)");
                 break;
 
-            case PomodoroMode.SemiAuto:
+            case Models.PomodoroMode.SemiAuto:
                 _lblModeMark.Text = "II";
-                // 可选：休息模式下稍微变暗，或者用绿色表示放松
                 _lblModeMark.ForeColor = AppTheme.Colors.Success;
                 break;
 
-            case PomodoroMode.Manual:
+            case Models.PomodoroMode.Manual:
                 _lblModeMark.Text = "III";
                 _lblModeMark.ForeColor = AppTheme.Colors.Info;
                 break;
@@ -241,9 +266,6 @@ public partial class PomodoroControl : UserControl
                 _lblModeMark.Text = "";
                 break;
         }
-
-
-        UpdateCountDisplay();
     }
 
     private void UpdateCountDisplay()
@@ -310,7 +332,6 @@ public partial class PomodoroControl : UserControl
 
     private void SaveSettings()
     {
-        // _appSettings.PomodoroMode = _timerService.Settings.PomodoroMode;
         _appSettings.WorkTimeMinutes = _timerService.Settings.WorkTimeMinutes;
         _appSettings.WorkTimeSeconds = _timerService.Settings.WorkTimeSeconds;
         _appSettings.ShortBreakMinutes = _timerService.Settings.ShortBreakMinutes;

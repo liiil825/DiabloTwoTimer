@@ -64,7 +64,6 @@ public partial class HistoryControl : UserControl
     public bool LoadProfileHistoryData(
         CharacterProfile? profile,
         string scene,
-        string characterName,
         GameDifficulty difficulty
     )
     {
@@ -73,6 +72,7 @@ public partial class HistoryControl : UserControl
         _currentProfile = profile;
         _currentScene = scene;
         _currentDifficulty = difficulty;
+        string characterName = profile?.Name ?? "";
         bool result = _historyService.LoadProfileHistoryData(profile, scene, characterName, difficulty);
         if (result)
             RefreshGridRowCount();

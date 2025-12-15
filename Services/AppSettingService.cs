@@ -10,12 +10,6 @@ namespace DiabloTwoMFTimer.Services;
 
 public class AppSettings : IAppSettings
 {
-    private static readonly string ConfigFilePath = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-        "DiabloTwoMFTimer",
-        "config.yaml"
-    );
-
     private static readonly ISerializer serializer = new SerializerBuilder()
         .WithNamingConvention(CamelCaseNamingConvention.Instance)
         .Build();
@@ -67,17 +61,18 @@ public class AppSettings : IAppSettings
     // 保存设置
     public void Save()
     {
+        var configFilePath = FolderManager.ConfigFilePath;
         try
         {
             // 确保目录存在 - 添加null检查以修复CS8604警告
-            string? directory = Path.GetDirectoryName(ConfigFilePath);
+            string? directory = Path.GetDirectoryName(configFilePath);
             if (directory != null)
             {
                 Directory.CreateDirectory(directory);
             }
 
             var yaml = serializer.Serialize(this);
-            File.WriteAllText(ConfigFilePath, yaml);
+            File.WriteAllText(configFilePath, yaml);
         }
         catch (Exception ex)
         {
@@ -90,15 +85,16 @@ public class AppSettings : IAppSettings
     {
         try
         {
+            var configFilePath = FolderManager.ConfigFilePath;
             // 确保目录存在 - 添加null检查以修复CS8604警告
-            string? directory = Path.GetDirectoryName(ConfigFilePath);
+            string? directory = Path.GetDirectoryName(configFilePath);
             if (directory != null)
             {
                 Directory.CreateDirectory(directory);
             }
-            if (File.Exists(ConfigFilePath))
+            if (File.Exists(configFilePath))
             {
-                var yaml = File.ReadAllText(ConfigFilePath);
+                var yaml = File.ReadAllText(configFilePath);
                 var settings = deserializer.Deserialize<AppSettings>(yaml);
                 return settings;
             }

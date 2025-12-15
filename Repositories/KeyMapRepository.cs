@@ -191,6 +191,40 @@ public class KeyMapRepository : IKeyMapRepository
             },
             new KeyMapNode
             {
+                Key = "c",
+                Text = "角色 (Character)",
+                Children =
+                [
+                    new()
+                    {
+                        Key = "q",
+                        Text = "创建角色 (Create)",
+                        Action = "Character.Create",
+                    },
+                    new()
+                    {
+                        Key = "w",
+                        Text = "切换角色 (Switch)",
+                        Action = "Character.Switch",
+                    },
+                    new()
+                    {
+                        Key = "e",
+                        Text = "导出角色 (Export)",
+                        Action = "Character.Export",
+                    },
+                    new()
+                    {
+                        Key = "s",
+                        Text = "切换场景 (Switch Scene)",
+                        Action = "Scene.Switch",
+                        RequiresInput = true,
+                        InputHint = "输入场景的英文短名称 (如: Coun, Pit, Gamble)",
+                    },
+                ],
+            },
+            new KeyMapNode
+            {
                 Key = "g", // Go / Goto
                 Text = "导航 (Go)",
                 Children =

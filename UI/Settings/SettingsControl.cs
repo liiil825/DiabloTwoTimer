@@ -99,6 +99,7 @@ public partial class SettingsControl : UserControl
         _appSettings.Language = AppSettings.LanguageToString(generalSettings.SelectedLanguage);
         _appSettings.AlwaysOnTop = generalSettings.IsAlwaysOnTop;
 
+        _appSettings.HotkeyLeader = hotkeySettings.LeaderHotkey;
         _appSettings.HotkeyStartOrNext = hotkeySettings.StartOrNextRunHotkey;
         _appSettings.HotkeyPause = hotkeySettings.PauseHotkey;
         _appSettings.HotkeyDeleteHistory = hotkeySettings.DeleteHistoryHotkey;

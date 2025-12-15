@@ -308,4 +308,19 @@ public class SceneService : ISceneService
             _ => pureEnglishSceneName,
         };
     }
+
+    /// <summary>
+    /// 根据shortEnName查找场景
+    /// </summary>
+    /// <param name="shortEnName">场景的英文短名称</param>
+    /// <returns>对应的场景对象，如果未找到则返回null</returns>
+    public FarmingScene? GetSceneByShortEnName(string shortEnName)
+    {
+        if (string.IsNullOrWhiteSpace(shortEnName))
+            return null;
+
+        return FarmingScenes.FirstOrDefault(s =>
+            string.Equals(s.ShortEnName, shortEnName, StringComparison.OrdinalIgnoreCase)
+        );
+    }
 }

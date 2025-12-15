@@ -60,3 +60,12 @@ public class ShowRecordLootFormMessage { }
 
 // 请求切换掉落记录可见性消息
 public class ToggleLootVisibilityMessage { }
+
+// 请求创建角色消息
+public class CreateCharacterMessage { }
+
+// 请求切换角色消息
+public class SwitchCharacterMessage { }
+
+// 请求导出角色消息
+public class ExportCharacterMessage { }

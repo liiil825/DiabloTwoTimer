@@ -1,4 +1,19 @@
 farmingSpots:
+  - act: 0
+    enUS: "Gambling"
+    zhCN: "赌装备"
+    shortEnName: "Gamble"
+    shortZhCN: "赌装备"
+  - act: 0
+    enUS: "Stash Management"
+    zhCN: "整理背包"
+    shortEnName: "Stash"
+    shortZhCN: "整理背包"
+  - act: 0
+    enUS: "Crafting"
+    zhCN: "做手工"
+    shortEnName: "Craft"
+    shortZhCN: "做手工"
   - act: 1
     enUS: "Countess"
     zhCN: "女伯爵"

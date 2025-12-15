@@ -13,6 +13,7 @@ public class CommandInitializer
     private readonly IPomodoroTimerService _pomodoroTimerService;
     private readonly IMainService _mainService;
     private readonly IAppSettings _appSettings;
+    private readonly IProfileService _profileService;
 
     // UI 相关的动作通常需要通过 Messenger 或者直接注入 Controller (不太推荐)
     // 这里我们通过 Messenger 发送指令，或者直接调用 Service
@@ -24,7 +25,8 @@ public class CommandInitializer
         IPomodoroTimerService pomodoroTimerService,
         IMainService mainService,
         IAppSettings appSettings,
-        IMessenger messenger
+        IMessenger messenger,
+        IProfileService profileService
     )
     {
         _dispatcher = dispatcher;
@@ -33,6 +35,7 @@ public class CommandInitializer
         _mainService = mainService;
         _appSettings = appSettings;
         _messenger = messenger;
+        _profileService = profileService;
     }
 
     public void Initialize()
@@ -258,6 +261,54 @@ public class CommandInitializer
         _dispatcher.Register("Nav.Profile", () => _mainService.SetActiveTabPage(Models.TabPage.Profile));
         _dispatcher.Register("Nav.Pomodoro", () => _mainService.SetActiveTabPage(Models.TabPage.Pomodoro));
         _dispatcher.Register("Nav.Settings", () => _mainService.SetActiveTabPage(Models.TabPage.Settings));
+
+        // 角色管理命令
+        _dispatcher.Register(
+            "Character.Create",
+            () =>
+            {
+                _mainService.SetActiveTabPage(Models.TabPage.Profile);
+                _messenger.Publish(new CreateCharacterMessage());
+            }
+        );
+
+        _dispatcher.Register(
+            "Character.Switch",
+            () =>
+            {
+                _mainService.SetActiveTabPage(Models.TabPage.Profile);
+                _messenger.Publish(new SwitchCharacterMessage());
+            }
+        );
+
+        _dispatcher.Register(
+            "Character.Export",
+            () =>
+            {
+                _messenger.Publish(new ExportCharacterMessage());
+            }
+        );
+
+        // 场景操作
+        _dispatcher.Register(
+            "Scene.Switch",
+            (arg) =>
+            {
+                string? shortEnName = arg?.ToString();
+                if (!string.IsNullOrEmpty(shortEnName))
+                {
+                    bool success = _profileService.SwitchSceneByShortEnName(shortEnName);
+                    if (success)
+                    {
+                        Utils.Toast.Success($"已切换到场景: {shortEnName}");
+                    }
+                    else
+                    {
+                        Utils.Toast.Error($"未找到场景: {shortEnName}");
+                    }
+                }
+            }
+        );
 
         // 工具
         _dispatcher.Register(

@@ -49,13 +49,16 @@ partial class HotkeySettingsControl
         // 
         this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+        this.AutoScroll = true;
         this.BackColor = DiabloTwoMFTimer.UI.Theme.AppTheme.BackColor;
         this.Controls.Add(this.tlpMain);
         this.Name = "HotkeySettingsControl";
         // 【关键】启用自动大小，防止截断
-        this.AutoSize = true;
-        this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-        this.Dock = System.Windows.Forms.DockStyle.Top;
+        // this.AutoSize = true;
+        // this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+        // this.Dock = System.Windows.Forms.DockStyle.Top;
+        this.Dock = System.Windows.Forms.DockStyle.Fill;
+
 
         // 
         // tlpMain (主布局容器)

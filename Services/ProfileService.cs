@@ -294,6 +294,26 @@ public class ProfileService : IProfileService
         return difficulties.IndexOf(difficulty);
     }
 
+    /// <summary>
+    /// 根据shortEnName切换场景
+    /// </summary>
+    /// <param name="shortEnName">场景的英文短名称</param>
+    /// <returns>是否成功切换场景</returns>
+    public bool SwitchSceneByShortEnName(string shortEnName)
+    {
+        if (string.IsNullOrWhiteSpace(shortEnName))
+            return false;
+
+        // 根据shortEnName查找场景
+        var scene = _sceneService.GetSceneByShortEnName(shortEnName);
+        if (scene == null)
+            return false;
+
+        // 更新当前场景
+        CurrentScene = scene.EnUS;
+        return true;
+    }
+
     #endregion
 
     #region Record Management (新增区域)

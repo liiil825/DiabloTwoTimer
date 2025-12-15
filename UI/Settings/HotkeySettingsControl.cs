@@ -201,14 +201,8 @@ public partial class HotkeySettingsControl : UserControl
 
     public void LoadHotkeys(IAppSettings settings)
     {
-        // 假设 Settings 中已经添加了 HotkeyLeader 属性
-        // 如果报错，请确保在 IAppSettings 和 AppSettings 中添加该属性
-        // LeaderHotkey = settings.HotkeyLeader;
 
-        // 暂时为了代码不报错，这里需要你手动确认 Settings 结构
-        // 示例：
-        // LeaderHotkey = settings.HotkeyLeader;
-
+        LeaderHotkey = settings.HotkeyLeader;
         StartOrNextRunHotkey = settings.HotkeyStartOrNext;
         PauseHotkey = settings.HotkeyPause;
         DeleteHistoryHotkey = settings.HotkeyDeleteHistory;
@@ -244,7 +238,7 @@ public partial class HotkeySettingsControl : UserControl
                 LoadHotkeys(
                     new Services.AppSettings
                     {
-                        // HotkeyLeader = LeaderHotkey, // 请取消注释并确保属性存在
+                        HotkeyLeader = LeaderHotkey,
                         HotkeyStartOrNext = StartOrNextRunHotkey,
                         HotkeyPause = PauseHotkey,
                         HotkeyDeleteHistory = DeleteHistoryHotkey,

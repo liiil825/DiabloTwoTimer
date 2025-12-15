@@ -21,4 +21,7 @@ public interface ISceneService
     // 难度相关
     string GetLocalizedDifficultyName(GameDifficulty difficulty);
     GameDifficulty GetDifficultyByIndex(int index);
+    
+    // 根据shortEnName查找场景
+    FarmingScene? GetSceneByShortEnName(string shortEnName);
 }

@@ -32,6 +32,13 @@ public interface IProfileService
     GameDifficulty GetDifficultyByIndex(int index);
     int GetDifficultyIndex(GameDifficulty difficulty);
 
+    /// <summary>
+    /// 根据shortEnName切换场景
+    /// </summary>
+    /// <param name="shortEnName">场景的英文短名称</param>
+    /// <returns>是否成功切换场景</returns>
+    bool SwitchSceneByShortEnName(string shortEnName);
+
     void AddRecord(MFRecord record);
 
     void UpdateRecord(MFRecord record);

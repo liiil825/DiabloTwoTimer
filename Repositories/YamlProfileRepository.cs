@@ -25,11 +25,7 @@ public class YamlProfileRepository : IProfileRepository
     public YamlProfileRepository()
     {
         // 1. 初始化路径
-        _profilesDirectory = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-            "DiabloTwoMFTimer",
-            "profiles"
-        );
+        _profilesDirectory = FolderManager.ProfilesPath;
 
         // 2. 确保目录存在
         if (!Directory.Exists(_profilesDirectory))

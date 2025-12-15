@@ -30,6 +30,7 @@ public class KeyMapNode
     /// 输入提示文本 (例如 "请输入透明度 (0-100)...")
     /// </summary>
     public string? InputHint { get; set; }
+
     // --- 新增字段 End ---
 
     /// <summary>

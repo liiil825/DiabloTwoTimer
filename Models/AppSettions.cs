@@ -1,4 +1,5 @@
 namespace DiabloTwoMFTimer.Models;
+
 public enum WindowPosition
 {
     TopLeft,

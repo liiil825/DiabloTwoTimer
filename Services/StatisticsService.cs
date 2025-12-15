@@ -117,7 +117,7 @@ public class StatisticsService(IProfileService profileService, IAppSettings appS
         var sb = new StringBuilder();
         // 1. 获取场景统计
         var validRecords = _profileService
-            .CurrentProfile.Records.Where(r => r.StartTime >= start && r.StartTime <= end)
+            .CurrentProfile.Records.Where(r => r.IsCompleted && r.EndTime >= start && r.EndTime <= end)
             .ToList();
 
         if (validRecords.Count > 0)

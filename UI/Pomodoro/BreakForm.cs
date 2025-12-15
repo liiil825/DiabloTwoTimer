@@ -386,13 +386,10 @@ public partial class BreakForm : System.Windows.Forms.Form
 
             if (lblDuration != null)
             {
-                // var validRecords = _profileService.CurrentProfile.Records.Where(r =>
-                //     r.IsCompleted && r.StartTime >= start && r.StartTime <= end
-                // );
                 var validRecords = _profileService
                     .CurrentProfile.Records.Where(r =>
-                        r.StartTime >= start && r.StartTime <= end && r.DurationSeconds > 0
-                    ) // 去掉 r.IsCompleted
+                        r.IsCompleted && r.EndTime >= start && r.EndTime <= end && r.DurationSeconds > 0
+                    )
                     .ToList();
 
                 double totalSeconds = validRecords.Sum(r => r.DurationSeconds);

@@ -21,6 +21,7 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
     // UI 控件
     private FlowLayoutPanel _breadcrumbPanel = null!;
     private FlowLayoutPanel _itemsPanel = null!;
+
     // 【新增】输入框
     private ThemedTextBox _inputTextBox = null!;
     private Label _inputHintLabel = null!;
@@ -90,7 +91,7 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
         {
             Dock = DockStyle.Fill,
             Visible = false,
-            Padding = new Padding(0, 30, 0, 0) // 垂直居中一点
+            Padding = new Padding(0, 30, 0, 0), // 垂直居中一点
         };
 
         _inputHintLabel = new ThemedLabel
@@ -99,7 +100,7 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
             Font = new Font(AppTheme.Fonts.FontFamily, 14, FontStyle.Regular),
             AutoSize = true,
             Location = new Point(screen.Width / 2 - 100, 20),
-            Anchor = AnchorStyles.Top
+            Anchor = AnchorStyles.Top,
         };
 
         _inputTextBox = new ThemedTextBox
@@ -154,7 +155,8 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
     private void RefreshUI()
     {
         // 如果正在输入模式，不需要刷新列表
-        if (_inputContainer.Visible) return;
+        if (_inputContainer.Visible)
+            return;
 
         _breadcrumbPanel.SuspendLayout();
         _itemsPanel.SuspendLayout();
@@ -183,7 +185,12 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
 
             if (_currentNodes.Count == 0)
             {
-                var lbl = new ThemedLabel { Text = "没有可用操作", AutoSize = true, ForeColor = Color.Gray };
+                var lbl = new ThemedLabel
+                {
+                    Text = "没有可用操作",
+                    AutoSize = true,
+                    ForeColor = Color.Gray,
+                };
                 _itemsPanel.Controls.Add(lbl);
             }
         }
@@ -291,10 +298,12 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
 
     private void HandleInput(string key)
     {
-        if (_currentNodes == null) return;
+        if (_currentNodes == null)
+            return;
 
         var targetNode = _currentNodes.FirstOrDefault(n => n.Key.Equals(key, StringComparison.OrdinalIgnoreCase));
-        if (targetNode == null) return;
+        if (targetNode == null)
+            return;
 
         if (targetNode.IsLeaf)
         {
@@ -330,9 +339,7 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
         _inputContainer.Visible = true;
 
         // 设置提示
-        _inputHintLabel.Text = string.IsNullOrEmpty(node.InputHint)
-            ? $"请输入 [{node.Text}] 的参数:"
-            : node.InputHint;
+        _inputHintLabel.Text = string.IsNullOrEmpty(node.InputHint) ? $"请输入 [{node.Text}] 的参数:" : node.InputHint;
 
         // 居中调整 (简单计算)
         _inputHintLabel.Left = (this.Width - _inputHintLabel.Width) / 2;
@@ -378,7 +385,8 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
         else
         {
             string msg = $"[演示模式] 执行命令:\n{node.Action}";
-            if (args != null) msg += $"\n参数: {args}";
+            if (args != null)
+                msg += $"\n参数: {args}";
             ThemedMessageBox.Show(msg, "Leader Key Action");
         }
 

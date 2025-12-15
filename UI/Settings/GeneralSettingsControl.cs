@@ -198,9 +198,7 @@ public partial class GeneralSettingsControl : UserControl
     }
 
     public Models.LanguageOption SelectedLanguage =>
-        (chineseRadioButton?.Checked ?? false)
-            ? Models.LanguageOption.Chinese
-            : Models.LanguageOption.English;
+        (chineseRadioButton?.Checked ?? false) ? Models.LanguageOption.Chinese : Models.LanguageOption.English;
 
     public bool IsAlwaysOnTop => alwaysOnTopCheckBox?.Checked ?? false;
 

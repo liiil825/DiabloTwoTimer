@@ -208,44 +208,50 @@ public class CommandInitializer
             }
         );
 
-        _dispatcher.Register("App.SetOpacity", (arg) =>
-        {
-            if (double.TryParse(arg?.ToString(), out double val))
+        _dispatcher.Register(
+            "App.SetOpacity",
+            (arg) =>
             {
-                // 调用调整透明度的逻辑
-                if (val < 0.1 || val > 1.0)
+                if (double.TryParse(arg?.ToString(), out double val))
                 {
-                    Utils.Toast.Error("透明度值必须在 0.1-1.0 之间");
-                    return;
-                }
-                _appSettings.Opacity = val;
-                _appSettings.Save();
-                _messenger.Publish(new OpacityChangedMessage());
-                Utils.Toast.Success($"已设置透明度为 {val}");
-            }
-        });
-        _dispatcher.Register("App.SetSize", (arg) =>
-        {
-            if (float.TryParse(arg?.ToString(), out float val) && val >= 1.0f && val <= 2.5f)
-            {
-                var result = DiabloTwoMFTimer.UI.Components.ThemedMessageBox.Show(
-                "界面缩放设置已保存。需要重启程序才能完全生效。\n\n是否立即重启？",
-                "需要重启",
-                MessageBoxButtons.YesNo
-            ); // 使用 YesNo 按钮
-                _appSettings.UiScale = val;
-                _appSettings.Save();
-                if (result == DialogResult.Yes)
-                {
-                    Application.Restart();
-                    Application.Exit();
+                    // 调用调整透明度的逻辑
+                    if (val < 0.1 || val > 1.0)
+                    {
+                        Utils.Toast.Error("透明度值必须在 0.1-1.0 之间");
+                        return;
+                    }
+                    _appSettings.Opacity = val;
+                    _appSettings.Save();
+                    _messenger.Publish(new OpacityChangedMessage());
+                    Utils.Toast.Success($"已设置透明度为 {val}");
                 }
             }
-            else
+        );
+        _dispatcher.Register(
+            "App.SetSize",
+            (arg) =>
             {
-                Utils.Toast.Error("请输入 1.0 - 2.5 之间的数值");
+                if (float.TryParse(arg?.ToString(), out float val) && val >= 1.0f && val <= 2.5f)
+                {
+                    var result = DiabloTwoMFTimer.UI.Components.ThemedMessageBox.Show(
+                        "界面缩放设置已保存。需要重启程序才能完全生效。\n\n是否立即重启？",
+                        "需要重启",
+                        MessageBoxButtons.YesNo
+                    ); // 使用 YesNo 按钮
+                    _appSettings.UiScale = val;
+                    _appSettings.Save();
+                    if (result == DialogResult.Yes)
+                    {
+                        Application.Restart();
+                        Application.Exit();
+                    }
+                }
+                else
+                {
+                    Utils.Toast.Error("请输入 1.0 - 2.5 之间的数值");
+                }
             }
-        });
+        );
 
         // 导航：切换 Tab
         _dispatcher.Register("Nav.Timer", () => _mainService.SetActiveTabPage(Models.TabPage.Timer));

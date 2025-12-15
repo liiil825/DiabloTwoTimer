@@ -20,24 +20,41 @@ public class CommandDispatcher : ICommandDispatcher
     public void Register(string commandId, Action action)
     {
         // 包装：忽略参数，包装同步 Action
-        Register(commandId, _ => { action(); return Task.CompletedTask; });
+        Register(
+            commandId,
+            _ =>
+            {
+                action();
+                return Task.CompletedTask;
+            }
+        );
     }
 
     public void Register(string commandId, Func<object?, Task> action)
     {
-        if (string.IsNullOrWhiteSpace(commandId) || action == null) return;
+        if (string.IsNullOrWhiteSpace(commandId) || action == null)
+            return;
         _commands[commandId] = action;
     }
 
     public void Register(string commandId, Action<object?> action)
     {
-        if (action == null) return;
-        Register(commandId, (args) => { action(args); return Task.CompletedTask; });
+        if (action == null)
+            return;
+        Register(
+            commandId,
+            (args) =>
+            {
+                action(args);
+                return Task.CompletedTask;
+            }
+        );
     }
 
     public async Task ExecuteAsync(string commandId, object? args = null)
     {
-        if (string.IsNullOrWhiteSpace(commandId)) return;
+        if (string.IsNullOrWhiteSpace(commandId))
+            return;
 
         if (_commands.TryGetValue(commandId, out var action))
         {

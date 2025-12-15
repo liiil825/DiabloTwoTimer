@@ -38,7 +38,7 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
     private System.Windows.Forms.Timer _animTimer = null!;
     private bool _isClosing = false;
     private const double TARGET_OPACITY = 0.95; // 目标透明度
-    private const double ANIMATION_SPEED = 0.15; // 动画速度 (越大越快)
+    private const double ANIMATION_SPEED = 0.3; // 动画速度 (越大越快)
 
     public LeaderKeyForm(ICommandDispatcher? commandDispatcher = null, IKeyMapRepository? keyMapRepository = null)
     {
@@ -249,6 +249,34 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
 
         panel.Controls.Add(lblKey);
         panel.Controls.Add(lblText);
+
+        // 【优化1】如果是分支节点（子菜单），添加一个视觉指示符
+        if (!node.IsLeaf)
+        {
+            var lblArrow = new Label
+            {
+                Text = "▶", // 或者使用 "..." 
+                Font = new Font(AppTheme.Fonts.FontFamily, 8, FontStyle.Regular), // 字体稍小
+                ForeColor = Color.Gray, // 颜色淡一点
+                AutoSize = true,
+                BackColor = Color.Transparent
+            };
+
+            // 将箭头放置在 Panel 最右侧垂直居中
+            // 注意：这里需要先计算 AutoSize 后的大小，或者简单估算位置
+            // 为了简单起见，我们直接放到右侧边缘附近
+            panel.Controls.Add(lblArrow);
+
+            // 确保箭头在最上层
+            lblArrow.BringToFront();
+
+            // 手动定位：靠右边距 10px，垂直居中
+            lblArrow.Location = new Point(
+                itemWidth - ScaleHelper.Scale(20),
+                (itemHeight - ScaleHelper.Scale(15)) / 2
+            );
+        }
+
         return panel;
     }
 
@@ -375,11 +403,13 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
     private void ExecuteAction(KeyMapNode node, object? args = null)
     {
         CloseWithAnimation();
-        // 确保隐藏后状态复原，下次打开不残留输入框
-        ExitInputMode();
+
+        // 注意：删除了这里的 ExitInputMode() 和 ResetState()
+        // 这样窗体在淡出时，用户还能看到刚才的操作结果/列表，而不是突然变空
 
         if (_commandDispatcher != null && !string.IsNullOrEmpty(node.Action))
         {
+            // 异步执行命令，不阻塞 UI 动画
             _ = _commandDispatcher.ExecuteAsync(node.Action, args);
         }
         else
@@ -387,21 +417,32 @@ public partial class LeaderKeyForm : System.Windows.Forms.Form
             string msg = $"[演示模式] 执行命令:\n{node.Action}";
             if (args != null)
                 msg += $"\n参数: {args}";
+            // MessageBox 会阻塞线程，可能会打断淡出动画，但在演示模式下可以接受
             ThemedMessageBox.Show(msg, "Leader Key Action");
         }
 
         LogManager.WriteDebugLog("LeaderKeyForm", $"执行操作: {node.Action} 参数: {args}");
-        ResetState();
+
+        // 这里的 ResetState() 也被移除，交由 AnimationTimer_Tick 在动画结束时调用
     }
 
+    // 【优化2】增强 ResetState，确保它能清理所有状态（包括输入框）
     private void ResetState()
     {
-        LogManager.WriteDebugLog("LeaderKeyForm", $"重置状态: 清空路径栈");
-        _pathStack.Clear();
+        LogManager.WriteDebugLog("LeaderKeyForm", $"重置状态");
 
-        // 【核心修复】将当前节点重置为根节点缓存
+        // 1. 强制退出输入模式（隐藏输入框，显示列表面板）
+        // 我们手动执行 ExitInputMode 的逻辑，但不调用 Focus()，因为窗体此时已隐藏
+        _pendingInputNode = null;
+        _inputContainer.Visible = false;
+        _itemsPanel.Visible = true;
+        _inputTextBox.Clear();
+
+        // 2. 清空路径栈，回到根节点
+        _pathStack.Clear();
         _currentNodes = _rootNodes ?? [];
 
+        // 3. 刷新界面（此时窗体是隐藏的，用户看不见这个刷新过程，下次打开就是干净的首页）
         RefreshUI();
     }
 

@@ -151,6 +151,12 @@ public class KeyMapRepository : IKeyMapRepository
                     },
                     new()
                     {
+                        Key = "d",
+                        Text = "切换状态 (Switch State)",
+                        Action = "Pomodoro.SwitchToNextState",
+                    },
+                    new()
+                    {
                         Key = "r",
                         Text = "重置 (Reset)",
                         Action = "Pomodoro.Reset",
@@ -159,7 +165,7 @@ public class KeyMapRepository : IKeyMapRepository
             },
             new KeyMapNode
             {
-                Key = "r", // Add
+                Key = "r",
                 Text = "记录 (Record)",
                 Children =
                 [

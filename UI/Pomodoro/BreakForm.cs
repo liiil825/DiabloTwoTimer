@@ -360,11 +360,10 @@ public partial class BreakForm : System.Windows.Forms.Form
             {
                 case StatViewType.Session:
                     if (_breakType == PomodoroBreakType.ShortBreak)
-                        start = _timerService.CurrentSessionStartTime.AddSeconds(-30);
+                        start = _timerService.PomodoroCycleStartTime.AddSeconds(-30);
                     else
                     {
-                        int cycleMins = (_timeSettings.WorkTimeMinutes * 4) + (_timeSettings.ShortBreakMinutes * 3);
-                        start = DateTime.Now.AddMinutes(-cycleMins - 10);
+                        start = _timerService.FullPomodoroCycleStartTime.AddSeconds(-10);
                     }
                     title = ">>> 本轮战况 <<<";
                     break;

@@ -21,7 +21,8 @@ public interface IPomodoroTimerService
     PomodoroTimerState PreviousState { get; }
 
     // 【新增】当前番茄周期（工作+休息）的起始时间
-    DateTime CurrentSessionStartTime { get; }
+    DateTime PomodoroCycleStartTime { get; }
+    DateTime FullPomodoroCycleStartTime { get; }
 
     // 方法
     void Start();

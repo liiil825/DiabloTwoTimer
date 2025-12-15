@@ -46,15 +46,18 @@ public class PomodoroTimerService : IPomodoroTimerService
 
     // 仅在非工作时间（即休息时间）允许查看统计
     public bool CanShowStats => _currentState != PomodoroTimerState.Work;
-    public DateTime CurrentSessionStartTime { get; private set; } = DateTime.Now;
+    public DateTime PomodoroCycleStartTime { get; private set; } = DateTime.Now;
+    public DateTime FullPomodoroCycleStartTime { get; private set; } = DateTime.Now;
 
     public PomodoroTimerService(ITimerService? timerService, IAppSettings? appSettings)
     {
         _timerService = timerService;
         _appSettings = appSettings;
 
-        _timer = new System.Timers.Timer(100);
-        _timer.AutoReset = true; // 确保它会循环触发
+        _timer = new System.Timers.Timer(100)
+        {
+            AutoReset = true // 确保它会循环触发
+        };
         _timer.Elapsed += OnTimerTick; // 注意：事件名从 Tick 变成了 Elapse
 
         // 显式初始化为停止状态，防止自动运行
@@ -88,7 +91,8 @@ public class PomodoroTimerService : IPomodoroTimerService
         {
             if (_status == TimerStatus.Stopped)
             {
-                CurrentSessionStartTime = DateTime.Now;
+                PomodoroCycleStartTime = DateTime.Now;
+                FullPomodoroCycleStartTime = DateTime.Now;
             }
             _status = TimerStatus.Running;
             _timer.Start();
@@ -224,7 +228,7 @@ public class PomodoroTimerService : IPomodoroTimerService
 
             _currentState = isLongBreak ? PomodoroTimerState.LongBreak : PomodoroTimerState.ShortBreak;
 
-            TryPauseGameTimer(); // (可选) 暂停游戏主计时器
+            TryPauseGameTimer();
 
             // 先重置时间
             _timeLeft = GetDurationForState(_currentState);
@@ -235,10 +239,12 @@ public class PomodoroTimerService : IPomodoroTimerService
         else
         {
             // >>> 休息 -> 工作 <<<
-            CurrentSessionStartTime = DateTime.Now;
+            PomodoroCycleStartTime = DateTime.Now;
+            if (_currentState == PomodoroTimerState.LongBreak)
+                FullPomodoroCycleStartTime = DateTime.Now;
             _currentState = PomodoroTimerState.Work;
 
-            TryResumeGameTimer(); // (可选) 恢复游戏主计时器
+            TryResumeGameTimer();
 
             _timeLeft = GetDurationForState(_currentState);
         }
@@ -311,7 +317,6 @@ public class PomodoroTimerService : IPomodoroTimerService
 
     private void TryPauseGameTimer()
     {
-        LogManager.WriteDebugLog("Pomodoro", "尝试暂停游戏主计时器");
         _timerService!.Pause();
     }
 

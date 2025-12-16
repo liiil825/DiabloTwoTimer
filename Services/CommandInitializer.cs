@@ -119,7 +119,7 @@ public class CommandInitializer
         );
 
         _dispatcher.Register(
-            "Pomodoro.PlusOneMinute",
+            "Pomodoro.AddMinutes",
             (arg) =>
             {
                 if (int.TryParse(arg?.ToString(), out int minutes) && minutes > 0 && minutes <= 59)

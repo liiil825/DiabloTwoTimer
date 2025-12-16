@@ -67,17 +67,17 @@ farmingSpots:
   - act: 3
     enUS: "Temples"
     zhCN: "神殿"
-    shortEnName: "Temple"
+    shortEnName: "Tem"
     shortZhCN: "神殿"
   - act: 3
     enUS: "Travincal"
     zhCN: "崔凡克"
-    shortEnName: "Trav"
+    shortEnName: "Tra"
     shortZhCN: "崔凡克"
   - act: 3
     enUS: "Mephisto"
     zhCN: "墨菲斯托"
-    shortEnName: "Meph"
+    shortEnName: "Mep"
     shortZhCN: "劳模"
   - act: 4
     enUS: "City of the Damned"
@@ -92,7 +92,7 @@ farmingSpots:
   - act: 4
     enUS: "Chaos Sanctuary & Diablo"
     zhCN: "混沌避难所"
-    shortEnName: "DRun"
+    shortEnName: "CS"
     shortZhCN: "超市"
   - act: 5
     enUS: "Eldritch & Shenk"

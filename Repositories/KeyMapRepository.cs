@@ -87,32 +87,6 @@ public class KeyMapRepository : IKeyMapRepository
             },
             new KeyMapNode
             {
-                Key = "t",
-                Text = "计时器",
-                Children =
-                [
-                    new()
-                    {
-                        Key = "s",
-                        Text = "启动",
-                        Action = "Timer.Start",
-                    },
-                    new()
-                    {
-                        Key = "p",
-                        Text = "暂停",
-                        Action = "Timer.Pause",
-                    },
-                    new()
-                    {
-                        Key = "r",
-                        Text = "重置",
-                        Action = "Timer.Reset",
-                    },
-                ],
-            },
-            new KeyMapNode
-            {
                 Key = "e",
                 Text = "番茄钟",
                 Children =
@@ -145,7 +119,7 @@ public class KeyMapRepository : IKeyMapRepository
                     },
                     new()
                     {
-                        Key = "e",
+                        Key = "a",
                         Text = "增加时间",
                         Action = "Pomodoro.AddMinutes",
                         RequiresInput = true,
@@ -173,13 +147,39 @@ public class KeyMapRepository : IKeyMapRepository
             },
             new KeyMapNode
             {
+                Key = "t",
+                Text = "计时器",
+                Children =
+                [
+                    new()
+                    {
+                        Key = "s",
+                        Text = "启动",
+                        Action = "Timer.Start",
+                    },
+                    new()
+                    {
+                        Key = "p",
+                        Text = "暂停",
+                        Action = "Timer.Pause",
+                    },
+                    new()
+                    {
+                        Key = "r",
+                        Text = "重置",
+                        Action = "Timer.Reset",
+                    },
+                ],
+            },
+            new KeyMapNode
+            {
                 Key = "r",
                 Text = "记录",
                 Children =
                 [
                     new()
                     {
-                        Key = "q",
+                        Key = "a",
                         Text = "添加掉落",
                         Action = "Loot.Add",
                     },

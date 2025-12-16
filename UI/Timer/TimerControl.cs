@@ -361,7 +361,12 @@ public partial class TimerControl : UserControl
             // 选择最后一行
             historyControl.SelectLastRow();
             // 删除选中的记录
-            return await historyControl.DeleteSelectedRecordAsync();
+            bool result = await historyControl.DeleteSelectedRecordAsync();
+            if (result)
+            {
+                UpdateStatistics();
+            }
+            return result;
         }
         return false;
     }
@@ -374,7 +379,12 @@ public partial class TimerControl : UserControl
             // 选择最后一行
             lootRecordsControl.SelectLastRow();
             // 删除选中的记录
-            return await lootRecordsControl.DeleteSelectedLootAsync();
+            bool result = await lootRecordsControl.DeleteSelectedLootAsync();
+            if (result)
+            {
+                UpdateStatistics();
+            }
+            return result;
         }
         return false;
     }

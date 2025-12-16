@@ -136,13 +136,12 @@ public class PomodoroTimerService : IPomodoroTimerService
 
     public void SkipBreak()
     {
-        // 只有在休息时才允许跳过
-        if (_currentState != PomodoroTimerState.Work)
-        {
-            TransitionToNextStage(); // 强制流转到下一阶段 (即工作)
-            PomodoroBreakSkipped?.Invoke(this, EventArgs.Empty);
-            Toast.Success(LanguageManager.GetString("PomodoroBreakSkipped", "Break skipped"));
-        }
+        if (_currentState == PomodoroTimerState.Work)
+            return;
+
+        TransitionToNextStage();
+        PomodoroBreakSkipped?.Invoke(this, EventArgs.Empty);
+        Toast.Success(LanguageManager.GetString("PomodoroBreakSkipped", "Break skipped"));
     }
 
     public void AddMinutes(int minutes)
@@ -228,11 +227,9 @@ public class PomodoroTimerService : IPomodoroTimerService
 
             _currentState = isLongBreak ? PomodoroTimerState.LongBreak : PomodoroTimerState.ShortBreak;
 
-            TryPauseGameTimer();
-
             // 先重置时间
             _timeLeft = GetDurationForState(_currentState);
-
+            TryPauseGameTimer();
             // 再触发UI弹窗 (UI会读取到新的休息时间)
             PomodoroBreakStarted?.Invoke(this, new PomodoroBreakStartedEventArgs(breakType));
         }
@@ -244,9 +241,8 @@ public class PomodoroTimerService : IPomodoroTimerService
                 FullPomodoroCycleStartTime = DateTime.Now;
             _currentState = PomodoroTimerState.Work;
 
-            TryResumeGameTimer();
-
             _timeLeft = GetDurationForState(_currentState);
+            TryResumeGameTimer();
         }
 
         // 3. 进入新阶段后，状态自动变为 Running 并开始计时
@@ -318,7 +314,7 @@ public class PomodoroTimerService : IPomodoroTimerService
             LogManager.WriteDebugLog("Pomodoro", $"工作时间警告：{warnShort}秒");
             var message = LanguageManager.GetString("PomodoroWorkEndingShort", warnShort);
             if (pomodoroMode == PomodoroMode.Automatic)
-                Toast.Warning(message);
+                Toast.Error(message);
             else
                 Toast.Info(message);
         }

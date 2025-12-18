@@ -353,7 +353,8 @@ public class TimerService : ITimerService
             existingRecord.DurationSeconds = durationSeconds;
 
             _profileService.UpdateRecord(existingRecord);
-            LogManager.WriteDebugLog("TimerService", "现有记录已完成并保存");
+            var timeString = TimeSpan.FromSeconds(durationSeconds).ToString("mm\\:ss\\.ff");
+            Toast.Success($"{timeString}");
         }
         else
         {

@@ -88,29 +88,38 @@ public static class D2ScrollHelper
 
     private static void UpdateScrollBarParams(DataGridView grid, D2ScrollBar scrollBar)
     {
-        // 1. 动态调整 Padding (完美避开表头)
+        // 1. 动态调整 Padding (保持不变)
         int topOffset = grid.ColumnHeadersHeight;
-        // 底部避开系统可能预留的滚动条高度 + 2px 微调
-        // int bottomOffset = System.Windows.Forms.SystemInformation.HorizontalScrollBarHeight + 2;
         scrollBar.Padding = new Padding(0, topOffset, 0, 0);
 
         // 2. 计算可见行数
-        int visibleRows = grid.DisplayedRowCount(false);
+        int visibleRows = grid.DisplayedRowCount(false); // 只计算完整显示的行
 
-        // 【优化 2】智能计算 Maximum
-        // 这里的逻辑是：如果总行数是 100，一页能看 10 行。
-        // 那么滚动条只需要滚到第 90 行，剩下的 10 行就自然显示在屏幕上了。
-        // 这样就不会出现“滚到最后一行置顶，下面全是空白”的情况。
+        // ================================================================
+        // 【修复核心逻辑】
+        // 既然 D2ScrollBar 内部采用了 (Max - Large + 1) 的标准逻辑
+        // 这里 Maximum 应该设置为 (总行数 - 1)
+        // ================================================================
 
-        int maxScrollIndex = grid.RowCount - visibleRows;
+        if (grid.RowCount > 0)
+        {
+            // 这里的逻辑是：
+            // 假设总行数 100，Visible 10。
+            // Maximum 设为 99。
+            // ScrollBar 内部上限 = 99 - 10 + 1 = 90。
+            // 此时 Value 最大为 90，表格正好显示第 90 行到 99 行。完美。
+            scrollBar.Maximum = grid.RowCount - 1;
+        }
+        else
+        {
+            scrollBar.Maximum = 0;
+        }
 
-        // 如果计算结果小于0，说明不需要滚动（数据少于一页）
-        if (maxScrollIndex < 0) maxScrollIndex = 0;
-
-        scrollBar.Maximum = maxScrollIndex; // 限制最大值
+        // 设置滑块大小（代表一页能显示多少数据）
         scrollBar.LargeChange = visibleRows > 0 ? visibleRows : 1;
 
-        // 只有当需要滚动时才显示
+        // 3. 只有当内容超出显示范围时才显示
+        // (TotalRows > VisibleRows)
         scrollBar.Visible = grid.RowCount > visibleRows;
     }
 

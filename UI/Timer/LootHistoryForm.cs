@@ -45,6 +45,7 @@ public partial class LootHistoryForm : System.Windows.Forms.Form
 
         InitializeComponent();
         InitializeToggleButtons();
+        D2ScrollHelper.Attach(this.gridLoot, this);
 
         LanguageManager.OnLanguageChanged += LanguageChanged;
 

@@ -317,7 +317,7 @@ public class CommandInitializer
         );
 
         _dispatcher.Register(
-            "Character.ShowLootHistory",
+            "Loot.ShowHistory",
             () =>
             {
                 _mainService.SetActiveTabPage(Models.TabPage.Profile);

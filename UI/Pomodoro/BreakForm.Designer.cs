@@ -60,7 +60,7 @@ partial class BreakForm
         // 
         this.btnSkip.Name = "btnSkip";
         this.btnSkip.TabIndex = 7;
-        this.btnSkip.Text = "跳过休息";
+        this.btnSkip.Text = "结束休息";
         this.btnSkip.SetThemePrimary();
         this.btnSkip.Click += (s, e) =>
         {

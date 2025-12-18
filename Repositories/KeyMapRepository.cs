@@ -225,7 +225,7 @@ public class KeyMapRepository : IKeyMapRepository
                     {
                         Key = "q",
                         Text = "掉落",
-                        Action = "Character.ShowLootHistory",
+                        Action = "Loot.ShowHistory",
                     },
                     new()
                     {

@@ -256,8 +256,6 @@ public partial class ProfileManager : UserControl
     {
         // 更新按钮文本
         btnCreateCharacter!.Text = DiabloTwoMFTimer.Utils.LanguageManager.GetString("CreateCharacter");
-        // btnCreateCharacter!.Text = "\uE7C3";
-        // btnCreateCharacter!.Font = Theme.AppTheme.Fonts.SegoeIcon;
         btnSwitchCharacter!.Text = DiabloTwoMFTimer.Utils.LanguageManager.GetString("SwitchCharacter");
         btnDeleteCharacter!.Text = DiabloTwoMFTimer.Utils.LanguageManager.GetString("DeleteCharacter");
         btnShowStats!.Text = DiabloTwoMFTimer.Utils.LanguageManager.GetString("Statistics");
@@ -436,6 +434,7 @@ public partial class ProfileManager : UserControl
                 LoadLastRunSettings();
                 // 更新UI显示新角色信息
                 UpdateUI();
+                _mainService.SetActiveTabPage(Models.TabPage.Timer);
 
                 // 显示成功提示
                 Utils.Toast.Success($"已成功切换到角色 '{currentProfile.Name}'");

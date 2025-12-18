@@ -283,12 +283,10 @@ public partial class PomodoroControl : UserControl
         if (_timerService.IsRunning)
         {
             _timerService.Pause();
-            Toast.Success(LanguageManager.GetString("PomodoroPaused", "Pomodoro timer paused"));
         }
         else
         {
             _timerService.Start();
-            Toast.Success(LanguageManager.GetString("PomodoroStarted", "Pomodoro timer started"));
         }
     }
 

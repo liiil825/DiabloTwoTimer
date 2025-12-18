@@ -6,6 +6,7 @@
   "TimerShowLootDrops": "Show Loot Drops",
   "TimerStarted": "Timer Started",
   "TimerPaused": "Timer Paused",
+  "TimeRecorded": "New Record: {{0}}",
   "TimerResumed": "Timer Resumed",
   "TimerSyncStartPomodoro": "Start Pomodoro when Main Timer Starts",
   "HotkeySettingsGroup": "Hotkey Settings",

@@ -124,6 +124,7 @@
   "LootItems": "掉落物品",
   "Round": "轮",
   "NoHighValueLoots": "暂无高价值掉落",
+  "TimeRecorded": "新增记录: {{0}}",
   "FastestTime": "最快: {{0}}",
   "FastestTimePlaceholder": "最快: --:--:--.-",
   "AverageTime": "平均: {{0}}",

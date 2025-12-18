@@ -354,7 +354,8 @@ public class TimerService : ITimerService
 
             _profileService.UpdateRecord(existingRecord);
             var timeString = TimeSpan.FromSeconds(durationSeconds).ToString("mm\\:ss\\.ff");
-            Toast.Success($"{timeString}");
+            string message = LanguageManager.GetString("TimeRecorded", timeString);
+            Toast.Info(message);
         }
         else
         {

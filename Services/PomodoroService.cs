@@ -97,6 +97,7 @@ public class PomodoroTimerService : IPomodoroTimerService
             _status = TimerStatus.Running;
             _timer.Start();
             NotifyStateChanged();
+            Toast.Success(LanguageManager.GetString("PomodoroStarted"));
         }
     }
 
@@ -107,6 +108,7 @@ public class PomodoroTimerService : IPomodoroTimerService
             _status = TimerStatus.Paused;
             _timer.Stop();
             NotifyStateChanged();
+            Toast.Warning(LanguageManager.GetString("PomodoroPaused"));
         }
     }
 

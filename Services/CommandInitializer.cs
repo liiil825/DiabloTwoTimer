@@ -91,12 +91,10 @@ public class CommandInitializer
                 if (_pomodoroTimerService.IsRunning)
                 {
                     _pomodoroTimerService.Pause();
-                    Utils.Toast.Info("番茄钟已暂停");
                 }
                 else
                 {
                     _pomodoroTimerService.Start();
-                    Utils.Toast.Success("番茄钟已启动");
                 }
             }
         );

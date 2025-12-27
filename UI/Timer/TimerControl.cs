@@ -334,9 +334,8 @@ public partial class TimerControl : UserControl
     // 路由删除逻辑
     public async Task<bool> DeleteSelectedRecordAsync()
     {
-        // 逻辑：如果 Loot 控件拥有焦点，则删除 Loot；否则默认删除 History
-
-        if (lootRecordsControl != null && lootRecordsControl.HasFocus)
+        // 逻辑：如果 Loot 控件有选中记录，则删除 Loot；否则默认删除 History
+        if (lootRecordsControl != null && (lootRecordsControl.HasFocus || lootRecordsControl.HasSelectedRecords))
         {
             return await lootRecordsControl.DeleteSelectedLootAsync();
         }

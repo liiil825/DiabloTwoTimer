@@ -148,7 +148,6 @@ public partial class LootRecordsControl : UserControl
             return Task.FromResult(false);
         if (_currentProfile == null || gridLoot.SelectedRows.Count == 0)
             return Task.FromResult(false);
-
         try
         {
             // 【新增】设置标志位
@@ -205,4 +204,6 @@ public partial class LootRecordsControl : UserControl
     }
 
     public bool HasFocus => gridLoot.ContainsFocus;
+
+    public bool HasSelectedRecords => gridLoot.SelectedRows.Count > 0;
 }

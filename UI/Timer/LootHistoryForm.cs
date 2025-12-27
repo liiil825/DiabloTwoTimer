@@ -14,9 +14,11 @@ namespace DiabloTwoMFTimer.UI.Timer;
 
 public partial class LootHistoryForm : System.Windows.Forms.Form
 {
-    private readonly IProfileService _profileService;
-    private readonly ISceneService _sceneService;
-    private readonly IStatisticsService _statisticsService;
+    private readonly IMainService _mainService = null!;
+    private readonly IProfileService _profileService = null!;
+    private readonly ISceneService _sceneService = null!;
+    private readonly IStatisticsService _statisticsService = null!;
+    private readonly IMessenger _messenger = null!;
 
     private Button btnToday = null!;
     private Button btnWeek = null!;
@@ -30,9 +32,6 @@ public partial class LootHistoryForm : System.Windows.Forms.Form
     private Label? _lblRowEditBadge;
     private Label? _lblRowDelBadge;
 
-    private readonly Font _iconFont = new Font("Segoe MDL2 Assets", 12F);
-    private const string ICON_CHECK = "\uE73E";
-    private const string ICON_CANCEL = "\uE711";
     private const string ICON_CLOSE = "\uE711";
 
     private enum ViewMode
@@ -58,22 +57,24 @@ public partial class LootHistoryForm : System.Windows.Forms.Form
     }
 
     public LootHistoryForm(
+        IMainService mainService,
         IProfileService profileService,
         ISceneService sceneService,
-        IStatisticsService statisticsService
+        IStatisticsService statisticsService,
+        IMessenger messenger
     )
     {
         _profileService = profileService;
         _sceneService = sceneService;
         _statisticsService = statisticsService;
+        _mainService = mainService;
+        _messenger = messenger;
 
         InitializeComponent();
         InitializeToggleButtons();
         ApplyScaledLayout();
 
-        this.TopMost = false;
-
-        btnClose.Font = _iconFont;
+        btnClose.Font = Theme.AppTheme.Fonts.SegoeIcon;
         btnClose.Text = ICON_CLOSE;
         btnClose.Width = ScaleHelper.Scale(50);
         btnClose.Height = ScaleHelper.Scale(50);
@@ -87,10 +88,9 @@ public partial class LootHistoryForm : System.Windows.Forms.Form
         this.KeyPreview = true;
         this.KeyDown += LootHistoryForm_KeyDown;
 
-        AttachKeyBadge(dtpStart, "Q", () => dtpStart.OpenDropdown());
-        AttachKeyBadge(dtpEnd, "W", () => dtpEnd.OpenDropdown());
+        AttachKeyBadge(dtpStart, "F", () => dtpStart.OpenDropdown());
+        AttachKeyBadge(dtpEnd, "G", () => dtpEnd.OpenDropdown());
         AttachKeyBadge(btnSearch, "R", () => btnSearch.PerformClick());
-
         AttachKeyBadge(btnClose, "X", () => btnClose.PerformClick());
 
         gridLoot.AutoGenerateColumns = false;
@@ -163,6 +163,7 @@ public partial class LootHistoryForm : System.Windows.Forms.Form
         {
             case Keys.H:
                 ToggleShortcutsVisibility();
+                e.SuppressKeyPress = true;
                 break;
             case Keys.D1:
             case Keys.NumPad1:
@@ -177,14 +178,14 @@ public partial class LootHistoryForm : System.Windows.Forms.Form
                 btnCustom?.PerformClick();
                 break;
 
-            case Keys.Q:
+            case Keys.F:
                 if (pnlCustomDate.Visible)
                 {
                     dtpStart.OpenDropdown();
                     e.SuppressKeyPress = true;
                 }
                 break;
-            case Keys.W:
+            case Keys.G:
                 if (pnlCustomDate.Visible && !dtpEnd.ContainsFocus)
                 {
                     dtpEnd.OpenDropdown();
@@ -196,6 +197,14 @@ public partial class LootHistoryForm : System.Windows.Forms.Form
                 {
                     btnSearch.PerformClick();
                     e.SuppressKeyPress = true;
+                    gridLoot.Focus();
+
+                    // 【优化】如果有数据，自动选中第一行，方便直接开始 W/S 导航
+                    if (gridLoot.Rows.Count > 0 && gridLoot.Columns.Count > 0)
+                    {
+                        // 确保没有选中其他奇怪的地方，重置到起点
+                        gridLoot.CurrentCell = gridLoot.Rows[0].Cells[0];
+                    }
                 }
                 break;
 
@@ -231,15 +240,13 @@ public partial class LootHistoryForm : System.Windows.Forms.Form
         if (item == null)
             return;
 
-        using (var editForm = new EditNameForm(item.Name))
+        using var editForm = new EditNameForm(item.Name);
+        if (editForm.ShowDialog(this) == DialogResult.OK)
         {
-            if (editForm.ShowDialog(this) == DialogResult.OK)
-            {
-                item.Name = editForm.NewName;
-                _profileService.SaveCurrentProfile();
-                gridLoot.Refresh();
-                gridLoot.Focus();
-            }
+            item.Name = editForm.NewName;
+            _profileService.SaveCurrentProfile();
+            gridLoot.Refresh();
+            gridLoot.Focus();
         }
     }
 
@@ -258,8 +265,7 @@ public partial class LootHistoryForm : System.Windows.Forms.Form
         {
             _profileService.CurrentProfile!.LootRecords.Remove(item.OriginalRecord);
             _profileService.SaveCurrentProfile();
-            var bs = gridLoot.DataSource as BindingSource;
-            if (bs != null)
+            if (gridLoot.DataSource is BindingSource bs)
                 bs.Remove(item);
             gridLoot.Focus();
         }
@@ -445,21 +451,10 @@ public partial class LootHistoryForm : System.Windows.Forms.Form
         lblSeparator.Margin = new Padding(0, 0, spacing, 0);
         dtpEnd.Margin = new Padding(0, 0, spacing, 0);
 
-        pnlGridContainer.Margin = new Padding(0, ScaleHelper.Scale(10), 0, 0);
+        pnlGridContainer.Margin = new Padding(0, ScaleHelper.Scale(10), 0, ScaleHelper.Scale(30));
 
         // 底部按钮区域
-        mainLayout.RowStyles[3] = new RowStyle(SizeType.AutoSize);
-        panelButtons.Padding = new Padding(0);
-
-        // --- 核心修复：调整底部间距策略 ---
-        // 1. 将 panelButtons 的底部 Margin 减小
-        panelButtons.Margin = new Padding(0, 0, 0, ScaleHelper.Scale(10));
-
-        btnClose.Margin = new Padding(ScaleHelper.Scale(10));
-
-        // 2. 将所需的底部空间加到主布局的 Padding 上，这样更稳定
-        // 之前 Margin 是 60，现在 Margin 是 10，所以 Padding 补上 50
-        mainLayout.Padding = new Padding(0, 0, 0, ScaleHelper.Scale(50));
+        mainLayout.Padding = new Padding(0);
     }
 
     private void LootHistoryForm_Resize(object? sender, EventArgs e)
@@ -482,7 +477,7 @@ public partial class LootHistoryForm : System.Windows.Forms.Form
         private ThemedTextBox txtName;
         private ThemedModalButton btnSave;
         private ThemedModalButton btnCancel;
-        private readonly Font _iconFont = new Font("Segoe MDL2 Assets", 12F);
+        private readonly Font _iconFont = Theme.AppTheme.Fonts.SegoeIcon;
         private const string ICON_CHECK = "\uE73E";
         private const string ICON_CANCEL = "\uE711";
 
@@ -672,6 +667,8 @@ public partial class LootHistoryForm : System.Windows.Forms.Form
     protected override void OnFormClosed(FormClosedEventArgs e)
     {
         _fadeInTimer.Stop();
+        _mainService.SetActiveTabPage(Models.TabPage.Timer);
+        _messenger.Publish(new ShowMainWindowMessage());
         LanguageManager.OnLanguageChanged -= LanguageChanged;
         base.OnFormClosed(e);
     }

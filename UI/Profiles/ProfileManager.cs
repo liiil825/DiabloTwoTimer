@@ -13,15 +13,15 @@ namespace DiabloTwoMFTimer.UI.Profiles;
 
 public partial class ProfileManager : UserControl
 {
-    private readonly ITimerService _timerService;
-    private readonly IProfileService _profileService;
-    private readonly IAppSettings _appSettings;
-    private readonly IMainService _mainService;
-    private readonly IPomodoroTimerService _pomodoroTimerService;
-    private readonly IStatisticsService _statisticsService;
-    private readonly ISceneService _sceneService;
+    private readonly IMainService _mainService = null!;
+    private readonly ITimerService _timerService = null!;
+    private readonly IProfileService _profileService = null!;
+    private readonly IAppSettings _appSettings = null!;
+    private readonly IPomodoroTimerService _pomodoroTimerService = null!;
+    private readonly IStatisticsService _statisticsService = null!;
+    private readonly ISceneService _sceneService = null!;
 
-    private readonly IMessenger _messenger;
+    private readonly IMessenger _messenger = null!;
 
     public ProfileManager(
         IProfileService profileService,
@@ -484,10 +484,13 @@ public partial class ProfileManager : UserControl
     {
         // 实例化全屏历史记录窗体
         var historyForm = new DiabloTwoMFTimer.UI.Timer.LootHistoryForm(
+            _mainService,
             _profileService,
             _sceneService,
-            _statisticsService
+            _statisticsService,
+            _messenger
         );
+        _messenger.Publish(new HideMainWindowMessage());
 
         historyForm.ShowDialog(); // 模态显示
     }
@@ -497,6 +500,7 @@ public partial class ProfileManager : UserControl
         // 创建 BreakForm，使用 StatisticsView 模式
         // 注意：BreakType 在这里不重要，传默认值即可
         var statsForm = new DiabloTwoMFTimer.UI.Pomodoro.BreakForm(
+            _mainService,
             _pomodoroTimerService,
             _appSettings,
             _profileService,

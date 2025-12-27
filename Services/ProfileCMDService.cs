@@ -11,6 +11,7 @@ public class ProfileCMDService : IProfileCMDService
     private readonly IMessenger _messenger;
     private readonly ICommandDispatcher _dispatcher;
     private readonly IProfileService _profileService;
+    private readonly ITimerService _timerService;
     private readonly ISceneService _sceneService;
 
     public ProfileCMDService(
@@ -18,6 +19,7 @@ public class ProfileCMDService : IProfileCMDService
         IMessenger messenger,
         ICommandDispatcher dispatcher,
         IProfileService profileService,
+        ITimerService timerService,
         ISceneService sceneService
     )
     {
@@ -25,6 +27,7 @@ public class ProfileCMDService : IProfileCMDService
         _messenger = messenger;
         _dispatcher = dispatcher;
         _profileService = profileService;
+        _timerService = timerService;
         _sceneService = sceneService;
     }
 
@@ -84,6 +87,10 @@ public class ProfileCMDService : IProfileCMDService
                 if (!string.IsNullOrEmpty(shortEnName))
                 {
                     _profileService.SwitchSceneByShortEnName(shortEnName);
+                    if (!_timerService.IsStopped)
+                    {
+                        _timerService.TogglePause();
+                    }
                 }
                 else
                 {
@@ -110,6 +117,10 @@ public class ProfileCMDService : IProfileCMDService
                     () =>
                     {
                         _profileService.SwitchSceneByShortEnName(shortEnName);
+                        if (!_timerService.IsStopped)
+                        {
+                            _timerService.TogglePause();
+                        }
                     }
                 );
             }

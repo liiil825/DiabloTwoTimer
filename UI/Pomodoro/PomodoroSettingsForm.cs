@@ -1,230 +1,192 @@
-using System.Windows.Forms;
+using System;
+using DiabloTwoMFTimer.Interfaces;
+using DiabloTwoMFTimer.Models;
+using DiabloTwoMFTimer.UI.Form;
+using DiabloTwoMFTimer.Utils;
+
+#nullable disable
 
 namespace DiabloTwoMFTimer.UI.Pomodoro;
 
-partial class PomodoroSettingsForm
+public partial class PomodoroSettingsForm : BaseForm
 {
-    private System.ComponentModel.IContainer components;
+    private readonly IAppSettings _appSettings = null!;
 
-    protected override void Dispose(bool disposing)
+    // 属性
+    public int WorkTimeMinutes { get; private set; }
+    public int WorkTimeSeconds { get; private set; }
+    public int ShortBreakMinutes { get; private set; }
+    public int ShortBreakSeconds { get; private set; }
+    public int LongBreakMinutes { get; private set; }
+    public int LongBreakSeconds { get; private set; }
+    public int WarningLongTime { get; private set; }
+    public int WarningShortTime { get; private set; }
+
+    // 辅助类用于 ComboBox
+    private class ModeItem
     {
-        if (disposing && (components != null))
-            components.Dispose();
-        base.Dispose(disposing);
+        public PomodoroMode Value { get; set; }
+        public string Text { get; set; } = "";
+        public override string ToString() => Text;
     }
 
-    private void InitializeComponent()
+    public PomodoroSettingsForm()
     {
-        this.components = new System.ComponentModel.Container();
-        this.tlpContent = new System.Windows.Forms.TableLayoutPanel();
+        InitializeComponent();
+    }
 
-        // Controls
-        this.lblWorkTime = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
-        this.nudWorkTimeMin = new System.Windows.Forms.NumericUpDown();
-        this.lblWorkMinUnit = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
-        this.nudWorkTimeSec = new System.Windows.Forms.NumericUpDown();
-        this.lblWorkSecUnit = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
+    public PomodoroSettingsForm(
+        IAppSettings appSettings,
+        int workTimeMinutes,
+        int workTimeSeconds,
+        int shortBreakMinutes,
+        int shortBreakSeconds,
+        int longBreakMinutes,
+        int longBreakSeconds,
+        int warningLongTime,
+        int warningShortTime
+    )
+        : this()
+    {
+        _appSettings = appSettings;
 
-        this.lblShortBreakTime = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
-        this.nudShortBreakTimeMin = new System.Windows.Forms.NumericUpDown();
-        this.lblShortBreakMinUnit = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
-        this.nudShortBreakTimeSec = new System.Windows.Forms.NumericUpDown();
-        this.lblShortBreakSecUnit = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
+        WorkTimeMinutes = workTimeMinutes;
+        WorkTimeSeconds = workTimeSeconds;
+        ShortBreakMinutes = shortBreakMinutes;
+        ShortBreakSeconds = shortBreakSeconds;
+        LongBreakMinutes = longBreakMinutes;
+        LongBreakSeconds = longBreakSeconds;
+        WarningLongTime = warningLongTime;
+        WarningShortTime = warningShortTime;
+    }
 
-        this.lblLongBreakTime = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
-        this.nudLongBreakTimeMin = new System.Windows.Forms.NumericUpDown();
-        this.lblLongBreakMinUnit = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
-        this.nudLongBreakTimeSec = new System.Windows.Forms.NumericUpDown();
-        this.lblLongBreakSecUnit = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
+    protected override void OnLoad(EventArgs e)
+    {
+        base.OnLoad(e);
+        if (!this.DesignMode)
+        {
+            if (WorkTimeMinutes == 0 && ShortBreakMinutes == 0 && LongBreakMinutes == 0)
+            {
+                LoadSettings();
+            }
+            UpdateUI();
+        }
+    }
 
-        this.lblWarningLongTime = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
-        this.nudWarningLongTime = new System.Windows.Forms.NumericUpDown();
-        this.lblWarningLongTimeUnit = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
+    private void LoadSettings()
+    {
+        WorkTimeMinutes = _appSettings.WorkTimeMinutes;
+        WorkTimeSeconds = _appSettings.WorkTimeSeconds;
+        ShortBreakMinutes = _appSettings.ShortBreakMinutes;
+        ShortBreakSeconds = _appSettings.ShortBreakSeconds;
+        LongBreakMinutes = _appSettings.LongBreakMinutes;
+        LongBreakSeconds = _appSettings.LongBreakSeconds;
+        WarningLongTime = _appSettings.PomodoroWarningLongTime;
+        WarningShortTime = _appSettings.PomodoroWarningShortTime;
+    }
 
-        this.lblWarningShortTime = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
-        this.nudWarningShortTime = new System.Windows.Forms.NumericUpDown();
-        this.lblWarningShortTimeUnit = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
+    protected override void UpdateUI()
+    {
+        base.UpdateUI();
 
-        // 【新增】模式选择
-        this.lblMode = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
-        this.cmbMode = new DiabloTwoMFTimer.UI.Components.ThemedComboBox();
+        // 1. 设置数值
+        nudWorkTimeMin.Value = Math.Max(nudWorkTimeMin.Minimum, Math.Min(nudWorkTimeMin.Maximum, WorkTimeMinutes));
+        nudWorkTimeSec.Value = Math.Max(nudWorkTimeSec.Minimum, Math.Min(nudWorkTimeSec.Maximum, WorkTimeSeconds));
 
-        ((System.ComponentModel.ISupportInitialize)(this.nudWorkTimeMin)).BeginInit();
-        ((System.ComponentModel.ISupportInitialize)(this.nudWorkTimeSec)).BeginInit();
-        ((System.ComponentModel.ISupportInitialize)(this.nudShortBreakTimeMin)).BeginInit();
-        ((System.ComponentModel.ISupportInitialize)(this.nudShortBreakTimeSec)).BeginInit();
-        ((System.ComponentModel.ISupportInitialize)(this.nudLongBreakTimeMin)).BeginInit();
-        ((System.ComponentModel.ISupportInitialize)(this.nudLongBreakTimeSec)).BeginInit();
-        ((System.ComponentModel.ISupportInitialize)(this.nudWarningLongTime)).BeginInit();
-        ((System.ComponentModel.ISupportInitialize)(this.nudWarningShortTime)).BeginInit();
-
-        this.pnlContent.SuspendLayout();
-        this.tlpContent.SuspendLayout();
-        this.SuspendLayout();
-
-        //
-        // tlpContent (6 Rows, 5 Cols)
-        //
-        this.tlpContent.AutoSize = true;
-        this.tlpContent.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-        this.tlpContent.ColumnCount = 5;
-        this.tlpContent.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize)); // Label
-        this.tlpContent.ColumnStyles.Add(
-            new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F)
-        ); // Input 1
-        this.tlpContent.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize)); // Unit 1
-        this.tlpContent.ColumnStyles.Add(
-            new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F)
-        ); // Input 2
-        this.tlpContent.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize)); // Unit 2
-
-        this.tlpContent.Dock = System.Windows.Forms.DockStyle.Fill;
-        this.tlpContent.RowCount = 6;
-        for (int i = 0; i < 6; i++)
-            this.tlpContent.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-
-        // Row 0: Mode Selection (新增)
-        this.tlpContent.Controls.Add(this.lblMode, 0, 0);
-        this.tlpContent.Controls.Add(this.cmbMode, 1, 0);
-        this.tlpContent.SetColumnSpan(this.cmbMode, 4); // ComboBox 占满后续列
-
-        // Row 1: Work
-        AddRow(1, lblWorkTime, nudWorkTimeMin, lblWorkMinUnit, nudWorkTimeSec, lblWorkSecUnit);
-        // Row 2: Short Break
-        AddRow(
-            2,
-            lblShortBreakTime,
-            nudShortBreakTimeMin,
-            lblShortBreakMinUnit,
-            nudShortBreakTimeSec,
-            lblShortBreakSecUnit
+        nudShortBreakTimeMin.Value = Math.Max(
+            nudShortBreakTimeMin.Minimum,
+            Math.Min(nudShortBreakTimeMin.Maximum, ShortBreakMinutes)
         );
-        // Row 3: Long Break
-        AddRow(3, lblLongBreakTime, nudLongBreakTimeMin, lblLongBreakMinUnit, nudLongBreakTimeSec, lblLongBreakSecUnit);
+        nudShortBreakTimeSec.Value = Math.Max(
+            nudShortBreakTimeSec.Minimum,
+            Math.Min(nudShortBreakTimeSec.Maximum, ShortBreakSeconds)
+        );
 
-        // Row 4: Warning 1
-        this.tlpContent.Controls.Add(this.lblWarningLongTime, 0, 4);
-        this.tlpContent.Controls.Add(this.nudWarningLongTime, 1, 4);
-        this.tlpContent.Controls.Add(this.lblWarningLongTimeUnit, 2, 4);
+        nudLongBreakTimeMin.Value = Math.Max(
+            nudLongBreakTimeMin.Minimum,
+            Math.Min(nudLongBreakTimeMin.Maximum, LongBreakMinutes)
+        );
+        nudLongBreakTimeSec.Value = Math.Max(
+            nudLongBreakTimeSec.Minimum,
+            Math.Min(nudLongBreakTimeSec.Maximum, LongBreakSeconds)
+        );
 
-        // Row 5: Warning 2
-        this.tlpContent.Controls.Add(this.lblWarningShortTime, 0, 5);
-        this.tlpContent.Controls.Add(this.nudWarningShortTime, 1, 5);
-        this.tlpContent.Controls.Add(this.lblWarningShortTimeUnit, 2, 5);
+        nudWarningLongTime.Value = Math.Max(
+            nudWarningLongTime.Minimum,
+            Math.Min(nudWarningLongTime.Maximum, WarningLongTime)
+        );
+        nudWarningShortTime.Value = Math.Max(
+            nudWarningShortTime.Minimum,
+            Math.Min(nudWarningShortTime.Maximum, WarningShortTime)
+        );
 
-        // 统一控件样式方法
-        void ConfigureNud(System.Windows.Forms.NumericUpDown nud, decimal max)
+        // 2. 本地化文本
+        this.Text = LanguageManager.GetString("PomodoroSettings") ?? "番茄时钟设置";
+
+        // 模式选择
+        lblMode.Text = LanguageManager.GetString("PomodoroMode", "Mode:");
+        cmbMode.Items.Clear();
+        cmbMode.Items.Add(new ModeItem { Value = PomodoroMode.Automatic, Text = LanguageManager.GetString("PomodoroMode_Auto", "Auto") });
+        cmbMode.Items.Add(new ModeItem { Value = PomodoroMode.SemiAuto, Text = LanguageManager.GetString("PomodoroMode_Semi", "Semi-Auto") });
+        cmbMode.Items.Add(new ModeItem { Value = PomodoroMode.Manual, Text = LanguageManager.GetString("PomodoroMode_Manual", "Manual") });
+
+        // 选中当前值
+        foreach (ModeItem item in cmbMode.Items)
         {
-            nud.Dock = System.Windows.Forms.DockStyle.Fill;
-            nud.BackColor = DiabloTwoMFTimer.UI.Theme.AppTheme.SurfaceColor;
-            nud.ForeColor = DiabloTwoMFTimer.UI.Theme.AppTheme.TextColor;
-            nud.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            nud.Maximum = max;
-            nud.Margin = new System.Windows.Forms.Padding(5, 5, 5, 15);
+            if (item.Value == _appSettings.PomodoroMode)
+            {
+                cmbMode.SelectedItem = item;
+                break;
+            }
         }
 
-        void ConfigureLabel(System.Windows.Forms.Label lbl, string text)
-        {
-            lbl.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            lbl.AutoSize = true;
-            lbl.Text = text;
-            lbl.Margin = new System.Windows.Forms.Padding(0, 0, 10, 15);
-        }
+        // 行标题
+        lblWorkTime.Text = LanguageManager.GetString("WorkTime") ?? "工作时间:";
+        lblShortBreakTime.Text = LanguageManager.GetString("ShortBreakTime") ?? "短休息时间:";
+        lblLongBreakTime.Text = LanguageManager.GetString("LongBreakTime") ?? "长休息时间:";
+        lblWarningLongTime.Text = LanguageManager.GetString("PomodoroWarningLongTime") ?? "提前长时间提示:";
+        lblWarningShortTime.Text = LanguageManager.GetString("PomodoroWarningShortTime") ?? "提前短时间提示:";
 
-        // Apply Styles
-        ConfigureLabel(lblMode, "Mode:");
-
-        ConfigureLabel(lblWorkTime, "Work Time:");
-        ConfigureLabel(lblShortBreakTime, "Short Break:");
-        ConfigureLabel(lblLongBreakTime, "Long Break:");
-        ConfigureLabel(lblWarningLongTime, "Warning Long:");
-        ConfigureLabel(lblWarningShortTime, "Warning Short:");
-
-        ConfigureLabel(lblWorkMinUnit, "min");
-        ConfigureLabel(lblWorkSecUnit, "sec");
-        ConfigureLabel(lblShortBreakMinUnit, "min");
-        ConfigureLabel(lblShortBreakSecUnit, "sec");
-        ConfigureLabel(lblLongBreakMinUnit, "min");
-        ConfigureLabel(lblLongBreakSecUnit, "sec");
-        ConfigureLabel(lblWarningLongTimeUnit, "sec");
-        ConfigureLabel(lblWarningShortTimeUnit, "sec");
-
-        ConfigureNud(nudWorkTimeMin, 999);
-        ConfigureNud(nudWorkTimeSec, 59);
-        ConfigureNud(nudShortBreakTimeMin, 999);
-        ConfigureNud(nudShortBreakTimeSec, 59);
-        ConfigureNud(nudLongBreakTimeMin, 999);
-        ConfigureNud(nudLongBreakTimeSec, 59);
-        ConfigureNud(nudWarningLongTime, 300);
-        ConfigureNud(nudWarningShortTime, 60);
-
-        // ComboBox style
-        this.cmbMode.Dock = System.Windows.Forms.DockStyle.Fill;
-        this.cmbMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-        this.cmbMode.Margin = new System.Windows.Forms.Padding(5, 5, 5, 15);
-
-        //
-        // PomodoroSettingsForm
-        //
-        this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
-        this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-        this.MinimumSize = new System.Drawing.Size(450, 0);
-
-        this.pnlContent.Controls.Add(this.tlpContent);
-        this.Name = "PomodoroSettingsForm";
-        this.Text = "Pomodoro Settings";
-
-        ((System.ComponentModel.ISupportInitialize)(this.nudWorkTimeMin)).EndInit();
-        ((System.ComponentModel.ISupportInitialize)(this.nudWorkTimeSec)).EndInit();
-        ((System.ComponentModel.ISupportInitialize)(this.nudShortBreakTimeMin)).EndInit();
-        ((System.ComponentModel.ISupportInitialize)(this.nudShortBreakTimeSec)).EndInit();
-        ((System.ComponentModel.ISupportInitialize)(this.nudLongBreakTimeMin)).EndInit();
-        ((System.ComponentModel.ISupportInitialize)(this.nudLongBreakTimeSec)).EndInit();
-        ((System.ComponentModel.ISupportInitialize)(this.nudWarningLongTime)).EndInit();
-        ((System.ComponentModel.ISupportInitialize)(this.nudWarningShortTime)).EndInit();
-
-        this.pnlContent.ResumeLayout(false);
-        this.pnlContent.PerformLayout();
-        this.tlpContent.ResumeLayout(false);
-        this.tlpContent.PerformLayout();
-        this.ResumeLayout(false);
-        this.PerformLayout();
+        // 单位 (分/秒)
+        string strMin = LanguageManager.GetString("Minutes") ?? "分";
+        string strSec = LanguageManager.GetString("Seconds") ?? "秒";
+        lblWorkMinUnit.Text = strMin;
+        lblShortBreakMinUnit.Text = strMin;
+        lblLongBreakMinUnit.Text = strMin;
+        lblWorkSecUnit.Text = strSec;
+        lblShortBreakSecUnit.Text = strSec;
+        lblLongBreakSecUnit.Text = strSec;
+        lblWarningLongTimeUnit.Text = strSec;
+        lblWarningShortTimeUnit.Text = strSec;
     }
 
-    private void AddRow(int row, Control c1, Control c2, Control c3, Control c4, Control c5)
+    protected override void BtnConfirm_Click(object sender, EventArgs e)
     {
-        this.tlpContent.Controls.Add(c1, 0, row);
-        this.tlpContent.Controls.Add(c2, 1, row);
-        this.tlpContent.Controls.Add(c3, 2, row);
-        this.tlpContent.Controls.Add(c4, 3, row);
-        this.tlpContent.Controls.Add(c5, 4, row);
+        WorkTimeMinutes = (int)nudWorkTimeMin.Value;
+        WorkTimeSeconds = (int)nudWorkTimeSec.Value;
+        ShortBreakMinutes = (int)nudShortBreakTimeMin.Value;
+        ShortBreakSeconds = (int)nudShortBreakTimeSec.Value;
+        LongBreakMinutes = (int)nudLongBreakTimeMin.Value;
+        LongBreakSeconds = (int)nudLongBreakTimeSec.Value;
+        WarningLongTime = (int)nudWarningLongTime.Value;
+        WarningShortTime = (int)nudWarningShortTime.Value;
+
+        // 如果有注入的_appSettings，直接更新设置
+        _appSettings.WorkTimeMinutes = WorkTimeMinutes;
+        _appSettings.WorkTimeSeconds = WorkTimeSeconds;
+        _appSettings.ShortBreakMinutes = ShortBreakMinutes;
+        _appSettings.ShortBreakSeconds = ShortBreakSeconds;
+        _appSettings.LongBreakMinutes = LongBreakMinutes;
+        _appSettings.LongBreakSeconds = LongBreakSeconds;
+        _appSettings.PomodoroWarningLongTime = WarningLongTime;
+        _appSettings.PomodoroWarningShortTime = WarningShortTime;
+
+        // 更新模式
+        if (cmbMode.SelectedItem is ModeItem item)
+        {
+            _appSettings.PomodoroMode = item.Value;
+        }
+
+        base.BtnConfirm_Click(sender, e);
     }
-
-    private System.Windows.Forms.TableLayoutPanel tlpContent;
-
-    // ... Controls definitions (same as before) ...
-    private DiabloTwoMFTimer.UI.Components.ThemedLabel lblMode; // 新增
-    private DiabloTwoMFTimer.UI.Components.ThemedComboBox cmbMode; // 新增
-
-    private DiabloTwoMFTimer.UI.Components.ThemedLabel lblWorkTime;
-    private DiabloTwoMFTimer.UI.Components.ThemedLabel lblShortBreakTime;
-    private DiabloTwoMFTimer.UI.Components.ThemedLabel lblLongBreakTime;
-    private DiabloTwoMFTimer.UI.Components.ThemedLabel lblWorkMinUnit;
-    private DiabloTwoMFTimer.UI.Components.ThemedLabel lblShortBreakMinUnit;
-    private DiabloTwoMFTimer.UI.Components.ThemedLabel lblLongBreakMinUnit;
-    private System.Windows.Forms.NumericUpDown nudWorkTimeMin;
-    private System.Windows.Forms.NumericUpDown nudWorkTimeSec;
-    private System.Windows.Forms.NumericUpDown nudShortBreakTimeMin;
-    private System.Windows.Forms.NumericUpDown nudShortBreakTimeSec;
-    private System.Windows.Forms.NumericUpDown nudLongBreakTimeMin;
-    private System.Windows.Forms.NumericUpDown nudLongBreakTimeSec;
-    private DiabloTwoMFTimer.UI.Components.ThemedLabel lblWorkSecUnit;
-    private DiabloTwoMFTimer.UI.Components.ThemedLabel lblShortBreakSecUnit;
-    private DiabloTwoMFTimer.UI.Components.ThemedLabel lblLongBreakSecUnit;
-    private DiabloTwoMFTimer.UI.Components.ThemedLabel lblWarningLongTime;
-    private DiabloTwoMFTimer.UI.Components.ThemedLabel lblWarningShortTime;
-    private DiabloTwoMFTimer.UI.Components.ThemedLabel lblWarningLongTimeUnit;
-    private DiabloTwoMFTimer.UI.Components.ThemedLabel lblWarningShortTimeUnit;
-    private System.Windows.Forms.NumericUpDown nudWarningLongTime;
-    private System.Windows.Forms.NumericUpDown nudWarningShortTime;
 }

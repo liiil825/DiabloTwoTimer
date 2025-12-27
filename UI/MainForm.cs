@@ -102,6 +102,8 @@ public partial class MainForm : System.Windows.Forms.Form
         {
             _mainService.SetActiveTabPage(Models.TabPage.Timer);
         }
+
+        this.Opacity = _appSettings.Opacity;
     }
 
     // 统一的点击事件处理
@@ -196,7 +198,7 @@ public partial class MainForm : System.Windows.Forms.Form
         AdjustWindowHeight();
         this.StartPosition = FormStartPosition.Manual;
         this.ShowInTaskbar = true;
-        this.Opacity = _appSettings.Opacity;
+        this.Opacity = 0;
         this.TopMost = _appSettings.AlwaysOnTop;
         // 根据设置显示或隐藏导航栏
         tlpNavigation.Visible = _appSettings.ShowNavigation;

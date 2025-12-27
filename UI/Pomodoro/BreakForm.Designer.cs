@@ -1,5 +1,6 @@
 using DiabloTwoMFTimer.UI.Components;
 using DiabloTwoMFTimer.UI.Theme;
+using DiabloTwoMFTimer.Utils;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -183,7 +184,9 @@ partial class BreakForm
         // 
         this.btnSkip.Name = "btnSkip";
         this.btnSkip.Size = new System.Drawing.Size(120, 40);
-        this.btnSkip.Margin = new System.Windows.Forms.Padding(20); // 你的修改
+        this.btnSkip.Padding = new Padding(ScaleHelper.Scale(5));
+        this.btnSkip.Margin = new Padding(ScaleHelper.Scale(10), 0, ScaleHelper.Scale(10), ScaleHelper.Scale(60));
+        this.btnSkip.Margin = new System.Windows.Forms.Padding(20);
         this.btnSkip.TabIndex = 0;
         this.btnSkip.Font = Theme.AppTheme.Fonts.SegoeIcon;
         this.btnSkip.Text = "";
@@ -199,7 +202,8 @@ partial class BreakForm
         // 
         this.btnClose.Name = "btnClose";
         this.btnClose.Size = new System.Drawing.Size(120, 40);
-        this.btnClose.Margin = new System.Windows.Forms.Padding(20); // 你的修改
+        this.btnClose.Padding = new Padding(ScaleHelper.Scale(5));
+        this.btnClose.Margin = new Padding(ScaleHelper.Scale(10), 0, ScaleHelper.Scale(10), ScaleHelper.Scale(60));
         this.btnClose.TabIndex = 1;
         this.btnClose.Font = Theme.AppTheme.Fonts.SegoeIcon;
         this.btnClose.Text = "\uE711";

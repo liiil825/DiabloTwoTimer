@@ -13,6 +13,7 @@ namespace DiabloTwoMFTimer.UI.Pomodoro;
 
 public partial class BreakForm : System.Windows.Forms.Form
 {
+    private readonly IMainService _mainService;
     private readonly IPomodoroTimerService _timerService;
     private readonly IAppSettings _appSettings;
     private readonly PomodoroBreakType _breakType;
@@ -50,6 +51,7 @@ public partial class BreakForm : System.Windows.Forms.Form
     };
 
     public BreakForm(
+        IMainService mainService,
         IPomodoroTimerService timerService,
         IAppSettings appSettings,
         IProfileService? profileService,
@@ -58,6 +60,7 @@ public partial class BreakForm : System.Windows.Forms.Form
         PomodoroBreakType breakType = PomodoroBreakType.ShortBreak
     )
     {
+        _mainService = mainService;
         _timerService = timerService;
         _appSettings = appSettings;
         _profileService = profileService;
@@ -82,7 +85,7 @@ public partial class BreakForm : System.Windows.Forms.Form
 
         // --- 核心修改 2: 为底部按钮添加快捷键提示 ---
         // S -> Skip, D -> Close (CancelButton 默认映射 ESC，我们额外增加 D)
-        AttachKeyBadge(btnSkip, "S");
+        AttachKeyBadge(btnSkip, "Z");
         AttachKeyBadge(btnClose, "X");
 
         // 设置Esc键关闭窗口 (保留 ESC 功能)
@@ -113,6 +116,7 @@ public partial class BreakForm : System.Windows.Forms.Form
             case Keys.H:
                 // 切换提示显示/隐藏
                 ToggleShortcutsVisibility();
+                e.SuppressKeyPress = true;
                 break;
 
             case Keys.D1:
@@ -130,7 +134,7 @@ public partial class BreakForm : System.Windows.Forms.Form
                 btnToggleWeek?.PerformClick();
                 break;
 
-            case Keys.S:
+            case Keys.Z:
                 if (btnSkip.Visible && btnSkip.Enabled)
                     btnSkip.PerformClick();
                 break;
@@ -186,8 +190,8 @@ public partial class BreakForm : System.Windows.Forms.Form
 
         lblMessage.Margin = new Padding(0, ScaleHelper.Scale(40), 0, ScaleHelper.Scale(30));
         lblTimer.Margin = new Padding(0, 0, 0, ScaleHelper.Scale(10));
-        pomodoroStatusDisplay.Margin = new Padding(0, 0, 0, ScaleHelper.Scale(20));
-        lblDuration.Margin = new Padding(0, 0, 0, ScaleHelper.Scale(20));
+        pomodoroStatusDisplay.Margin = new Padding(0);
+        lblDuration.Margin = new Padding(0, ScaleHelper.Scale(20), 0, ScaleHelper.Scale(20));
 
         panelStatsContainer.Margin = new Padding(
             ScaleHelper.Scale(100),
@@ -195,10 +199,6 @@ public partial class BreakForm : System.Windows.Forms.Form
             ScaleHelper.Scale(100),
             0
         );
-
-        mainLayout.RowStyles[6] = new RowStyle(SizeType.AutoSize);
-        panelButtons.Padding = new Padding(ScaleHelper.Scale(5));
-        panelButtons.Margin = new Padding(0, 0, 0, ScaleHelper.Scale(60));
 
         mainLayout.Padding = new Padding(0);
     }
@@ -471,6 +471,7 @@ public partial class BreakForm : System.Windows.Forms.Form
     private void BreakForm_FormClosing(object? sender, FormClosingEventArgs e)
     {
         _fadeInTimer.Stop();
+        _mainService.SetActiveTabPage(Models.TabPage.Timer);
         _timerService.TimeUpdated -= TimerService_TimeUpdated;
         _timerService.PomodoroTimerStateChanged -= TimerService_PomodoroTimerStateChanged;
     }

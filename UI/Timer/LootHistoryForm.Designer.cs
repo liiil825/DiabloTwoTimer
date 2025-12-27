@@ -13,7 +13,6 @@ namespace DiabloTwoMFTimer.UI.Timer
             if (disposing && (components != null))
             {
                 components.Dispose();
-                LanguageManager.OnLanguageChanged -= LanguageChanged;
             }
             base.Dispose(disposing);
         }
@@ -161,7 +160,7 @@ namespace DiabloTwoMFTimer.UI.Timer
             this.panelButtons.FlowDirection = System.Windows.Forms.FlowDirection.LeftToRight;
             this.panelButtons.Location = new System.Drawing.Point(340, 520);
             this.panelButtons.Name = "panelButtons";
-            this.panelButtons.Size = new System.Drawing.Size(120, 40);
+            this.panelButtons.Size = new System.Drawing.Size(120, 61);
             this.panelButtons.TabIndex = 3;
             this.panelButtons.WrapContents = false;
 
@@ -170,6 +169,8 @@ namespace DiabloTwoMFTimer.UI.Timer
             // 
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(120, 40);
+            this.btnClose.Padding = new Padding(ScaleHelper.Scale(5));
+            this.btnClose.Margin = new Padding(ScaleHelper.Scale(10), 0, ScaleHelper.Scale(10), ScaleHelper.Scale(60));
             this.btnClose.TabIndex = 0;
             this.btnClose.Text = "Close";
             this.btnClose.SetThemeDanger();

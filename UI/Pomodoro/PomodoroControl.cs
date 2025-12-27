@@ -11,6 +11,7 @@ namespace DiabloTwoMFTimer.UI.Pomodoro;
 
 public partial class PomodoroControl : UserControl
 {
+    private readonly IMainService _mainService = null!;
     private readonly IMessenger _messenger = null!;
     private readonly IPomodoroTimerService _timerService = null!;
     private readonly IAppSettings _appSettings = null!;
@@ -25,6 +26,7 @@ public partial class PomodoroControl : UserControl
     }
 
     public PomodoroControl(
+        IMainService mainService,
         IPomodoroTimerService timerService,
         IAppSettings appSettings,
         IProfileService profileService,
@@ -33,6 +35,7 @@ public partial class PomodoroControl : UserControl
     )
         : this()
     {
+        _mainService = mainService;
         _timerService = timerService;
         _appSettings = appSettings;
         _profileService = profileService;
@@ -316,7 +319,15 @@ public partial class PomodoroControl : UserControl
             _breakForm.Close();
         }
 
-        _breakForm = new BreakForm(_timerService, _appSettings, _profileService, _statsService, mode, breakType);
+        _breakForm = new BreakForm(
+            _mainService,
+            _timerService,
+            _appSettings,
+            _profileService,
+            _statsService,
+            mode,
+            breakType
+        );
         _breakForm.Show(this.FindForm());
     }
 

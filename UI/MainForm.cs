@@ -37,6 +37,7 @@ public partial class MainForm : System.Windows.Forms.Form
     private readonly CommandInitializer _commandInitializer = null!;
     private LeaderKeyForm _leaderKeyForm = null!;
     private System.ComponentModel.IContainer _components = null!;
+    private readonly IAudioService _audioService = null!;
 
     public MainForm()
     {
@@ -58,7 +59,8 @@ public partial class MainForm : System.Windows.Forms.Form
         SettingsControl settingsControl,
         ICommandDispatcher commandDispatcher,
         CommandInitializer commandInitializer,
-        IKeyMapRepository keyMapRepository
+        IKeyMapRepository keyMapRepository,
+        IAudioService audioService
     )
         : this()
     {
@@ -75,6 +77,7 @@ public partial class MainForm : System.Windows.Forms.Form
         _commandDispatcher = commandDispatcher;
         _commandInitializer = commandInitializer;
         _messenger = messenger;
+        _audioService = audioService;
 
         _commandInitializer.Initialize();
         _leaderKeyForm = new LeaderKeyForm(_commandDispatcher, _keyMapRepository);
@@ -83,8 +86,24 @@ public partial class MainForm : System.Windows.Forms.Form
         InitializeSystemTray();
         SubscribeToEvents();
         SubscribeToMessages();
+        InitializeAudio();
         Utils.Toast.RegisterUiInvoker(action => this.SafeInvoke(action));
         this.Shown += OnMainForm_Shown;
+    }
+
+    /// <summary>
+    /// 初始化音频，将资源目录的音频复制到用户目录
+    /// </summary>
+    private void InitializeAudio()
+    {
+        try
+        {
+            _audioService.Initialize();
+        }
+        catch (Exception ex)
+        {
+            LogManager.WriteErrorLog("MainForm", "初始化音频服务失败", ex);
+        }
     }
 
     internal TabControl? TabControl => tabControl;

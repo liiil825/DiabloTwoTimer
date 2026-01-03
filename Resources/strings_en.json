@@ -209,5 +209,13 @@
   "LootDeleteTitle": "Delete Confirmation",
   "LootDeleteConfirm": "Are you sure you want to delete item:\n'{0}'?",
   "LootEditBadge": "E Edit",
-  "LootDeleteBadge": "D Del"
+  "LootDeleteBadge": "D Del",
+  "Audio.SettingsTitle": "Audio Settings",
+  "Audio.EnableAudio": "Enable Audio",
+  "Audio.MasterVolume": "Master Volume",
+  "Audio.TimerStart": "Timer Start Sound",
+  "Audio.TimerPause": "Timer Pause Sound",
+  "Audio.BreakStart": "Break Start Sound",
+  "Audio.BreakEnd": "Break End Sound",
+  "Audio.FileNotFound": "File Not Found (Will be reset to default)"
 }

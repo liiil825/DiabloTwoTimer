@@ -54,10 +54,17 @@ public class AppSettings : IAppSettings
     public bool ShowNavigation { get; set; } = true; // 是否显示导航栏
 
     public Keys HotkeyLeader { get; set; } = Keys.Space | Keys.Control;
-    public Keys HotkeyStartOrNext { get; set; } = Keys.Q | Keys.Alt;
-    public Keys HotkeyPause { get; set; } = Keys.P | Keys.Control;
-    public Keys HotkeyDeleteHistory { get; set; } = Keys.D | Keys.Control;
-    public Keys HotkeyRecordLoot { get; set; } = Keys.A | Keys.Alt;
+    public Keys HotkeyStartOrNext { get; set; } = Keys.None;
+    public Keys HotkeyPause { get; set; } = Keys.None;
+    public Keys HotkeyDeleteHistory { get; set; } = Keys.None;
+    public Keys HotkeyRecordLoot { get; set; } = Keys.None;
+
+    public bool AudioEnabled { get; set; } = true;
+    public int AudioVolume { get; set; } = 100;
+    public string SoundTimerStart { get; set; } = "timer_start.mp3";
+    public string SoundTimerPause { get; set; } = "timer_pause.mp3";
+    public string SoundBreakStart { get; set; } = "break_start.mp3";
+    public string SoundBreakEnd { get; set; } = "break_end.mp3";
 
     // 保存设置
     public void Save()

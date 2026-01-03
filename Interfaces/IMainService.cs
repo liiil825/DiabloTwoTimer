@@ -48,4 +48,6 @@ public interface IMainService
 
     // 设置番茄钟模式
     void SetPomodoroMode(Models.PomodoroMode mode);
+
+    void RequestShowSettings();
 }

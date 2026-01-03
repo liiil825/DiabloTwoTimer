@@ -321,7 +321,7 @@ public class KeyMapRepository : IKeyMapRepository
                     {
                         Key = "r",
                         Text = "设置",
-                        Action = "Nav.Settings",
+                        Action = "App.ShowSettings",
                     },
                 ],
             },

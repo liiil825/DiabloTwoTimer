@@ -213,5 +213,17 @@
   "LootDeleteTitle": "删除确认",
   "LootDeleteConfirm": "确定要删除物品:\n'{0}'吗？",
   "LootEditBadge": "E 编辑",
-  "LootDeleteBadge": "D 删除"
+  "LootDeleteBadge": "D 删除",
+  "Settings.Title": "设置",
+  "Settings.Tab.General": "常规设置",
+  "Settings.Tab.Timer": "计时器设置",
+  "Settings.Tab.Hotkeys": "按键设置",
+  "Settings.Tab.Audio": "声音设置",
+  "Settings.Audio.Enable": "开启音效",
+  "Settings.Audio.Volume": "音量",
+  "Settings.Audio.TimerStart": "计时开始",
+  "Settings.Audio.TimerPause": "计时暂停",
+  "Settings.Audio.BreakStart": "休息开始",
+  "Settings.Audio.BreakEnd": "休息结束",
+  "Audio.FileNotFound": "文件未找到 (将会自动恢复)"
 }

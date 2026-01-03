@@ -44,6 +44,13 @@ public interface IAppSettings
     public Keys HotkeyDeleteHistory { get; set; }
     public Keys HotkeyRecordLoot { get; set; }
 
+    bool AudioEnabled { get; set; }
+    int AudioVolume { get; set; } // 0-100
+    string SoundTimerStart { get; set; }
+    string SoundTimerPause { get; set; }
+    string SoundBreakStart { get; set; } // 工作结束 -> 休息开始
+    string SoundBreakEnd { get; set; }   // 休息结束 -> 准备工作
+
     // 方法
     void Save();
 }

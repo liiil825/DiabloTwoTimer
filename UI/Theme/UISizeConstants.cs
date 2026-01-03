@@ -18,6 +18,10 @@ public static class UISizeConstants
     // 【新增】基础弹窗的默认宽度
     private const int _baseFormWidth = 400;
 
+    // [新增] 设置窗体的基础尺寸
+    private const int _settingsFormWidth = 600;
+    private const int _settingsFormHeight = 500;
+
     public static int TabItemWidth => ScaleHelper.Scale(_tabItemWidth);
     public static int TabItemHeight => ScaleHelper.Scale(_tabItemHeight);
 
@@ -29,4 +33,8 @@ public static class UISizeConstants
 
     // 【新增】获取缩放后的弹窗宽度
     public static int BaseFormWidth => ScaleHelper.Scale(_baseFormWidth);
+
+    // [新增] 获取缩放后的设置窗体尺寸
+    public static int SettingsFormWidth => ScaleHelper.Scale(_settingsFormWidth);
+    public static int SettingsFormHeight => ScaleHelper.Scale(_settingsFormHeight);
 }

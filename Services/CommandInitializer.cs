@@ -199,7 +199,7 @@ public class CommandInitializer
         _dispatcher.Register("Nav.Timer", () => _mainService.SetActiveTabPage(Models.TabPage.Timer));
         _dispatcher.Register("Nav.Profile", () => _mainService.SetActiveTabPage(Models.TabPage.Profile));
         _dispatcher.Register("Nav.Pomodoro", () => _mainService.SetActiveTabPage(Models.TabPage.Pomodoro));
-        _dispatcher.Register("Nav.Settings", () => _mainService.SetActiveTabPage(Models.TabPage.Settings));
+        _dispatcher.Register("Nav.Settings", () => _mainService.RequestShowSettings());
 
         // 工具
         _dispatcher.Register(
@@ -269,6 +269,15 @@ public class CommandInitializer
                 _mainService.SetPomodoroMode(Models.PomodoroMode.Manual);
             }
         );
+
+        _dispatcher.Register(
+            "App.ShowSettings",
+            () =>
+            {
+                _mainService.RequestShowSettings();
+            }
+        );
+
         _windowCMDService.Initialize();
         _profileCMDService.Initialize();
     }

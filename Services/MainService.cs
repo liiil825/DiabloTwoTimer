@@ -4,10 +4,12 @@ using System.Windows.Forms;
 using DiabloTwoMFTimer.Interfaces;
 using DiabloTwoMFTimer.Models;
 using DiabloTwoMFTimer.Utils;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DiabloTwoMFTimer.Services;
 
 public class MainServices(
+    IServiceProvider serviceProvider,
     IProfileService profileService,
     ITimerService timerService,
     ITimerHistoryService timerHistoryService,
@@ -18,6 +20,7 @@ public class MainServices(
 ) : IMainService, IDisposable
 {
     #region Services & Fields
+    private readonly IServiceProvider _serviceProvider = serviceProvider;
     private readonly IProfileRepository _profileRepository = profileRepository;
     private readonly IProfileService _profileService = profileService;
     private readonly ITimerService _timerService = timerService;
@@ -299,5 +302,18 @@ public class MainServices(
         // 显示成功提示
         string modeName = LanguageManager.GetString($"PomodoroMode_{mode}");
         Utils.Toast.Success($"番茄钟模式已设置为: {modeName}");
+    }
+
+    public void RequestShowSettings()
+    {
+        // 使用 IServiceProvider 创建一个新的 SettingsForm 实例
+        // 这样可以确保每次打开都是新的，且 Form 内部的依赖 (如 AudioService) 也会被自动注入
+        var settingsForm = _serviceProvider.GetRequiredService<UI.Form.SettingsForm>();
+
+        // 以模态对话框方式显示
+        settingsForm.ShowDialog();
+
+        // ShowDialog 会阻塞直到窗口关闭，关闭后资源由 Form 自身 Dispose 处理
+        // (因为我们在 SettingsForm 里没写特殊逻辑，它关闭时会自动 Dispose)
     }
 }

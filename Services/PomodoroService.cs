@@ -238,7 +238,10 @@ public class PomodoroTimerService : IPomodoroTimerService
             PomodoroBreakStarted?.Invoke(this, new PomodoroBreakStartedEventArgs(breakType));
 
             // 播放番茄钟休息开始音效
-            _audioService?.PlaySound(_appSettings?.SoundBreakStart ?? "");
+            if (_appSettings?.SoundBreakStartEnabled == true)
+            {
+                _audioService?.PlaySound(_appSettings?.SoundBreakStart ?? "");
+            }
         }
         else
         {
@@ -252,7 +255,10 @@ public class PomodoroTimerService : IPomodoroTimerService
             TryResumeGameTimer();
 
             // 播放番茄钟休息结束音效
-            _audioService?.PlaySound(_appSettings?.SoundBreakEnd ?? "");
+            if (_appSettings?.SoundBreakEndEnabled == true)
+            {
+                _audioService?.PlaySound(_appSettings?.SoundBreakEnd ?? "");
+            }
         }
 
         // 3. 进入新阶段后，状态自动变为 Running 并开始计时

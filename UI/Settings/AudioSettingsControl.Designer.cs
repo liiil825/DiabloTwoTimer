@@ -161,9 +161,10 @@ partial class AudioSettingsControl
 
         // tblAudioRows (使用表格布局管理4行配置)
         // 
-        this.tblAudioRows.ColumnCount = 3;
+        this.tblAudioRows.ColumnCount = 4;
         this.tblAudioRows.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize)); // Label
         this.tblAudioRows.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize)); // Sound File Name
+        this.tblAudioRows.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize)); // Button
         this.tblAudioRows.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize)); // Button
         this.tblAudioRows.Dock = System.Windows.Forms.DockStyle.Top;
         this.tblAudioRows.Location = new System.Drawing.Point(3, 94);

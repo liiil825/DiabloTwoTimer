@@ -50,6 +50,10 @@ public interface IAppSettings
     string SoundTimerPause { get; set; }
     string SoundBreakStart { get; set; } // 工作结束 -> 休息开始
     string SoundBreakEnd { get; set; }   // 休息结束 -> 准备工作
+    bool SoundTimerStartEnabled { get; set; }
+    bool SoundTimerPauseEnabled { get; set; }
+    bool SoundBreakStartEnabled { get; set; }
+    bool SoundBreakEndEnabled { get; set; }
 
     // 方法
     void Save();

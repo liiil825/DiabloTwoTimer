@@ -19,8 +19,24 @@ public partial class AudioSettingsControl : UserControl
     private ThemedButton? btnPreviewBreakStart = null!;
     private ThemedButton? btnPreviewBreakEnd = null!;
 
+    // 取消按钮引用，用于逻辑绑定
+    private ThemedButton? btnCancelTimerStart = null!;
+    private ThemedButton? btnCancelTimerPause = null!;
+    private ThemedButton? btnCancelBreakStart = null!;
+    private ThemedButton? btnCancelBreakEnd = null!;
+
     // 播放按钮映射 (Button -> Original Text)
     private Dictionary<Button, string> _previewButtonMap = new();
+
+    // 行控件映射，用于状态管理
+    private Dictionary<ThemedButton, Tuple<ThemedLabel, ThemedLabel, ThemedButton>> _rowControlsMap = new();
+
+    // 取消按钮状态映射
+    private Dictionary<ThemedButton, bool> _cancelButtonStates = new();
+
+    private const string _playIcon = "\uE102";
+    private const string _stopIcon = "\uE004";
+    private const string _cancelIcon = "\uE711";
 
     // 默认构造函数，用于设计器
     public AudioSettingsControl()
@@ -42,7 +58,7 @@ public partial class AudioSettingsControl : UserControl
     private void InitializeAudioRows()
     {
         // 辅助方法：添加一行配置
-        void AddRow(string labelKey, string soundFileName, out ThemedButton btn, int rowIndex)
+        void AddRow(string labelKey, string soundFileName, out ThemedButton btnPreview, out ThemedButton btnCancel, int rowIndex)
         {
             // 1. Label
             var lbl = new ThemedLabel
@@ -65,9 +81,10 @@ public partial class AudioSettingsControl : UserControl
             };
 
             // 3. Preview Button
-            btn = new ThemedButton
+            btnPreview = new ThemedButton
             {
-                Text = "▶", // Play Icon
+                Text = _playIcon, // Play Icon
+                Font = new Font("Segoe MDL2 Assets", 18, FontStyle.Regular),
                 Width = 40,
                 Height = 30, // 稍微高一点方便点击
                 Dock = DockStyle.Left,
@@ -75,10 +92,28 @@ public partial class AudioSettingsControl : UserControl
                 Margin = new Padding(0, 5, 10, 5)
             };
 
+            // 4. Cancel Button
+            btnCancel = new ThemedButton
+            {
+                Text = _cancelIcon, // Cancel Icon
+                Font = new Font("Segoe MDL2 Assets", 18, FontStyle.Regular),
+                Width = 40,
+                Height = 30,
+                Dock = DockStyle.Left,
+                FlatStyle = FlatStyle.Flat,
+                Margin = new Padding(0, 5, 0, 5),
+                ForeColor = UI.Theme.AppTheme.TextColor
+            };
+
             // 添加到 TableLayout
             this.tblAudioRows.Controls.Add(lbl, 0, rowIndex);
             this.tblAudioRows.Controls.Add(lblSoundFile, 1, rowIndex);
-            this.tblAudioRows.Controls.Add(btn, 2, rowIndex);
+            this.tblAudioRows.Controls.Add(btnPreview, 2, rowIndex);
+            this.tblAudioRows.Controls.Add(btnCancel, 3, rowIndex);
+
+            // 存储行控件映射
+            _rowControlsMap[btnCancel] = Tuple.Create(lbl, lblSoundFile, btnPreview);
+            _cancelButtonStates[btnCancel] = false;
         }
 
         // 获取音频文件名，使用默认值或从设置中读取
@@ -87,10 +122,10 @@ public partial class AudioSettingsControl : UserControl
         string breakStartFile = _appSettings?.SoundBreakStart ?? "break_start.mp3";
         string breakEndFile = _appSettings?.SoundBreakEnd ?? "break_end.mp3";
 
-        AddRow("Settings.Audio.TimerStart", timerStartFile, out btnPreviewTimerStart, 0);
-        AddRow("Settings.Audio.TimerPause", timerPauseFile, out btnPreviewTimerPause, 1);
-        AddRow("Settings.Audio.BreakStart", breakStartFile, out btnPreviewBreakStart, 2);
-        AddRow("Settings.Audio.BreakEnd", breakEndFile, out btnPreviewBreakEnd, 3);
+        AddRow("Settings.Audio.TimerStart", timerStartFile, out btnPreviewTimerStart, out btnCancelTimerStart, 0);
+        AddRow("Settings.Audio.TimerPause", timerPauseFile, out btnPreviewTimerPause, out btnCancelTimerPause, 1);
+        AddRow("Settings.Audio.BreakStart", breakStartFile, out btnPreviewBreakStart, out btnCancelBreakStart, 2);
+        AddRow("Settings.Audio.BreakEnd", breakEndFile, out btnPreviewBreakEnd, out btnCancelBreakEnd, 3);
     }
 
     public void LoadSettings(IAppSettings settings)
@@ -135,8 +170,38 @@ public partial class AudioSettingsControl : UserControl
         if (lblVolumeValue != null)
             lblVolumeValue.Text = $"{_appSettings.AudioVolume}%";
 
+        // 加载取消按钮状态
+        LoadCancelButtonStates();
+
         if (chkEnableAudio != null)
             UpdateControlState(chkEnableAudio.Checked);
+    }
+
+    private void LoadCancelButtonStates()
+    {
+        if (_appSettings == null) return;
+
+        // 加载各取消按钮状态
+        if (btnCancelTimerStart != null)
+        {
+            _cancelButtonStates[btnCancelTimerStart] = !_appSettings.SoundTimerStartEnabled;
+            UpdateCancelButtonState(btnCancelTimerStart, _cancelButtonStates[btnCancelTimerStart]);
+        }
+        if (btnCancelTimerPause != null)
+        {
+            _cancelButtonStates[btnCancelTimerPause] = !_appSettings.SoundTimerPauseEnabled;
+            UpdateCancelButtonState(btnCancelTimerPause, _cancelButtonStates[btnCancelTimerPause]);
+        }
+        if (btnCancelBreakStart != null)
+        {
+            _cancelButtonStates[btnCancelBreakStart] = !_appSettings.SoundBreakStartEnabled;
+            UpdateCancelButtonState(btnCancelBreakStart, _cancelButtonStates[btnCancelBreakStart]);
+        }
+        if (btnCancelBreakEnd != null)
+        {
+            _cancelButtonStates[btnCancelBreakEnd] = !_appSettings.SoundBreakEndEnabled;
+            UpdateCancelButtonState(btnCancelBreakEnd, _cancelButtonStates[btnCancelBreakEnd]);
+        }
     }
 
     private void BindEvents()
@@ -167,12 +232,61 @@ public partial class AudioSettingsControl : UserControl
             BindPreviewButton(btnPreviewBreakStart, () => _appSettings.SoundBreakStart);
         if (btnPreviewBreakEnd != null)
             BindPreviewButton(btnPreviewBreakEnd, () => _appSettings.SoundBreakEnd);
+
+        // 绑定取消按钮
+        if (btnCancelTimerStart != null)
+            BindCancelButton(btnCancelTimerStart, () => { _appSettings.SoundTimerStartEnabled = !_appSettings.SoundTimerStartEnabled; });
+        if (btnCancelTimerPause != null)
+            BindCancelButton(btnCancelTimerPause, () => { _appSettings.SoundTimerPauseEnabled = !_appSettings.SoundTimerPauseEnabled; });
+        if (btnCancelBreakStart != null)
+            BindCancelButton(btnCancelBreakStart, () => { _appSettings.SoundBreakStartEnabled = !_appSettings.SoundBreakStartEnabled; });
+        if (btnCancelBreakEnd != null)
+            BindCancelButton(btnCancelBreakEnd, () => { _appSettings.SoundBreakEndEnabled = !_appSettings.SoundBreakEndEnabled; });
+    }
+
+    private void BindCancelButton(ThemedButton btn, Action onStateChanged)
+    {
+        btn.Click += (s, e) =>
+        {
+            // 切换状态
+            _cancelButtonStates[btn] = !_cancelButtonStates[btn];
+
+            // 更新UI
+            UpdateCancelButtonState(btn, _cancelButtonStates[btn]);
+
+            // 触发状态变更回调
+            onStateChanged();
+        };
+    }
+
+    private void UpdateCancelButtonState(ThemedButton btn, bool isActive)
+    {
+        if (!_rowControlsMap.TryGetValue(btn, out var controls)) return;
+
+        var (lbl, lblSoundFile, btnPreview) = controls;
+
+        // 使用 ThemedButton 的 IsSelected 属性触发高亮效果
+        btn.IsSelected = isActive;
+
+        if (isActive)
+        {
+            // 激活状态：禁用播放按钮，灰色文字
+            btnPreview.Enabled = false;
+            lbl.ForeColor = UI.Theme.AppTheme.Colors.TextSecondaryColor;
+            lblSoundFile.ForeColor = UI.Theme.AppTheme.Colors.TextSecondaryColor;
+        }
+        else
+        {
+            // 非激活状态：启用播放按钮，正常文字
+            btnPreview.Enabled = true;
+            lbl.ForeColor = UI.Theme.AppTheme.TextColor;
+            lblSoundFile.ForeColor = UI.Theme.AppTheme.Colors.TextSecondaryColor;
+        }
     }
 
     private void BindPreviewButton(Button btn, Func<string> getFileName)
     {
-        _previewButtonMap[btn] = "▶"; // 注册默认图标
-
+        _previewButtonMap[btn] = _playIcon; // 注册默认图标
         btn.Click += (s, e) =>
         {
             if (_audioService == null) return;
@@ -181,7 +295,7 @@ public partial class AudioSettingsControl : UserControl
             if (string.IsNullOrEmpty(fileName)) return;
 
             // 核心交互：如果是"正在试听"且点击的是"自己"，则是停止
-            bool isCurrentButtonPlaying = btn.Text == "■";
+            bool isCurrentButtonPlaying = btn.Text == _stopIcon;
 
             if (isCurrentButtonPlaying)
             {
@@ -194,7 +308,7 @@ public partial class AudioSettingsControl : UserControl
                 ResetAllPreviewButtons();
 
                 // 开始试听
-                btn.Text = "■"; // 暂停图标
+                btn.Text = _stopIcon; // 暂停图标
                 btn.ForeColor = Color.Orange; // 高亮
 
                 _audioService.PreviewSound(fileName, () =>

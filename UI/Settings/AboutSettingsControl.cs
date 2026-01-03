@@ -26,9 +26,7 @@ public partial class AboutSettingsControl : UserControl
         // 获取版本号
         var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
         lblVersion.Text = LanguageManager.GetString("VersionLabel", version);
-
         lblAuthor.Text = LanguageManager.GetString("AuthorLabel") ?? "Author: liiil825";
-
         btnGithub.Text = LanguageManager.GetString("VisitGithub") ?? "GitHub";
         btnBilibili.Text = LanguageManager.GetString("VisitBilibili") ?? "Bilibili";
     }

@@ -8,10 +8,7 @@ namespace DiabloTwoMFTimer.UI.Form;
 
 public partial class AboutForm : BaseForm
 {
-    // 定义跳转链接
     private const string GithubUrl = "https://github.com/liiil825/diablotwotimer";
-
-    // 如果你有具体的个人空间链接，请替换此处
     private const string BilibiliUrl = "https://space.bilibili.com/3250094";
 
     public AboutForm()
@@ -36,9 +33,7 @@ public partial class AboutForm : BaseForm
         // 获取版本号
         var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3) ?? "1.0.0";
         lblVersion.Text = LanguageManager.GetString("VersionLabel", version);
-
         lblAuthor.Text = LanguageManager.GetString("AuthorLabel") ?? "Author: liiil825";
-
         btnGithub.Text = LanguageManager.GetString("VisitGithub") ?? "GitHub";
         btnBilibili.Text = LanguageManager.GetString("VisitBilibili") ?? "Bilibili";
 

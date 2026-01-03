@@ -65,6 +65,10 @@ public class AppSettings : IAppSettings
     public string SoundTimerPause { get; set; } = "timer_pause.mp3";
     public string SoundBreakStart { get; set; } = "break_start.mp3";
     public string SoundBreakEnd { get; set; } = "break_end.mp3";
+    public bool SoundTimerStartEnabled { get; set; } = true;
+    public bool SoundTimerPauseEnabled { get; set; } = true;
+    public bool SoundBreakStartEnabled { get; set; } = true;
+    public bool SoundBreakEndEnabled { get; set; } = true;
 
     // 保存设置
     public void Save()

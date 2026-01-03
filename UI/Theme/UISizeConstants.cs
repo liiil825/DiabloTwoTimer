@@ -13,7 +13,7 @@ public static class UISizeConstants
     private const int _baseClientHeightWithLoot = 340;
 
     private const int _tabItemWidth = 47;
-    private const int _tabItemHeight = 25;
+    private const int _tabItemHeight = 30;
 
     // 【新增】基础弹窗的默认宽度
     private const int _baseFormWidth = 400;

@@ -108,9 +108,9 @@ partial class AudioSettingsControl
         // 
         this.tlpVolume.AutoSize = true;
         this.tlpVolume.ColumnCount = 3;
-        this.tlpVolume.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 60F));
+        this.tlpVolume.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
         this.tlpVolume.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 150F));
-        this.tlpVolume.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 80F));
+        this.tlpVolume.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
         this.tlpVolume.Controls.Add(this.lblVolumeTitle, 0, 0);
         this.tlpVolume.Controls.Add(this.trackVolume, 1, 0);
         this.tlpVolume.Controls.Add(this.lblVolumeValue, 2, 0);
@@ -119,30 +119,30 @@ partial class AudioSettingsControl
         this.tlpVolume.Name = "tlpVolume";
         this.tlpVolume.RowCount = 1;
         this.tlpVolume.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-        this.tlpVolume.Size = new System.Drawing.Size(300, 50);
+        this.tlpVolume.Size = new System.Drawing.Size(612, 50);
         this.tlpVolume.TabIndex = 1;
 
         // 
         // lblVolumeTitle
         // 
-        this.lblVolumeTitle.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+        this.lblVolumeTitle.Anchor = System.Windows.Forms.AnchorStyles.Left;
         this.lblVolumeTitle.AutoSize = true;
-        this.lblVolumeTitle.Location = new System.Drawing.Point(13, 5);
-        this.lblVolumeTitle.Margin = new System.Windows.Forms.Padding(10, 0, 0, 0);
+        this.lblVolumeTitle.Location = new System.Drawing.Point(13, 15);
+        this.lblVolumeTitle.Margin = new System.Windows.Forms.Padding(10, 0, 10, 0);
         this.lblVolumeTitle.Name = "lblVolumeTitle";
-        this.lblVolumeTitle.Size = new System.Drawing.Size(44, 20);
+        this.lblVolumeTitle.Size = new System.Drawing.Size(50, 20);
         this.lblVolumeTitle.TabIndex = 0;
-        this.lblVolumeTitle.Text = "Volume";
+        this.lblVolumeTitle.Text = "音量";
 
         // 
         // trackVolume
         // 
         this.trackVolume.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
-        this.trackVolume.Location = new System.Drawing.Point(63, 20);
-        this.trackVolume.Margin = new System.Windows.Forms.Padding(0, 20, 0, 0);
+        this.trackVolume.Location = new System.Drawing.Point(73, 20);
+        this.trackVolume.Margin = new System.Windows.Forms.Padding(0, 20, 10, 0);
         this.trackVolume.Maximum = 100;
         this.trackVolume.Name = "trackVolume";
-        this.trackVolume.Size = new System.Drawing.Size(144, 30);
+        this.trackVolume.Size = new System.Drawing.Size(469, 30);
         this.trackVolume.TabIndex = 1;
         this.trackVolume.TickFrequency = 10;
         this.trackVolume.TickStyle = System.Windows.Forms.TickStyle.None;
@@ -150,9 +150,10 @@ partial class AudioSettingsControl
         // 
         // lblVolumeValue
         // 
-        this.lblVolumeValue.Anchor = System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right;
+        this.lblVolumeValue.Anchor = System.Windows.Forms.AnchorStyles.Left;
         this.lblVolumeValue.AutoSize = true;
-        this.lblVolumeValue.Location = new System.Drawing.Point(554, 5);
+        this.lblVolumeValue.Location = new System.Drawing.Point(552, 15);
+        this.lblVolumeValue.Margin = new System.Windows.Forms.Padding(0, 0, 10, 0);
         this.lblVolumeValue.Name = "lblVolumeValue";
         this.lblVolumeValue.Size = new System.Drawing.Size(54, 20);
         this.lblVolumeValue.TabIndex = 2;

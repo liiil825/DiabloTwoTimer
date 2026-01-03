@@ -1,4 +1,5 @@
 using DiabloTwoMFTimer.UI.Settings;
+using DiabloTwoMFTimer.UI.Theme;
 
 namespace DiabloTwoMFTimer.UI.Form;
 
@@ -62,7 +63,7 @@ partial class SettingsForm
         this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
         this.tlpMain.Location = new System.Drawing.Point(0, 0);
         this.tlpMain.Name = "tlpMain";
-        this.tlpMain.Size = new System.Drawing.Size(Theme.UISizeConstants.ClientWidth, Theme.UISizeConstants.TabPageHeight);
+        this.tlpMain.Size = new System.Drawing.Size(Theme.UISizeConstants.SettingsFormWidth, Theme.UISizeConstants.SettingsFormHeight);
         this.tlpMain.TabIndex = 0;
 
         // 
@@ -72,9 +73,9 @@ partial class SettingsForm
         this.tabPageAudio.Location = new System.Drawing.Point(4, 25);
         this.tabPageAudio.Name = "tabPageAudio";
         this.tabPageAudio.Padding = new System.Windows.Forms.Padding(3);
-        this.tabPageAudio.Size = new System.Drawing.Size(Theme.UISizeConstants.ClientWidth - 8, Theme.UISizeConstants.TabPageHeight - Theme.UISizeConstants.TabItemHeight - 29);
+        this.tabPageAudio.Size = new System.Drawing.Size(Theme.UISizeConstants.SettingsFormWidth - 8, Theme.UISizeConstants.SettingsFormHeight - Theme.UISizeConstants.TabItemHeight);
         this.tabPageAudio.TabIndex = 3;
-        this.tabPageAudio.Text = "Audio";
+        this.tabPageAudio.Text = "声音";
         this.tabPageAudio.UseVisualStyleBackColor = false;
 
         // 
@@ -89,7 +90,7 @@ partial class SettingsForm
         this.tabControl.Location = new System.Drawing.Point(0, Theme.UISizeConstants.TabItemHeight);
         this.tabControl.Name = "tabControl";
         this.tabControl.SelectedIndex = 0;
-        this.tabControl.Size = new System.Drawing.Size(Theme.UISizeConstants.ClientWidth, Theme.UISizeConstants.TabPageHeight - Theme.UISizeConstants.TabItemHeight);
+        this.tabControl.Size = new System.Drawing.Size(Theme.UISizeConstants.SettingsFormWidth, Theme.UISizeConstants.SettingsFormHeight - Theme.UISizeConstants.TabItemHeight);
         this.tabControl.TabIndex = 0;
 
         // 
@@ -99,7 +100,7 @@ partial class SettingsForm
         this.tabPageAbout.Location = new System.Drawing.Point(4, 25);
         this.tabPageAbout.Name = "tabPageAbout";
         this.tabPageAbout.Padding = new System.Windows.Forms.Padding(3);
-        this.tabPageAbout.Size = new System.Drawing.Size(Theme.UISizeConstants.ClientWidth - 8, Theme.UISizeConstants.TabPageHeight - Theme.UISizeConstants.TabItemHeight - 29);
+        this.tabPageAbout.Size = new System.Drawing.Size(Theme.UISizeConstants.SettingsFormWidth - 8, UISizeConstants.SettingsFormHeight - Theme.UISizeConstants.TabItemHeight);
         this.tabPageAbout.TabIndex = 4;
         this.tabPageAbout.Text = "关于";
         this.tabPageAbout.UseVisualStyleBackColor = false;

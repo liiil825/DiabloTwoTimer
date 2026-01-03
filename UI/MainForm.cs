@@ -132,7 +132,10 @@ public partial class MainForm : System.Windows.Forms.Form
         else if (sender == btnNavPomodoro)
             tabControl.SelectedIndex = 2;
         else if (sender == btnNavSettings)
-            tabControl.SelectedIndex = 3;
+        {
+            _mainService.RequestShowSettings();
+            return;
+        }
         else if (sender == btnNavMinimize) // 现在文字是 'x'
         {
             using var form = new CloseOptionForm();

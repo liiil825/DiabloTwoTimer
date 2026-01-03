@@ -320,15 +320,8 @@ public static class DefaultKeyMapGenerator
                     new KeyMapNode
                     {
                         Key = "q",
-                        Text = "最小化到托盘",
-                        Action = "App.Minimize",
-                    },
-                    // 恢复窗口
-                    new KeyMapNode
-                    {
-                        Key = "w",
-                        Text = "恢复窗口",
-                        Action = "App.Restore",
+                        Text = "切换窗口显示/隐藏",
+                        Action = "App.ToggleVisibility",
                     },
                     new KeyMapNode
                     {

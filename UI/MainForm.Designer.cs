@@ -83,10 +83,12 @@ partial class MainForm
         this.tlpNavigation.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
         this.tlpNavigation.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
         this.tlpNavigation.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+        this.tlpNavigation.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
 
         this.tlpNavigation.Controls.Add(this.btnNavProfile, 0, 0);
         this.tlpNavigation.Controls.Add(this.btnNavTimer, 1, 0);
         this.tlpNavigation.Controls.Add(this.btnNavPomodoro, 2, 0);
+        this.tlpNavigation.Controls.Add(this.btnNavSettings, 3, 0);
         this.tlpNavigation.Controls.Add(this.btnNavMinimize, 4, 0);
 
         this.tlpNavigation.Dock = System.Windows.Forms.DockStyle.Top;
@@ -102,7 +104,9 @@ partial class MainForm
         ConfigureNavButton(btnNavProfile, "Profile");
         ConfigureNavButton(btnNavTimer, "Timer");
         ConfigureNavButton(btnNavPomodoro, "Tomato");
+        ConfigureNavButton(btnNavSettings, "Settings");
         ConfigureNavButton(btnNavMinimize, "\uE711");
+
         btnNavMinimize.Font = AppTheme.Fonts.SegoeIcon;
 
         // 

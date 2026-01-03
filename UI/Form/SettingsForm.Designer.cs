@@ -201,17 +201,6 @@ partial class SettingsForm
         this.timerSettings.TabIndex = 0;
 
         // 
-        // btnConfirmSettings
-        // 
-        this.btnConfirmSettings.Anchor = System.Windows.Forms.AnchorStyles.Right;
-        this.btnConfirmSettings.Name = "btnConfirmSettings";
-        this.btnConfirmSettings.Size = new System.Drawing.Size(80, 30);
-        this.btnConfirmSettings.TabIndex = 0;
-        this.btnConfirmSettings.Text = "确认";
-        this.btnConfirmSettings.Margin = new System.Windows.Forms.Padding(0);
-        this.btnConfirmSettings.Click += new System.EventHandler(this.BtnConfirmSettings_Click);
-
-        // 
         // SettingsForm
         // 
         this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);

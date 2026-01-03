@@ -82,5 +82,8 @@ public class ShowLootHistoryMessage { }
 // 请求删除角色消息
 public class DeleteCharacterMessage { }
 
+// 番茄钟设置变更消息
+public class PomodoroSettingsChangedMessage { }
+
 // 导航栏可见性变更消息
 public class NavigationVisibilityChangedMessage { }

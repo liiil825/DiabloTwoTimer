@@ -101,6 +101,7 @@ public partial class PomodoroControl : UserControl
         _messenger.Subscribe<ShowPomodoroSettingsMessage>(OnShowSettings);
         _messenger.Subscribe<ShowPomodoroBreakFormMessage>(OnShowBreakForm);
         _messenger.Subscribe<PomodoroModeChangedMessage>(OnPomodoroModeChanged);
+        _messenger.Subscribe<PomodoroSettingsChangedMessage>(OnPomodoroSettingsChanged);
     }
 
     /// <summary>
@@ -111,6 +112,7 @@ public partial class PomodoroControl : UserControl
         _messenger.Unsubscribe<ShowPomodoroSettingsMessage>(OnShowSettings);
         _messenger.Unsubscribe<ShowPomodoroBreakFormMessage>(OnShowBreakForm);
         _messenger.Unsubscribe<PomodoroModeChangedMessage>(OnPomodoroModeChanged);
+        _messenger.Unsubscribe<PomodoroSettingsChangedMessage>(OnPomodoroSettingsChanged);
     }
 
     /// <summary>
@@ -125,6 +127,27 @@ public partial class PomodoroControl : UserControl
     private void OnShowSettings(ShowPomodoroSettingsMessage msg)
     {
         this.SafeInvoke(ShowSettingsDialog);
+    }
+
+    /// <summary>
+    /// 处理番茄钟设置变更消息
+    /// </summary>
+    private void OnPomodoroSettingsChanged(PomodoroSettingsChangedMessage message)
+    {
+        this.SafeInvoke(() =>
+        {
+            // 重新加载计时器设置
+            _timerService.LoadSettings();
+
+            // 保存设置
+            SaveSettings();
+
+            // 重置计时器
+            _timerService.Reset();
+
+            // 更新UI
+            UpdateUI();
+        });
     }
 
     private void OnShowBreakForm(ShowPomodoroBreakFormMessage msg)

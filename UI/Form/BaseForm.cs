@@ -107,7 +107,7 @@ public partial class BaseForm : System.Windows.Forms.Form
         {
             if (btnConfirm != null && !btnConfirm.Focused && btnCancel != null && !btnCancel.Focused)
             {
-                BtnConfirm_Click(null, EventArgs.Empty);
+                btnConfirm.PerformClick();
                 return true;
             }
         }

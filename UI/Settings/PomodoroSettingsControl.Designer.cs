@@ -17,31 +17,38 @@ partial class PomodoroSettingsControl
     {
         this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
         this.grpPomodoroSettings = new DiabloTwoMFTimer.UI.Components.ThemedGroupBox();
+
+        // 初始化各个子面板
         this.tlpMode = new System.Windows.Forms.TableLayoutPanel();
         this.lblMode = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
         this.cmbMode = new DiabloTwoMFTimer.UI.Components.ThemedComboBox();
+
         this.tlpWorkTime = new System.Windows.Forms.TableLayoutPanel();
         this.lblWorkTime = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
         this.nudWorkTimeMin = new System.Windows.Forms.NumericUpDown();
         this.lblWorkMinUnit = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
         this.nudWorkTimeSec = new System.Windows.Forms.NumericUpDown();
         this.lblWorkSecUnit = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
+
         this.tlpShortBreakTime = new System.Windows.Forms.TableLayoutPanel();
         this.lblShortBreakTime = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
         this.nudShortBreakTimeMin = new System.Windows.Forms.NumericUpDown();
         this.lblShortBreakMinUnit = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
         this.nudShortBreakTimeSec = new System.Windows.Forms.NumericUpDown();
         this.lblShortBreakSecUnit = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
+
         this.tlpLongBreakTime = new System.Windows.Forms.TableLayoutPanel();
         this.lblLongBreakTime = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
         this.nudLongBreakTimeMin = new System.Windows.Forms.NumericUpDown();
         this.lblLongBreakMinUnit = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
         this.nudLongBreakTimeSec = new System.Windows.Forms.NumericUpDown();
         this.lblLongBreakSecUnit = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
+
         this.tlpWarningLongTime = new System.Windows.Forms.TableLayoutPanel();
         this.lblWarningLongTime = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
         this.nudWarningLongTime = new System.Windows.Forms.NumericUpDown();
         this.lblWarningLongTimeUnit = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
+
         this.tlpWarningShortTime = new System.Windows.Forms.TableLayoutPanel();
         this.lblWarningShortTime = new DiabloTwoMFTimer.UI.Components.ThemedLabel();
         this.nudWarningShortTime = new System.Windows.Forms.NumericUpDown();
@@ -87,16 +94,18 @@ partial class PomodoroSettingsControl
         // 
         this.grpPomodoroSettings.AutoSize = true;
         this.grpPomodoroSettings.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-        this.grpPomodoroSettings.Controls.Add(this.tlpMode);
-        this.grpPomodoroSettings.Controls.Add(this.tlpWorkTime);
-        this.grpPomodoroSettings.Controls.Add(this.tlpShortBreakTime);
-        this.grpPomodoroSettings.Controls.Add(this.tlpLongBreakTime);
-        this.grpPomodoroSettings.Controls.Add(this.tlpWarningLongTime);
+        // 注意顺序：先添加顶部的控件
         this.grpPomodoroSettings.Controls.Add(this.tlpWarningShortTime);
+        this.grpPomodoroSettings.Controls.Add(this.tlpWarningLongTime);
+        this.grpPomodoroSettings.Controls.Add(this.tlpLongBreakTime);
+        this.grpPomodoroSettings.Controls.Add(this.tlpShortBreakTime);
+        this.grpPomodoroSettings.Controls.Add(this.tlpWorkTime);
+        this.grpPomodoroSettings.Controls.Add(this.tlpMode);
         this.grpPomodoroSettings.Dock = System.Windows.Forms.DockStyle.Fill;
         this.grpPomodoroSettings.Location = new System.Drawing.Point(13, 13);
         this.grpPomodoroSettings.Name = "grpPomodoroSettings";
-        this.grpPomodoroSettings.Padding = new System.Windows.Forms.Padding(10);
+        // [修复] 增加Top Padding到35，解决标题文字遮挡lblMode的问题
+        this.grpPomodoroSettings.Padding = new System.Windows.Forms.Padding(12, 35, 12, 12);
         this.grpPomodoroSettings.Size = new System.Drawing.Size(584, 324);
         this.grpPomodoroSettings.TabIndex = 0;
         this.grpPomodoroSettings.TabStop = false;
@@ -108,16 +117,18 @@ partial class PomodoroSettingsControl
         this.tlpMode.AutoSize = true;
         this.tlpMode.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
         this.tlpMode.ColumnCount = 2;
-        this.tlpMode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+        // [修复] 第一列设为绝对宽度 120F，确保对齐
+        this.tlpMode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
         this.tlpMode.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
         this.tlpMode.Controls.Add(this.lblMode, 0, 0);
         this.tlpMode.Controls.Add(this.cmbMode, 1, 0);
         this.tlpMode.Dock = System.Windows.Forms.DockStyle.Top;
-        this.tlpMode.Location = new System.Drawing.Point(13, 13);
+        this.tlpMode.Location = new System.Drawing.Point(12, 35);
+        // [修复] 增加底部 Margin，防止下一行紧贴
+        this.tlpMode.Margin = new System.Windows.Forms.Padding(0, 0, 0, 10);
         this.tlpMode.Name = "tlpMode";
         this.tlpMode.RowCount = 1;
         this.tlpMode.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-        this.tlpMode.Size = new System.Drawing.Size(564, 40);
         this.tlpMode.TabIndex = 0;
 
         // 
@@ -137,10 +148,11 @@ partial class PomodoroSettingsControl
         this.cmbMode.Anchor = System.Windows.Forms.AnchorStyles.Left;
         this.cmbMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
         this.cmbMode.FormattingEnabled = true;
-        this.cmbMode.Location = new System.Drawing.Point(59, 7);
+        // [修复] 调整 X 位置以匹配布局逻辑 (设计器自动计算，但在代码中明确一下更好)
+        this.cmbMode.Location = new System.Drawing.Point(123, 7);
         this.cmbMode.Name = "cmbMode";
         this.cmbMode.Size = new System.Drawing.Size(200, 28);
-        this.cmbMode.Margin = new System.Windows.Forms.Padding(5, 5, 5, 15);
+        this.cmbMode.Margin = new System.Windows.Forms.Padding(3, 5, 5, 5);
         this.cmbMode.TabIndex = 1;
 
         // 
@@ -149,7 +161,8 @@ partial class PomodoroSettingsControl
         this.tlpWorkTime.AutoSize = true;
         this.tlpWorkTime.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
         this.tlpWorkTime.ColumnCount = 5;
-        this.tlpWorkTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+        // [修复] 第一列设为绝对宽度 120F，与其他行对齐
+        this.tlpWorkTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
         this.tlpWorkTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
         this.tlpWorkTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
         this.tlpWorkTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
@@ -160,11 +173,11 @@ partial class PomodoroSettingsControl
         this.tlpWorkTime.Controls.Add(this.nudWorkTimeSec, 3, 0);
         this.tlpWorkTime.Controls.Add(this.lblWorkSecUnit, 4, 0);
         this.tlpWorkTime.Dock = System.Windows.Forms.DockStyle.Top;
-        this.tlpWorkTime.Location = new System.Drawing.Point(13, 59);
+        // [修复] 增加底部 Margin
+        this.tlpWorkTime.Margin = new System.Windows.Forms.Padding(0, 0, 0, 10);
         this.tlpWorkTime.Name = "tlpWorkTime";
         this.tlpWorkTime.RowCount = 1;
         this.tlpWorkTime.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-        this.tlpWorkTime.Size = new System.Drawing.Size(564, 40);
         this.tlpWorkTime.TabIndex = 1;
 
         // 
@@ -186,7 +199,7 @@ partial class PomodoroSettingsControl
         this.nudWorkTimeMin.ForeColor = DiabloTwoMFTimer.UI.Theme.AppTheme.TextColor;
         this.nudWorkTimeMin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
         this.nudWorkTimeMin.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
-        this.nudWorkTimeMin.Margin = new System.Windows.Forms.Padding(5, 5, 5, 15);
+        this.nudWorkTimeMin.Margin = new System.Windows.Forms.Padding(3, 5, 5, 5);
         this.nudWorkTimeMin.Name = "nudWorkTimeMin";
         this.nudWorkTimeMin.Value = new decimal(new int[] { 25, 0, 0, 0 });
 
@@ -195,7 +208,7 @@ partial class PomodoroSettingsControl
         // 
         this.lblWorkMinUnit.Anchor = System.Windows.Forms.AnchorStyles.Left;
         this.lblWorkMinUnit.AutoSize = true;
-        this.lblWorkMinUnit.Location = new System.Drawing.Point(189, 10);
+        this.lblWorkMinUnit.Location = new System.Drawing.Point(223, 10);
         this.lblWorkMinUnit.Name = "lblWorkMinUnit";
         this.lblWorkMinUnit.Size = new System.Drawing.Size(30, 20);
         this.lblWorkMinUnit.TabIndex = 2;
@@ -209,7 +222,7 @@ partial class PomodoroSettingsControl
         this.nudWorkTimeSec.ForeColor = DiabloTwoMFTimer.UI.Theme.AppTheme.TextColor;
         this.nudWorkTimeSec.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
         this.nudWorkTimeSec.Maximum = new decimal(new int[] { 59, 0, 0, 0 });
-        this.nudWorkTimeSec.Margin = new System.Windows.Forms.Padding(5, 5, 5, 15);
+        this.nudWorkTimeSec.Margin = new System.Windows.Forms.Padding(3, 5, 5, 5);
         this.nudWorkTimeSec.Name = "nudWorkTimeSec";
 
         // 
@@ -217,7 +230,7 @@ partial class PomodoroSettingsControl
         // 
         this.lblWorkSecUnit.Anchor = System.Windows.Forms.AnchorStyles.Left;
         this.lblWorkSecUnit.AutoSize = true;
-        this.lblWorkSecUnit.Location = new System.Drawing.Point(325, 10);
+        this.lblWorkSecUnit.Location = new System.Drawing.Point(359, 10);
         this.lblWorkSecUnit.Name = "lblWorkSecUnit";
         this.lblWorkSecUnit.Size = new System.Drawing.Size(30, 20);
         this.lblWorkSecUnit.TabIndex = 4;
@@ -229,7 +242,8 @@ partial class PomodoroSettingsControl
         this.tlpShortBreakTime.AutoSize = true;
         this.tlpShortBreakTime.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
         this.tlpShortBreakTime.ColumnCount = 5;
-        this.tlpShortBreakTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+        // [修复] 第一列设为绝对宽度 120F
+        this.tlpShortBreakTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
         this.tlpShortBreakTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
         this.tlpShortBreakTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
         this.tlpShortBreakTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
@@ -240,11 +254,11 @@ partial class PomodoroSettingsControl
         this.tlpShortBreakTime.Controls.Add(this.nudShortBreakTimeSec, 3, 0);
         this.tlpShortBreakTime.Controls.Add(this.lblShortBreakSecUnit, 4, 0);
         this.tlpShortBreakTime.Dock = System.Windows.Forms.DockStyle.Top;
-        this.tlpShortBreakTime.Location = new System.Drawing.Point(13, 105);
+        // [修复] 增加底部 Margin
+        this.tlpShortBreakTime.Margin = new System.Windows.Forms.Padding(0, 0, 0, 10);
         this.tlpShortBreakTime.Name = "tlpShortBreakTime";
         this.tlpShortBreakTime.RowCount = 1;
         this.tlpShortBreakTime.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-        this.tlpShortBreakTime.Size = new System.Drawing.Size(564, 40);
         this.tlpShortBreakTime.TabIndex = 2;
 
         // 
@@ -266,7 +280,7 @@ partial class PomodoroSettingsControl
         this.nudShortBreakTimeMin.ForeColor = DiabloTwoMFTimer.UI.Theme.AppTheme.TextColor;
         this.nudShortBreakTimeMin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
         this.nudShortBreakTimeMin.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
-        this.nudShortBreakTimeMin.Margin = new System.Windows.Forms.Padding(5, 5, 5, 15);
+        this.nudShortBreakTimeMin.Margin = new System.Windows.Forms.Padding(3, 5, 5, 5);
         this.nudShortBreakTimeMin.Name = "nudShortBreakTimeMin";
         this.nudShortBreakTimeMin.Value = new decimal(new int[] { 5, 0, 0, 0 });
 
@@ -275,7 +289,7 @@ partial class PomodoroSettingsControl
         // 
         this.lblShortBreakMinUnit.Anchor = System.Windows.Forms.AnchorStyles.Left;
         this.lblShortBreakMinUnit.AutoSize = true;
-        this.lblShortBreakMinUnit.Location = new System.Drawing.Point(199, 10);
+        this.lblShortBreakMinUnit.Location = new System.Drawing.Point(223, 10);
         this.lblShortBreakMinUnit.Name = "lblShortBreakMinUnit";
         this.lblShortBreakMinUnit.Size = new System.Drawing.Size(30, 20);
         this.lblShortBreakMinUnit.TabIndex = 2;
@@ -289,7 +303,7 @@ partial class PomodoroSettingsControl
         this.nudShortBreakTimeSec.ForeColor = DiabloTwoMFTimer.UI.Theme.AppTheme.TextColor;
         this.nudShortBreakTimeSec.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
         this.nudShortBreakTimeSec.Maximum = new decimal(new int[] { 59, 0, 0, 0 });
-        this.nudShortBreakTimeSec.Margin = new System.Windows.Forms.Padding(5, 5, 5, 15);
+        this.nudShortBreakTimeSec.Margin = new System.Windows.Forms.Padding(3, 5, 5, 5);
         this.nudShortBreakTimeSec.Name = "nudShortBreakTimeSec";
 
         // 
@@ -297,7 +311,7 @@ partial class PomodoroSettingsControl
         // 
         this.lblShortBreakSecUnit.Anchor = System.Windows.Forms.AnchorStyles.Left;
         this.lblShortBreakSecUnit.AutoSize = true;
-        this.lblShortBreakSecUnit.Location = new System.Drawing.Point(335, 10);
+        this.lblShortBreakSecUnit.Location = new System.Drawing.Point(359, 10);
         this.lblShortBreakSecUnit.Name = "lblShortBreakSecUnit";
         this.lblShortBreakSecUnit.Size = new System.Drawing.Size(30, 20);
         this.lblShortBreakSecUnit.TabIndex = 4;
@@ -309,7 +323,8 @@ partial class PomodoroSettingsControl
         this.tlpLongBreakTime.AutoSize = true;
         this.tlpLongBreakTime.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
         this.tlpLongBreakTime.ColumnCount = 5;
-        this.tlpLongBreakTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+        // [修复] 第一列设为绝对宽度 120F
+        this.tlpLongBreakTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
         this.tlpLongBreakTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
         this.tlpLongBreakTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
         this.tlpLongBreakTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
@@ -320,11 +335,11 @@ partial class PomodoroSettingsControl
         this.tlpLongBreakTime.Controls.Add(this.nudLongBreakTimeSec, 3, 0);
         this.tlpLongBreakTime.Controls.Add(this.lblLongBreakSecUnit, 4, 0);
         this.tlpLongBreakTime.Dock = System.Windows.Forms.DockStyle.Top;
-        this.tlpLongBreakTime.Location = new System.Drawing.Point(13, 151);
+        // [修复] 增加底部 Margin
+        this.tlpLongBreakTime.Margin = new System.Windows.Forms.Padding(0, 0, 0, 10);
         this.tlpLongBreakTime.Name = "tlpLongBreakTime";
         this.tlpLongBreakTime.RowCount = 1;
         this.tlpLongBreakTime.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-        this.tlpLongBreakTime.Size = new System.Drawing.Size(564, 40);
         this.tlpLongBreakTime.TabIndex = 3;
 
         // 
@@ -346,7 +361,7 @@ partial class PomodoroSettingsControl
         this.nudLongBreakTimeMin.ForeColor = DiabloTwoMFTimer.UI.Theme.AppTheme.TextColor;
         this.nudLongBreakTimeMin.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
         this.nudLongBreakTimeMin.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
-        this.nudLongBreakTimeMin.Margin = new System.Windows.Forms.Padding(5, 5, 5, 15);
+        this.nudLongBreakTimeMin.Margin = new System.Windows.Forms.Padding(3, 5, 5, 5);
         this.nudLongBreakTimeMin.Name = "nudLongBreakTimeMin";
         this.nudLongBreakTimeMin.Value = new decimal(new int[] { 15, 0, 0, 0 });
 
@@ -355,7 +370,7 @@ partial class PomodoroSettingsControl
         // 
         this.lblLongBreakMinUnit.Anchor = System.Windows.Forms.AnchorStyles.Left;
         this.lblLongBreakMinUnit.AutoSize = true;
-        this.lblLongBreakMinUnit.Location = new System.Drawing.Point(199, 10);
+        this.lblLongBreakMinUnit.Location = new System.Drawing.Point(223, 10);
         this.lblLongBreakMinUnit.Name = "lblLongBreakMinUnit";
         this.lblLongBreakMinUnit.Size = new System.Drawing.Size(30, 20);
         this.lblLongBreakMinUnit.TabIndex = 2;
@@ -369,7 +384,7 @@ partial class PomodoroSettingsControl
         this.nudLongBreakTimeSec.ForeColor = DiabloTwoMFTimer.UI.Theme.AppTheme.TextColor;
         this.nudLongBreakTimeSec.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
         this.nudLongBreakTimeSec.Maximum = new decimal(new int[] { 59, 0, 0, 0 });
-        this.nudLongBreakTimeSec.Margin = new System.Windows.Forms.Padding(5, 5, 5, 15);
+        this.nudLongBreakTimeSec.Margin = new System.Windows.Forms.Padding(3, 5, 5, 5);
         this.nudLongBreakTimeSec.Name = "nudLongBreakTimeSec";
 
         // 
@@ -377,7 +392,7 @@ partial class PomodoroSettingsControl
         // 
         this.lblLongBreakSecUnit.Anchor = System.Windows.Forms.AnchorStyles.Left;
         this.lblLongBreakSecUnit.AutoSize = true;
-        this.lblLongBreakSecUnit.Location = new System.Drawing.Point(335, 10);
+        this.lblLongBreakSecUnit.Location = new System.Drawing.Point(359, 10);
         this.lblLongBreakSecUnit.Name = "lblLongBreakSecUnit";
         this.lblLongBreakSecUnit.Size = new System.Drawing.Size(30, 20);
         this.lblLongBreakSecUnit.TabIndex = 4;
@@ -389,18 +404,19 @@ partial class PomodoroSettingsControl
         this.tlpWarningLongTime.AutoSize = true;
         this.tlpWarningLongTime.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
         this.tlpWarningLongTime.ColumnCount = 3;
-        this.tlpWarningLongTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+        // [修复] 第一列设为绝对宽度 120F
+        this.tlpWarningLongTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
         this.tlpWarningLongTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
         this.tlpWarningLongTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
         this.tlpWarningLongTime.Controls.Add(this.lblWarningLongTime, 0, 0);
         this.tlpWarningLongTime.Controls.Add(this.nudWarningLongTime, 1, 0);
         this.tlpWarningLongTime.Controls.Add(this.lblWarningLongTimeUnit, 2, 0);
         this.tlpWarningLongTime.Dock = System.Windows.Forms.DockStyle.Top;
-        this.tlpWarningLongTime.Location = new System.Drawing.Point(13, 197);
+        // [修复] 增加底部 Margin
+        this.tlpWarningLongTime.Margin = new System.Windows.Forms.Padding(0, 0, 0, 10);
         this.tlpWarningLongTime.Name = "tlpWarningLongTime";
         this.tlpWarningLongTime.RowCount = 1;
         this.tlpWarningLongTime.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-        this.tlpWarningLongTime.Size = new System.Drawing.Size(564, 40);
         this.tlpWarningLongTime.TabIndex = 4;
 
         // 
@@ -422,7 +438,7 @@ partial class PomodoroSettingsControl
         this.nudWarningLongTime.ForeColor = DiabloTwoMFTimer.UI.Theme.AppTheme.TextColor;
         this.nudWarningLongTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
         this.nudWarningLongTime.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
-        this.nudWarningLongTime.Margin = new System.Windows.Forms.Padding(5, 5, 5, 15);
+        this.nudWarningLongTime.Margin = new System.Windows.Forms.Padding(3, 5, 5, 5);
         this.nudWarningLongTime.Name = "nudWarningLongTime";
         this.nudWarningLongTime.Value = new decimal(new int[] { 45, 0, 0, 0 });
 
@@ -431,7 +447,7 @@ partial class PomodoroSettingsControl
         // 
         this.lblWarningLongTimeUnit.Anchor = System.Windows.Forms.AnchorStyles.Left;
         this.lblWarningLongTimeUnit.AutoSize = true;
-        this.lblWarningLongTimeUnit.Location = new System.Drawing.Point(189, 10);
+        this.lblWarningLongTimeUnit.Location = new System.Drawing.Point(223, 10);
         this.lblWarningLongTimeUnit.Name = "lblWarningLongTimeUnit";
         this.lblWarningLongTimeUnit.Size = new System.Drawing.Size(30, 20);
         this.lblWarningLongTimeUnit.TabIndex = 2;
@@ -443,18 +459,19 @@ partial class PomodoroSettingsControl
         this.tlpWarningShortTime.AutoSize = true;
         this.tlpWarningShortTime.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
         this.tlpWarningShortTime.ColumnCount = 3;
-        this.tlpWarningShortTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
+        // [修复] 第一列设为绝对宽度 120F
+        this.tlpWarningShortTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 120F));
         this.tlpWarningShortTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 100F));
         this.tlpWarningShortTime.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.AutoSize));
         this.tlpWarningShortTime.Controls.Add(this.lblWarningShortTime, 0, 0);
         this.tlpWarningShortTime.Controls.Add(this.nudWarningShortTime, 1, 0);
         this.tlpWarningShortTime.Controls.Add(this.lblWarningShortTimeUnit, 2, 0);
         this.tlpWarningShortTime.Dock = System.Windows.Forms.DockStyle.Top;
-        this.tlpWarningShortTime.Location = new System.Drawing.Point(13, 243);
+        // [修复] 增加底部 Margin
+        this.tlpWarningShortTime.Margin = new System.Windows.Forms.Padding(0, 0, 0, 10);
         this.tlpWarningShortTime.Name = "tlpWarningShortTime";
         this.tlpWarningShortTime.RowCount = 1;
         this.tlpWarningShortTime.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.AutoSize));
-        this.tlpWarningShortTime.Size = new System.Drawing.Size(564, 40);
         this.tlpWarningShortTime.TabIndex = 5;
 
         // 
@@ -476,7 +493,7 @@ partial class PomodoroSettingsControl
         this.nudWarningShortTime.ForeColor = DiabloTwoMFTimer.UI.Theme.AppTheme.TextColor;
         this.nudWarningShortTime.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
         this.nudWarningShortTime.Maximum = new decimal(new int[] { 99, 0, 0, 0 });
-        this.nudWarningShortTime.Margin = new System.Windows.Forms.Padding(5, 5, 5, 15);
+        this.nudWarningShortTime.Margin = new System.Windows.Forms.Padding(3, 5, 5, 5);
         this.nudWarningShortTime.Name = "nudWarningShortTime";
         this.nudWarningShortTime.Value = new decimal(new int[] { 3, 0, 0, 0 });
 
@@ -485,7 +502,7 @@ partial class PomodoroSettingsControl
         // 
         this.lblWarningShortTimeUnit.Anchor = System.Windows.Forms.AnchorStyles.Left;
         this.lblWarningShortTimeUnit.AutoSize = true;
-        this.lblWarningShortTimeUnit.Location = new System.Drawing.Point(189, 10);
+        this.lblWarningShortTimeUnit.Location = new System.Drawing.Point(223, 10);
         this.lblWarningShortTimeUnit.Name = "lblWarningShortTimeUnit";
         this.lblWarningShortTimeUnit.Size = new System.Drawing.Size(30, 20);
         this.lblWarningShortTimeUnit.TabIndex = 2;
@@ -500,7 +517,7 @@ partial class PomodoroSettingsControl
         this.BackColor = DiabloTwoMFTimer.UI.Theme.AppTheme.BackColor;
         this.Controls.Add(this.tlpMain);
         this.Name = "PomodoroSettingsControl";
-        this.Size = new System.Drawing.Size(600, 300);
+        this.Size = new System.Drawing.Size(600, 450); // 增加默认设计器预览高度
 
         ((System.ComponentModel.ISupportInitialize)(this.nudWorkTimeMin)).EndInit();
         ((System.ComponentModel.ISupportInitialize)(this.nudWorkTimeSec)).EndInit();
@@ -512,6 +529,8 @@ partial class PomodoroSettingsControl
         ((System.ComponentModel.ISupportInitialize)(this.nudWarningShortTime)).EndInit();
         this.tlpMain.ResumeLayout(false);
         this.tlpMain.PerformLayout();
+        this.grpPomodoroSettings.ResumeLayout(false);
+        this.grpPomodoroSettings.PerformLayout();
         this.tlpMode.ResumeLayout(false);
         this.tlpMode.PerformLayout();
         this.tlpWorkTime.ResumeLayout(false);
@@ -528,6 +547,7 @@ partial class PomodoroSettingsControl
         this.PerformLayout();
     }
 
+    // 变量声明保持不变...
     private System.Windows.Forms.TableLayoutPanel tlpMain;
     private System.Windows.Forms.TableLayoutPanel tlpMode;
     private DiabloTwoMFTimer.UI.Components.ThemedLabel lblMode;

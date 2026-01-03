@@ -84,7 +84,6 @@ public partial class SettingsForm : BaseForm
         AttachKeyBadge(btnSetPomodoro, "4");
         AttachKeyBadge(btnSetAudio, "5");
         AttachKeyBadge(btnAbout, "6");
-        AttachKeyBadge(btnConfirmSettings, "Z");
 
         // 默认选中
         SwitchTab(0, btnSetGeneral);
@@ -195,9 +194,8 @@ public partial class SettingsForm : BaseForm
                 SwitchTab(5, btnAbout);
                 break;
 
-            case Keys.Z:
-                if (btnConfirmSettings.Visible && btnConfirmSettings.Enabled)
-                    BtnConfirmSettings_Click(btnConfirmSettings, EventArgs.Empty);
+            case Keys.Enter:
+                BtnConfirmSettings_Click(btnConfirmSettings, EventArgs.Empty);
                 break;
         }
     }
@@ -261,8 +259,6 @@ public partial class SettingsForm : BaseForm
 
     protected override void OnFormClosing(FormClosingEventArgs e)
     {
-        _appSettings.Save();
-        // _messenger.Publish(new Models.TimerSettingsChangedMessage());
         base.OnFormClosing(e);
     }
 
@@ -290,6 +286,15 @@ public partial class SettingsForm : BaseForm
         _appSettings.ScreenshotOnLoot = timerSettings.ScreenshotOnLoot;
         _appSettings.HideWindowOnScreenshot = timerSettings.HideWindowOnScreenshot;
         _appSettings.Opacity = generalSettings.SelectedOpacity;
+
+        if (tabPagePomodoro.Controls.Count > 0 &&
+            tabPagePomodoro.Controls[0] is UI.Settings.PomodoroSettingsControl pomodoroSettings)
+        {
+            pomodoroSettings.SaveSettings();
+            // 发布番茄钟设置变更消息
+            _messenger.Publish(new PomodoroSettingsChangedMessage());
+        }
+
         // 保存缩放设置
         float oldScale = _appSettings.UiScale;
         float newScale = generalSettings.SelectedUiScale;

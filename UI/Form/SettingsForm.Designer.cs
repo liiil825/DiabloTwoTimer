@@ -24,12 +24,14 @@ partial class SettingsForm
         this.btnSetTimer = new DiabloTwoMFTimer.UI.Components.ThemedButton();
         this.btnSetAudio = new DiabloTwoMFTimer.UI.Components.ThemedButton();
         this.btnAbout = new DiabloTwoMFTimer.UI.Components.ThemedButton();
+        this.btnSetPomodoro = new DiabloTwoMFTimer.UI.Components.ThemedButton();
         this.tabPageGeneral = new System.Windows.Forms.TabPage();
         this.generalSettings = new DiabloTwoMFTimer.UI.Settings.GeneralSettingsControl();
         this.tabPageHotkeys = new System.Windows.Forms.TabPage();
         this.hotkeySettings = new DiabloTwoMFTimer.UI.Settings.HotkeySettingsControl();
         this.tabPageTimer = new System.Windows.Forms.TabPage();
         this.timerSettings = new DiabloTwoMFTimer.UI.Settings.TimerSettingsControl();
+        this.tabPagePomodoro = new System.Windows.Forms.TabPage();
         this.tabPageAudio = new System.Windows.Forms.TabPage();
         this.tabPageAbout = new System.Windows.Forms.TabPage();
         this.btnConfirmSettings = new DiabloTwoMFTimer.UI.Components.ThemedButton();
@@ -79,11 +81,24 @@ partial class SettingsForm
         this.tabPageAudio.UseVisualStyleBackColor = false;
 
         // 
+        // tabPagePomodoro
+        // 
+        this.tabPagePomodoro.BackColor = DiabloTwoMFTimer.UI.Theme.AppTheme.BackColor;
+        this.tabPagePomodoro.Location = new System.Drawing.Point(4, 25);
+        this.tabPagePomodoro.Name = "tabPagePomodoro";
+        this.tabPagePomodoro.Padding = new System.Windows.Forms.Padding(3);
+        this.tabPagePomodoro.Size = new System.Drawing.Size(Theme.UISizeConstants.SettingsFormWidth - 8, Theme.UISizeConstants.SettingsFormHeight - Theme.UISizeConstants.TabItemHeight - 29);
+        this.tabPagePomodoro.TabIndex = 3;
+        this.tabPagePomodoro.Text = "番茄";
+        this.tabPagePomodoro.UseVisualStyleBackColor = false;
+
+        // 
         // tabControl
         // 
         this.tabControl.Controls.Add(this.tabPageGeneral);
         this.tabControl.Controls.Add(this.tabPageHotkeys);
         this.tabControl.Controls.Add(this.tabPageTimer);
+        this.tabControl.Controls.Add(this.tabPagePomodoro);
         this.tabControl.Controls.Add(this.tabPageAudio);
         this.tabControl.Controls.Add(this.tabPageAbout);
         this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -108,20 +123,31 @@ partial class SettingsForm
         // 
         // tlpSettingsNav
         // 
-        this.tlpSettingsNav.ColumnCount = 5;
+        this.tlpSettingsNav.ColumnCount = 6;
         this.tlpSettingsNav.ColumnStyles.Clear();
-        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
-        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.67F));
+        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.67F));
+        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.67F));
+        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.67F));
+        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.67F));
+        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 16.67F));
         this.tlpSettingsNav.Dock = System.Windows.Forms.DockStyle.Fill;
         this.tlpSettingsNav.Margin = new System.Windows.Forms.Padding(0);
         this.tlpSettingsNav.Controls.Add(this.btnSetGeneral, 0, 0);
         this.tlpSettingsNav.Controls.Add(this.btnSetHotkeys, 1, 0);
         this.tlpSettingsNav.Controls.Add(this.btnSetTimer, 2, 0);
-        this.tlpSettingsNav.Controls.Add(this.btnSetAudio, 3, 0);
-        this.tlpSettingsNav.Controls.Add(this.btnAbout, 4, 0);
+        this.tlpSettingsNav.Controls.Add(this.btnSetPomodoro, 3, 0);
+        this.tlpSettingsNav.Controls.Add(this.btnSetAudio, 4, 0);
+        this.tlpSettingsNav.Controls.Add(this.btnAbout, 5, 0);
+
+        // 
+        // btnSetPomodoro
+        // 
+        this.btnSetPomodoro.Dock = System.Windows.Forms.DockStyle.Fill;
+        this.btnSetPomodoro.Margin = new System.Windows.Forms.Padding(0);
+        this.btnSetPomodoro.Name = "btnSetPomodoro";
+        this.btnSetPomodoro.Text = "番茄";
+        this.btnSetPomodoro.Click += new System.EventHandler(this.BtnSetPomodoro_Click);
 
         this.btnSetGeneral.Dock = System.Windows.Forms.DockStyle.Fill;
         this.btnSetGeneral.Margin = new System.Windows.Forms.Padding(0);
@@ -223,8 +249,10 @@ partial class SettingsForm
     private DiabloTwoMFTimer.UI.Components.ThemedButton btnSetGeneral;
     private DiabloTwoMFTimer.UI.Components.ThemedButton btnSetHotkeys;
     private DiabloTwoMFTimer.UI.Components.ThemedButton btnSetTimer;
+    private DiabloTwoMFTimer.UI.Components.ThemedButton btnSetPomodoro;
     private DiabloTwoMFTimer.UI.Components.ThemedButton btnSetAudio;
     private DiabloTwoMFTimer.UI.Components.ThemedButton btnAbout;
     private System.Windows.Forms.TabPage tabPageAudio;
     private System.Windows.Forms.TabPage tabPageAbout;
+    private System.Windows.Forms.TabPage tabPagePomodoro;
 }

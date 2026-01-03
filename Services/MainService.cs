@@ -159,18 +159,9 @@ public class MainServices(
         }
     }
 
-    public void ApplyWindowSettings(Form form)
+    public void ApplyWindowSettings(Form _)
     {
-        if (form != null && _appSettings != null)
-        {
-            form.TopMost = _appSettings.AlwaysOnTop;
-
-            if (Screen.PrimaryScreen != null)
-            {
-                var position = AppSettings.StringToWindowPosition(_appSettings.WindowPosition);
-                UI.Settings.SettingsControl.MoveWindowToPosition(form, position);
-            }
-        }
+        _messenger.Publish(new WindowPositionChangedMessage());
     }
 
     public void SetActiveTabPage(Models.TabPage tabPage)

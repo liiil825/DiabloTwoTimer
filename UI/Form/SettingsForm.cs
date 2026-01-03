@@ -51,6 +51,12 @@ public partial class SettingsForm : BaseForm
 
     private void SetupTabs()
     {
+        // 添加番茄设置Tab页面的内容
+        var pomodoroSettings = _serviceProvider.GetRequiredService<UI.Settings.PomodoroSettingsControl>();
+        tabPagePomodoro.Text = Utils.LanguageManager.GetString("Settings.Tab.Pomodoro");
+        pomodoroSettings.Dock = System.Windows.Forms.DockStyle.Fill;
+        tabPagePomodoro.Controls.Add(pomodoroSettings);
+
         // 添加音频设置Tab页面的内容
         var audioSettings = _serviceProvider.GetRequiredService<UI.Settings.AudioSettingsControl>();
         tabPageAudio.Text = Utils.LanguageManager.GetString("Settings.Tab.Audio");
@@ -67,15 +73,17 @@ public partial class SettingsForm : BaseForm
         btnSetGeneral.Click += (s, e) => SwitchTab(0, btnSetGeneral);
         btnSetHotkeys.Click += (s, e) => SwitchTab(1, btnSetHotkeys);
         btnSetTimer.Click += (s, e) => SwitchTab(2, btnSetTimer);
-        btnSetAudio.Click += (s, e) => SwitchTab(3, btnSetAudio);
-        btnAbout.Click += (s, e) => SwitchTab(4, btnAbout);
+        btnSetPomodoro.Click += (s, e) => SwitchTab(3, btnSetPomodoro);
+        btnSetAudio.Click += (s, e) => SwitchTab(4, btnSetAudio);
+        btnAbout.Click += (s, e) => SwitchTab(5, btnAbout);
 
         // 为Tab按钮添加快捷键提示标签
         AttachKeyBadge(btnSetGeneral, "1");
         AttachKeyBadge(btnSetHotkeys, "2");
         AttachKeyBadge(btnSetTimer, "3");
-        AttachKeyBadge(btnSetAudio, "4");
-        AttachKeyBadge(btnAbout, "5");
+        AttachKeyBadge(btnSetPomodoro, "4");
+        AttachKeyBadge(btnSetAudio, "5");
+        AttachKeyBadge(btnAbout, "6");
         AttachKeyBadge(btnConfirmSettings, "Z");
 
         // 默认选中
@@ -87,11 +95,16 @@ public partial class SettingsForm : BaseForm
         tabControl.SelectedIndex = index;
 
         // 1. 样式逻辑 (使用 IsSelected)
-        var buttons = new[] { btnSetGeneral, btnSetHotkeys, btnSetTimer, btnSetAudio, btnAbout };
+        var buttons = new[] { btnSetGeneral, btnSetHotkeys, btnSetTimer, btnSetPomodoro, btnSetAudio, btnAbout };
         foreach (var btn in buttons)
         {
             btn.IsSelected = (btn == activeBtn);
         }
+    }
+
+    private void BtnSetPomodoro_Click(object sender, EventArgs e)
+    {
+        SwitchTab(3, btnSetPomodoro);
     }
 
     public void RefreshUI()
@@ -116,8 +129,15 @@ public partial class SettingsForm : BaseForm
                 audioSettings.RefreshUI();
             }
 
+            // 刷新番茄设置UI
+            var pomodoroSettings = tabControl.TabPages[3].Controls[0] as UI.Settings.PomodoroSettingsControl;
+            if (pomodoroSettings != null)
+            {
+                pomodoroSettings.RefreshUI();
+            }
+
             // 刷新关于设置UI
-            var aboutSettings = tabControl.TabPages[4].Controls[0] as UI.Settings.AboutSettingsControl;
+            var aboutSettings = tabControl.TabPages[5].Controls[0] as UI.Settings.AboutSettingsControl;
             if (aboutSettings != null)
             {
                 aboutSettings.UpdateUI();
@@ -131,7 +151,7 @@ public partial class SettingsForm : BaseForm
         hotkeySettings.LoadHotkeys(settings);
         timerSettings.LoadSettings(settings);
 
-        // 音频设置已在构造函数中初始化数据
+        // 番茄设置已在构造函数中初始化数据
     }
 
     // 键盘事件处理逻辑
@@ -162,12 +182,17 @@ public partial class SettingsForm : BaseForm
 
             case Keys.D4:
             case Keys.NumPad4:
-                SwitchTab(3, btnSetAudio);
+                SwitchTab(3, btnSetPomodoro);
                 break;
 
             case Keys.D5:
             case Keys.NumPad5:
-                SwitchTab(4, btnAbout);
+                SwitchTab(4, btnSetAudio);
+                break;
+
+            case Keys.D6:
+            case Keys.NumPad6:
+                SwitchTab(5, btnAbout);
                 break;
 
             case Keys.Z:

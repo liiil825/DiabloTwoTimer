@@ -29,7 +29,6 @@ public partial class MainForm : System.Windows.Forms.Form
     private readonly ProfileManager _profileManager = null!;
     private readonly TimerControl _timerControl = null!;
     private readonly PomodoroControl _pomodoroControl = null!;
-    private readonly SettingsControl _settingsControl = null!;
     private NotifyIcon _notifyIcon = null!;
     private ContextMenuStrip _trayMenu = null!;
     private readonly ICommandDispatcher _commandDispatcher = null!;
@@ -56,7 +55,6 @@ public partial class MainForm : System.Windows.Forms.Form
         ProfileManager profileManager,
         TimerControl timerControl,
         PomodoroControl pomodoroControl,
-        SettingsControl settingsControl,
         ICommandDispatcher commandDispatcher,
         CommandInitializer commandInitializer,
         IKeyMapRepository keyMapRepository,
@@ -73,7 +71,6 @@ public partial class MainForm : System.Windows.Forms.Form
         _timerControl = timerControl;
         _pomodoroControl = pomodoroControl;
         _keyMapRepository = keyMapRepository;
-        _settingsControl = settingsControl;
         _commandDispatcher = commandDispatcher;
         _commandInitializer = commandInitializer;
         _messenger = messenger;
@@ -209,7 +206,6 @@ public partial class MainForm : System.Windows.Forms.Form
         AddControlToTab(tabProfilePage, _profileManager);
         AddControlToTab(tabTimerPage, _timerControl);
         AddControlToTab(tabPomodoroPage, _pomodoroControl);
-        AddControlToTab(tabSettingsPage, _settingsControl);
     }
 
     private void InitializeForm()
@@ -339,7 +335,7 @@ public partial class MainForm : System.Windows.Forms.Form
     private void SubscribeToMessages()
     {
         _messenger.Subscribe<WindowPositionChangedMessage>(_ =>
-            this.SafeInvoke(() => _mainService.ApplyWindowSettings(this))
+            this.SafeInvoke(() => this.MoveWindowToPosition(this))
         );
         _messenger.Subscribe<AlwaysOnTopChangedMessage>(_ =>
             this.SafeInvoke(() => this.TopMost = _appSettings.AlwaysOnTop)
@@ -391,6 +387,36 @@ public partial class MainForm : System.Windows.Forms.Form
                 tlpNavigation.Visible = _appSettings.ShowNavigation;
             })
         );
+    }
+
+    public void MoveWindowToPosition(System.Windows.Forms.Form form)
+    {
+        var position = AppSettings.StringToWindowPosition(_appSettings.WindowPosition);
+        Rectangle screenBounds = Screen.GetWorkingArea(form);
+        int x,
+            y;
+        switch (position)
+        {
+            case WindowPosition.TopLeft:
+                x = screenBounds.Left;
+                y = screenBounds.Top;
+                break;
+            case WindowPosition.TopRight:
+                x = screenBounds.Right - form.Width;
+                y = screenBounds.Top;
+                break;
+            case WindowPosition.BottomLeft:
+                x = screenBounds.Left;
+                y = screenBounds.Bottom - form.Height;
+                break;
+            case WindowPosition.BottomRight:
+                x = screenBounds.Right - form.Width;
+                y = screenBounds.Bottom - form.Height;
+                break;
+            default:
+                return;
+        }
+        form.Location = new Point(x, y);
     }
 
     private void OnScreenshotRequested(ScreenshotRequestedMessage message)
@@ -471,7 +497,6 @@ public partial class MainForm : System.Windows.Forms.Form
         _profileManager.RefreshUI();
         _timerControl.RefreshUI();
         _pomodoroControl.RefreshUI();
-        _settingsControl.RefreshUI();
     }
 
     private void ShowRecordLootDialog()

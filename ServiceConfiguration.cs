@@ -62,9 +62,7 @@ public static class ServiceConfiguration
         services.AddTransient<UI.Settings.HotkeySettingsControl>();
         services.AddTransient<UI.Settings.AudioSettingsControl>();
         services.AddTransient<UI.Settings.AboutSettingsControl>();
-
-        // (旧的 SettingsControl 如果不再使用可以移除，为了兼容暂时保留)
-        services.AddTransient<UI.Settings.SettingsControl>();
+        services.AddTransient<UI.Settings.PomodoroSettingsControl>();
 
         return services.BuildServiceProvider();
     }

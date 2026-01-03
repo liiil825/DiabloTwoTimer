@@ -54,12 +54,14 @@ public static class ServiceConfiguration
 
         // [新增] 设置窗体 (SettingsForm)
         services.AddTransient<UI.Form.SettingsForm>();
+        services.AddTransient<UI.Form.AboutForm>();
 
         // [新增] 设置子控件 (SettingsForm 内部通过 DI 请求这些控件)
         services.AddTransient<UI.Settings.GeneralSettingsControl>();
         services.AddTransient<UI.Settings.TimerSettingsControl>();
         services.AddTransient<UI.Settings.HotkeySettingsControl>();
         services.AddTransient<UI.Settings.AudioSettingsControl>();
+        services.AddTransient<UI.Settings.AboutSettingsControl>();
 
         // (旧的 SettingsControl 如果不再使用可以移除，为了兼容暂时保留)
         services.AddTransient<UI.Settings.SettingsControl>();

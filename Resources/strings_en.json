@@ -215,6 +215,7 @@
   "Settings.Tab.Timer": "Timer",
   "Settings.Tab.Hotkeys": "Hotkeys",
   "Settings.Tab.Audio": "Audio",
+  "Settings.Tab.About": "About",
   "Settings.Audio.Enable": "Enable Audio",
   "Settings.Audio.Volume": "Volume",
   "Settings.Audio.TimerStart": "Timer Start Sound",

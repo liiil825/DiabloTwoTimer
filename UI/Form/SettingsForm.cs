@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using DiabloTwoMFTimer.Interfaces;
 using DiabloTwoMFTimer.Models;
 using DiabloTwoMFTimer.Services;
 using DiabloTwoMFTimer.UI.Components;
+using DiabloTwoMFTimer.UI.Theme;
 using DiabloTwoMFTimer.Utils;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,6 +17,10 @@ public partial class SettingsForm : BaseForm
     private readonly IAppSettings _appSettings;
     private readonly IServiceProvider _serviceProvider;
     private readonly IMessenger _messenger;
+
+    // 用于存储所有的快捷键提示标签，方便统一显隐
+    private readonly List<Label> _shortcutBadges = new();
+    private bool _showShortcuts = false; // 默认隐藏
 
     public SettingsForm(
         IAppSettings appSettings,
@@ -33,13 +39,14 @@ public partial class SettingsForm : BaseForm
 
         this.Text = Utils.LanguageManager.GetString("Settings.Title");
 
+        // 开启键盘预览并绑定事件
+        this.KeyPreview = true;
+        this.KeyDown += SettingsForm_KeyDown;
+
         // 去掉构造函数里的 Size 设置，移到 OnLoad
         SetupTabs();
         InitializeData(_appSettings);
         RefreshUI();
-
-        // 动态调整按钮大小
-        AdjustButtonSize();
     }
 
     private void SetupTabs()
@@ -50,11 +57,26 @@ public partial class SettingsForm : BaseForm
         audioSettings.Dock = System.Windows.Forms.DockStyle.Fill;
         tabPageAudio.Controls.Add(audioSettings);
 
+        // 添加关于设置Tab页面的内容
+        var aboutSettings = _serviceProvider.GetRequiredService<UI.Settings.AboutSettingsControl>();
+        tabPageAbout.Text = Utils.LanguageManager.GetString("Settings.Tab.About");
+        aboutSettings.Dock = System.Windows.Forms.DockStyle.Fill;
+        tabPageAbout.Controls.Add(aboutSettings);
+
         // 扩展导航按钮数组
         btnSetGeneral.Click += (s, e) => SwitchTab(0, btnSetGeneral);
         btnSetHotkeys.Click += (s, e) => SwitchTab(1, btnSetHotkeys);
         btnSetTimer.Click += (s, e) => SwitchTab(2, btnSetTimer);
         btnSetAudio.Click += (s, e) => SwitchTab(3, btnSetAudio);
+        btnAbout.Click += (s, e) => SwitchTab(4, btnAbout);
+
+        // 为Tab按钮添加快捷键提示标签
+        AttachKeyBadge(btnSetGeneral, "1");
+        AttachKeyBadge(btnSetHotkeys, "2");
+        AttachKeyBadge(btnSetTimer, "3");
+        AttachKeyBadge(btnSetAudio, "4");
+        AttachKeyBadge(btnAbout, "5");
+        AttachKeyBadge(btnConfirmSettings, "Z");
 
         // 默认选中
         SwitchTab(0, btnSetGeneral);
@@ -65,7 +87,7 @@ public partial class SettingsForm : BaseForm
         tabControl.SelectedIndex = index;
 
         // 1. 样式逻辑 (使用 IsSelected)
-        var buttons = new[] { btnSetGeneral, btnSetHotkeys, btnSetTimer, btnSetAudio };
+        var buttons = new[] { btnSetGeneral, btnSetHotkeys, btnSetTimer, btnSetAudio, btnAbout };
         foreach (var btn in buttons)
         {
             btn.IsSelected = (btn == activeBtn);
@@ -81,6 +103,7 @@ public partial class SettingsForm : BaseForm
             btnSetHotkeys!.Text = LanguageManager.GetString("Settings.Tab.Hotkeys");
             btnSetTimer!.Text = LanguageManager.GetString("Settings.Tab.Timer");
             btnSetAudio!.Text = LanguageManager.GetString("Settings.Tab.Audio");
+            btnAbout!.Text = LanguageManager.GetString("Settings.Tab.About");
 
             generalSettings.RefreshUI();
             hotkeySettings.RefreshUI();
@@ -93,45 +116,13 @@ public partial class SettingsForm : BaseForm
                 audioSettings.RefreshUI();
             }
 
-            // 动态调整按钮大小
-            AdjustButtonSize();
+            // 刷新关于设置UI
+            var aboutSettings = tabControl.TabPages[4].Controls[0] as UI.Settings.AboutSettingsControl;
+            if (aboutSettings != null)
+            {
+                aboutSettings.UpdateUI();
+            }
         });
-    }
-
-    private void AdjustButtonSize()
-    {
-        // 基础尺寸
-        int baseWidth = 80;
-        int baseHeight = 30;
-
-        // 根据界面大小设置调整尺寸
-        int newWidth, newHeight;
-        float uiScale = _appSettings.UiScale;
-
-        // 如果用户没有手动设置，使用自动计算的缩放比例
-        float scaleFactor = uiScale > 0.1f ? uiScale : Utils.ScaleHelper.ScaleFactor;
-
-        if (scaleFactor < 1.3f) // 小尺寸
-        {
-            newWidth = Utils.ScaleHelper.Scale(baseWidth - 10);
-            newHeight = Utils.ScaleHelper.Scale(baseHeight - 5);
-        }
-        else if (scaleFactor < 2.0f) // 中尺寸
-        {
-            newWidth = Utils.ScaleHelper.Scale(baseWidth);
-            newHeight = Utils.ScaleHelper.Scale(baseHeight);
-        }
-        else // 大尺寸
-        {
-            newWidth = Utils.ScaleHelper.Scale(baseWidth + 20);
-            newHeight = Utils.ScaleHelper.Scale(baseHeight + 10);
-        }
-
-        // 应用新尺寸
-        if (btnConfirmSettings != null)
-        {
-            btnConfirmSettings.Size = new System.Drawing.Size(newWidth, newHeight);
-        }
     }
 
     public void InitializeData(IAppSettings settings)
@@ -143,9 +134,109 @@ public partial class SettingsForm : BaseForm
         // 音频设置已在构造函数中初始化数据
     }
 
+    // 键盘事件处理逻辑
+    private void SettingsForm_KeyDown(object? sender, KeyEventArgs e)
+    {
+        switch (e.KeyCode)
+        {
+            case Keys.H:
+                // 切换提示显示/隐藏
+                ToggleShortcutsVisibility();
+                e.SuppressKeyPress = true;
+                break;
+
+            case Keys.D1:
+            case Keys.NumPad1:
+                SwitchTab(0, btnSetGeneral);
+                break;
+
+            case Keys.D2:
+            case Keys.NumPad2:
+                SwitchTab(1, btnSetHotkeys);
+                break;
+
+            case Keys.D3:
+            case Keys.NumPad3:
+                SwitchTab(2, btnSetTimer);
+                break;
+
+            case Keys.D4:
+            case Keys.NumPad4:
+                SwitchTab(3, btnSetAudio);
+                break;
+
+            case Keys.D5:
+            case Keys.NumPad5:
+                SwitchTab(4, btnAbout);
+                break;
+
+            case Keys.Z:
+                if (btnConfirmSettings.Visible && btnConfirmSettings.Enabled)
+                    BtnConfirmSettings_Click(btnConfirmSettings, EventArgs.Empty);
+                break;
+        }
+    }
+
+    // 动态添加快捷键徽标 (Badge)
+    private void AttachKeyBadge(Control targetControl, string keyText)
+    {
+        var lblBadge = new Label
+        {
+            Text = keyText,
+            Font = new Font("Consolas", 8F, FontStyle.Bold),
+            ForeColor = Color.Gold,
+            BackColor = Color.FromArgb(180, 0, 0, 0),
+            AutoSize = true,
+            TextAlign = ContentAlignment.MiddleCenter,
+            Cursor = Cursors.Hand,
+            Visible = _showShortcuts,
+        };
+
+        // 计算位置：右上角
+        lblBadge.Location = new Point(targetControl.Width - 15, 2);
+        lblBadge.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+
+        // 点击徽标也能触发按钮点击
+        lblBadge.Click += (s, e) =>
+        {
+            if (targetControl is Button btn)
+            {
+                btn.PerformClick();
+            }
+            else if (targetControl is ThemedButton themedBtn)
+            {
+                // 对于ThemedButton，查找对应的Click事件处理
+                if (themedBtn == btnSetGeneral)
+                    SwitchTab(0, btnSetGeneral);
+                else if (themedBtn == btnSetHotkeys)
+                    SwitchTab(1, btnSetHotkeys);
+                else if (themedBtn == btnSetTimer)
+                    SwitchTab(2, btnSetTimer);
+                else if (themedBtn == btnSetAudio)
+                    SwitchTab(3, btnSetAudio);
+                else if (themedBtn == btnAbout)
+                    SwitchTab(4, btnAbout);
+            }
+        };
+
+        targetControl.Controls.Add(lblBadge);
+        lblBadge.BringToFront();
+
+        _shortcutBadges.Add(lblBadge);
+    }
+
+    private void ToggleShortcutsVisibility()
+    {
+        _showShortcuts = !_showShortcuts;
+        foreach (var badge in _shortcutBadges)
+        {
+            badge.Visible = _showShortcuts;
+        }
+    }
+
     protected override void OnFormClosing(FormClosingEventArgs e)
     {
-        // _appSettings.Save();
+        _appSettings.Save();
         // _messenger.Publish(new Models.TimerSettingsChangedMessage());
         base.OnFormClosing(e);
     }

@@ -200,6 +200,7 @@ public class CommandInitializer
         _dispatcher.Register("Nav.Profile", () => _mainService.SetActiveTabPage(Models.TabPage.Profile));
         _dispatcher.Register("Nav.Pomodoro", () => _mainService.SetActiveTabPage(Models.TabPage.Pomodoro));
         _dispatcher.Register("Nav.Settings", () => _mainService.RequestShowSettings());
+        _dispatcher.Register("Nav.About", () => _mainService.RequestShowAbout());
 
         // 工具
         _dispatcher.Register(

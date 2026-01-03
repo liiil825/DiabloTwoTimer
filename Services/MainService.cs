@@ -316,4 +316,15 @@ public class MainServices(
         // ShowDialog 会阻塞直到窗口关闭，关闭后资源由 Form 自身 Dispose 处理
         // (因为我们在 SettingsForm 里没写特殊逻辑，它关闭时会自动 Dispose)
     }
+
+    public void RequestShowAbout()
+    {
+        // 使用 IServiceProvider 创建一个新的 AboutForm 实例
+        var aboutForm = _serviceProvider.GetRequiredService<UI.Form.AboutForm>();
+
+        // 以模态对话框方式显示
+        aboutForm.ShowDialog();
+
+        // ShowDialog 会阻塞直到窗口关闭，关闭后资源由 Form 自身 Dispose 处理
+    }
 }

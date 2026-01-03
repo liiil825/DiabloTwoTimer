@@ -219,6 +219,7 @@
   "Settings.Tab.Timer": "计时器",
   "Settings.Tab.Hotkeys": "按键",
   "Settings.Tab.Audio": "声音",
+  "Settings.Tab.About": "关于",
   "Settings.Audio.Enable": "开启音效",
   "Settings.Audio.Volume": "音量",
   "Settings.Audio.TimerStart": "计时开始",

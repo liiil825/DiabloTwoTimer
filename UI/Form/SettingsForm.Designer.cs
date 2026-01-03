@@ -30,6 +30,7 @@ partial class SettingsForm
         this.tabPageTimer = new System.Windows.Forms.TabPage();
         this.timerSettings = new DiabloTwoMFTimer.UI.Settings.TimerSettingsControl();
         this.tabPageAudio = new System.Windows.Forms.TabPage();
+        this.tabPageAbout = new System.Windows.Forms.TabPage();
         this.btnConfirmSettings = new DiabloTwoMFTimer.UI.Components.ThemedButton();
 
         this.tlpMain.SuspendLayout();
@@ -83,6 +84,7 @@ partial class SettingsForm
         this.tabControl.Controls.Add(this.tabPageHotkeys);
         this.tabControl.Controls.Add(this.tabPageTimer);
         this.tabControl.Controls.Add(this.tabPageAudio);
+        this.tabControl.Controls.Add(this.tabPageAbout);
         this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
         this.tabControl.Location = new System.Drawing.Point(0, Theme.UISizeConstants.TabItemHeight);
         this.tabControl.Name = "tabControl";
@@ -91,20 +93,34 @@ partial class SettingsForm
         this.tabControl.TabIndex = 0;
 
         // 
+        // tabPageAbout
+        // 
+        this.tabPageAbout.BackColor = DiabloTwoMFTimer.UI.Theme.AppTheme.BackColor;
+        this.tabPageAbout.Location = new System.Drawing.Point(4, 25);
+        this.tabPageAbout.Name = "tabPageAbout";
+        this.tabPageAbout.Padding = new System.Windows.Forms.Padding(3);
+        this.tabPageAbout.Size = new System.Drawing.Size(Theme.UISizeConstants.ClientWidth - 8, Theme.UISizeConstants.TabPageHeight - Theme.UISizeConstants.TabItemHeight - 29);
+        this.tabPageAbout.TabIndex = 4;
+        this.tabPageAbout.Text = "关于";
+        this.tabPageAbout.UseVisualStyleBackColor = false;
+
+        // 
         // tlpSettingsNav
         // 
-        this.tlpSettingsNav.ColumnCount = 4;
+        this.tlpSettingsNav.ColumnCount = 5;
         this.tlpSettingsNav.ColumnStyles.Clear();
-        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
-        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
+        this.tlpSettingsNav.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 20F));
         this.tlpSettingsNav.Dock = System.Windows.Forms.DockStyle.Fill;
         this.tlpSettingsNav.Margin = new System.Windows.Forms.Padding(0);
         this.tlpSettingsNav.Controls.Add(this.btnSetGeneral, 0, 0);
         this.tlpSettingsNav.Controls.Add(this.btnSetHotkeys, 1, 0);
         this.tlpSettingsNav.Controls.Add(this.btnSetTimer, 2, 0);
         this.tlpSettingsNav.Controls.Add(this.btnSetAudio, 3, 0);
+        this.tlpSettingsNav.Controls.Add(this.btnAbout, 4, 0);
 
         this.btnSetGeneral.Dock = System.Windows.Forms.DockStyle.Fill;
         this.btnSetGeneral.Margin = new System.Windows.Forms.Padding(0);
@@ -117,6 +133,9 @@ partial class SettingsForm
 
         this.btnSetAudio.Dock = System.Windows.Forms.DockStyle.Fill;
         this.btnSetAudio.Margin = new System.Windows.Forms.Padding(0);
+
+        this.btnAbout.Dock = System.Windows.Forms.DockStyle.Fill;
+        this.btnAbout.Margin = new System.Windows.Forms.Padding(0);
 
         // 
         // Tab Pages
@@ -206,4 +225,5 @@ partial class SettingsForm
     private DiabloTwoMFTimer.UI.Components.ThemedButton btnSetAudio;
     private DiabloTwoMFTimer.UI.Components.ThemedButton btnAbout;
     private System.Windows.Forms.TabPage tabPageAudio;
+    private System.Windows.Forms.TabPage tabPageAbout;
 }

@@ -50,4 +50,5 @@ public interface IMainService
     void SetPomodoroMode(Models.PomodoroMode mode);
 
     void RequestShowSettings();
+    void RequestShowAbout();
 }

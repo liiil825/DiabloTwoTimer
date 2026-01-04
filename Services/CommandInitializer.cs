@@ -13,6 +13,7 @@ public class CommandInitializer
     private readonly IProfileService _profileService;
     private readonly IWindowCMDService _windowCMDService;
     private readonly IProfileCMDService _profileCMDService;
+    private readonly ITimerCMDService _timerCMDService;
 
     // UI 相关的动作通常需要通过 Messenger 或者直接注入 Controller (不太推荐)
     // 这里我们通过 Messenger 发送指令，或者直接调用 Service
@@ -27,7 +28,8 @@ public class CommandInitializer
         IMessenger messenger,
         IProfileService profileService,
         IWindowCMDService windowCMDService,
-        IProfileCMDService profileCMDService
+        IProfileCMDService profileCMDService,
+        ITimerCMDService timerCMDService
     )
     {
         _dispatcher = dispatcher;
@@ -38,63 +40,12 @@ public class CommandInitializer
         _messenger = messenger;
         _profileService = profileService;
         _windowCMDService = windowCMDService;
+        _timerCMDService = timerCMDService;
         _profileCMDService = profileCMDService;
     }
 
     public void Initialize()
     {
-        // --- 计时器相关 ---
-        _dispatcher.Register(
-            "Timer.Start",
-            () =>
-            {
-                _mainService.SetActiveTabPage(Models.TabPage.Timer);
-                _timerService.Start();
-            }
-        );
-        _dispatcher.Register(
-            "Timer.Pause",
-            () =>
-            {
-                _mainService.SetActiveTabPage(Models.TabPage.Timer);
-                _timerService.Pause();
-            }
-        );
-        _dispatcher.Register(
-            "Timer.Reset",
-            () =>
-            {
-                _mainService.SetActiveTabPage(Models.TabPage.Timer);
-                _timerService.Reset();
-            }
-        );
-        _dispatcher.Register(
-            "Timer.ResetAndStart",
-            () =>
-            {
-                _mainService.SetActiveTabPage(Models.TabPage.Timer);
-                _timerService.Reset();
-                _timerService.Start();
-            }
-        );
-        // StartOrNextRun
-        _dispatcher.Register(
-            "Timer.Next",
-            () =>
-            {
-                _mainService.SetActiveTabPage(Models.TabPage.Timer);
-                _timerService.StartOrNextRun();
-            }
-        ); // Next 是同步的
-        _dispatcher.Register(
-            "Timer.Toggle",
-            () =>
-            {
-                _mainService.SetActiveTabPage(Models.TabPage.Timer);
-                _timerService.TogglePause();
-            }
-        );
-
         // 1. 切换状态 (核心逻辑：运行则暂停，否则开始)
         _dispatcher.Register(
             "Pomodoro.Toggle",
@@ -290,5 +241,6 @@ public class CommandInitializer
 
         _windowCMDService.Initialize();
         _profileCMDService.Initialize();
+        _timerCMDService.Initialize();
     }
 }

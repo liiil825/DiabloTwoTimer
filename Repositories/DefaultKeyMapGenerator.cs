@@ -135,6 +135,12 @@ public static class DefaultKeyMapGenerator
                         Text = "重置停止",
                         Action = "Timer.Reset",
                     },
+                    new()
+                    {
+                        Key = "a",
+                        Text = "下一步",
+                        Action = "Timer.Action",
+                    },
                 ],
             },
             new KeyMapNode

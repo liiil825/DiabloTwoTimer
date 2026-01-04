@@ -39,6 +39,7 @@ public static class ServiceConfiguration
         services.AddSingleton<IMainService, MainServices>();
         services.AddSingleton<IWindowCMDService, WindowCMDService>();
         services.AddSingleton<IProfileCMDService, ProfileCMDService>();
+        services.AddSingleton<ITimerCMDService, TimerCMDService>();
 
         // CommandInitializer (Transient, 只在启动时用一次)
         services.AddTransient<CommandInitializer>();

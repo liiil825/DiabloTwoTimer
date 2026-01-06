@@ -319,9 +319,12 @@ public partial class SettingsForm : BaseForm
         if (tabPagePomodoro.Controls.Count > 0 &&
             tabPagePomodoro.Controls[0] is UI.Settings.PomodoroSettingsControl pomodoroSettings)
         {
-            pomodoroSettings.SaveSettings();
-            // 发布番茄钟设置变更消息
-            _messenger.Publish(new PomodoroSettingsChangedMessage());
+            bool isTimerDataChanged = pomodoroSettings.SaveSettings();
+            // 发布番茄钟设置变更消息，并传递是否修改了番茄数据的标志
+            _messenger.Publish(new PomodoroSettingsChangedMessage
+            {
+                IsTimerDataChanged = isTimerDataChanged
+            });
         }
 
         // 保存缩放设置

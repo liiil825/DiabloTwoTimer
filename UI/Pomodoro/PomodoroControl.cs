@@ -44,6 +44,7 @@ public partial class PomodoroControl : UserControl
 
         InitializeModeMark();
         LoadSettings();
+        _timerService.Reset();
         lblPomodoroTime.BindService(_timerService);
         SubscribeEvents();
         SubscribeToMessages();
@@ -139,11 +140,11 @@ public partial class PomodoroControl : UserControl
             // 重新加载计时器设置
             _timerService.LoadSettings();
 
-            // 保存设置
-            SaveSettings();
-
-            // 重置计时器
-            _timerService.Reset();
+            // 只有在修改了番茄数据时才重置计时器
+            if (message.IsTimerDataChanged)
+            {
+                _timerService.Reset();
+            }
 
             // 更新UI
             UpdateUI();
@@ -183,6 +184,19 @@ public partial class PomodoroControl : UserControl
 
         if (settingsForm.ShowDialog(this.FindForm()) == DialogResult.OK)
         {
+            // 比较当前设置和新设置，判断是否修改了番茄数据
+            bool isTimerDataChanged = false;
+
+            if (_timerService.Settings.WorkTimeMinutes != settingsForm.WorkTimeMinutes ||
+                _timerService.Settings.WorkTimeSeconds != settingsForm.WorkTimeSeconds ||
+                _timerService.Settings.ShortBreakMinutes != settingsForm.ShortBreakMinutes ||
+                _timerService.Settings.ShortBreakSeconds != settingsForm.ShortBreakSeconds ||
+                _timerService.Settings.LongBreakMinutes != settingsForm.LongBreakMinutes ||
+                _timerService.Settings.LongBreakSeconds != settingsForm.LongBreakSeconds)
+            {
+                isTimerDataChanged = true;
+            }
+
             _timerService.Settings.WorkTimeMinutes = settingsForm.WorkTimeMinutes;
             _timerService.Settings.WorkTimeSeconds = settingsForm.WorkTimeSeconds;
             _timerService.Settings.ShortBreakMinutes = settingsForm.ShortBreakMinutes;
@@ -197,7 +211,13 @@ public partial class PomodoroControl : UserControl
             _timerService.LoadSettings(); // 确保重新加载模式等设置
 
             SaveSettings();
-            _timerService.Reset();
+
+            // 只有在修改了番茄数据时才重置计时器
+            if (isTimerDataChanged)
+            {
+                _timerService.Reset();
+            }
+
             Toast.Success(LanguageManager.GetString("PomodoroSettingsSaved", "Pomodoro settings saved successfully"));
         }
     }

@@ -99,8 +99,21 @@ public partial class PomodoroSettingsControl : UserControl
         lblWarningShortTimeUnit.Text = strSec;
     }
 
-    public void SaveSettings()
+    public bool SaveSettings()
     {
+        // 比较当前设置和新设置，判断是否修改了番茄数据
+        bool IsTimerDataChanged = false;
+
+        if (_appSettings.WorkTimeMinutes != (int)nudWorkTimeMin.Value ||
+            _appSettings.WorkTimeSeconds != (int)nudWorkTimeSec.Value ||
+            _appSettings.ShortBreakMinutes != (int)nudShortBreakTimeMin.Value ||
+            _appSettings.ShortBreakSeconds != (int)nudShortBreakTimeSec.Value ||
+            _appSettings.LongBreakMinutes != (int)nudLongBreakTimeMin.Value ||
+            _appSettings.LongBreakSeconds != (int)nudLongBreakTimeSec.Value)
+        {
+            IsTimerDataChanged = true;
+        }
+
         _appSettings.WorkTimeMinutes = (int)nudWorkTimeMin.Value;
         _appSettings.WorkTimeSeconds = (int)nudWorkTimeSec.Value;
         _appSettings.ShortBreakMinutes = (int)nudShortBreakTimeMin.Value;
@@ -115,5 +128,6 @@ public partial class PomodoroSettingsControl : UserControl
         {
             _appSettings.PomodoroMode = item.Value;
         }
+        return IsTimerDataChanged;
     }
 }

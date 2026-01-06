@@ -44,6 +44,8 @@ public class PomodoroTimeSettings
     public int ShortBreakSeconds { get; set; } = 0;
     public int LongBreakMinutes { get; set; } = 15;
     public int LongBreakSeconds { get; set; } = 0;
+    public int WarningLongTime { get; set; } = 45;
+    public int WarningShortTime { get; set; } = 3;
     public PomodoroMode PomodoroMode { get; set; } = PomodoroMode.Automatic;
 }
 

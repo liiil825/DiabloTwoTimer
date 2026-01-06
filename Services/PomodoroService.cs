@@ -435,9 +435,6 @@ public class PomodoroTimerService : IPomodoroTimerService
         Settings.ShortBreakSeconds = _appSettings.ShortBreakSeconds;
         Settings.LongBreakMinutes = _appSettings.LongBreakMinutes;
         Settings.LongBreakSeconds = _appSettings.LongBreakSeconds;
-
-        // 加载设置时重置，确保状态回到 Stopped
-        Reset();
     }
 
     private void NotifyStateChanged()

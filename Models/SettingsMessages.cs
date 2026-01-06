@@ -88,7 +88,10 @@ public class ShowLootHistoryMessage { }
 public class DeleteCharacterMessage { }
 
 // 番茄钟设置变更消息
-public class PomodoroSettingsChangedMessage { }
+public class PomodoroSettingsChangedMessage
+{
+    public bool IsTimerDataChanged { get; set; }
+}
 
 // 导航栏可见性变更消息
 public class NavigationVisibilityChangedMessage { }

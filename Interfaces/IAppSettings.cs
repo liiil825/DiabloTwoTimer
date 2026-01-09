@@ -1,3 +1,5 @@
+using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace DiabloTwoMFTimer.Interfaces;
@@ -22,7 +24,6 @@ public interface IAppSettings
     public int LongBreakSeconds { get; set; }
 
     // 界面设置
-    public bool TimerShowLootDrops { get; set; }
     public bool TimerShowPomodoro { get; set; }
     public bool TimerSyncStartPomodoro { get; set; }
     public bool TimerSyncPausePomodoro { get; set; }
@@ -55,6 +56,17 @@ public interface IAppSettings
     bool SoundBreakStartEnabled { get; set; }
     bool SoundBreakEndEnabled { get; set; }
 
+    // --- 新增：计时界面模块显示设置 ---
+    bool TimerShowTimerTime { get; set; }       // 是否显示计时器时间数字 (不影响高度)
+    bool TimerShowStatistics { get; set; }      // 是否显示统计信息
+    bool TimerShowHistory { get; set; }         // 是否显示计时历史
+    bool TimerShowLootDrops { get; set; }       // 是否显示掉落 (原 TimerShowLootDrops，保持兼容)
+    bool TimerShowAccountInfo { get; set; }     // 是否显示底部账户信息
+
+    int TimerAverageRunCount { get; set; }      // 平均时间计算样本量 (0=全部, >0=最近N场)
+
+    // 计算当前选中的模块数量 (用于高度计算和番茄钟按钮显示)
+    int VisibleModuleCount { get; }
     // 方法
     void Save();
 }

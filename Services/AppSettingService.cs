@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using DiabloTwoMFTimer.Interfaces;
 using DiabloTwoMFTimer.Utils;
 using YamlDotNet.Serialization;
@@ -10,6 +12,7 @@ namespace DiabloTwoMFTimer.Services;
 
 public class AppSettings : IAppSettings
 {
+    // 静态序列化配置
     private static readonly ISerializer serializer = new SerializerBuilder()
         .WithNamingConvention(CamelCaseNamingConvention.Instance)
         .Build();
@@ -19,46 +22,68 @@ public class AppSettings : IAppSettings
         .IgnoreUnmatchedProperties()
         .Build();
 
-    // 窗口设置
+    // ================== 窗口设置 ==================
     public string WindowPosition { get; set; } = "TopRight";
+
     public double Opacity { get; set; } = 1.0;
     public float UiScale { get; set; } = 0f;
     public bool AlwaysOnTop { get; set; } = true;
     public string Language { get; set; } = "Chinese";
 
-    // 角色档案设置
+    // ================== 角色档案设置 ==================
     public string LastUsedProfile { get; set; } = "";
     public string LastRunScene { get; set; } = "";
     public string LastUsedDifficulty { get; set; } = "";
 
-    // 番茄时钟设置
+    // ================== 番茄时钟设置 ==================
     public int WorkTimeMinutes { get; set; } = 25;
     public int WorkTimeSeconds { get; set; } = 0;
     public int ShortBreakMinutes { get; set; } = 5;
     public int ShortBreakSeconds { get; set; } = 0;
     public int LongBreakMinutes { get; set; } = 15;
     public int LongBreakSeconds { get; set; } = 0;
-
     public Models.PomodoroMode PomodoroMode { get; set; } = Models.PomodoroMode.Automatic;
 
-    // 界面设置
-    public bool TimerShowLootDrops { get; set; } = false; // 是否显示掉落记录
-    public bool TimerShowPomodoro { get; set; } = true; // 是否显示番茄钟
-    public bool TimerSyncStartPomodoro { get; set; } = false; // 开启计时器时是否同步开启番茄钟
-    public bool TimerSyncPausePomodoro { get; set; } = false; // 暂停计时器时是否同步暂停番茄钟
+    // ================== 界面设置 ==================
+    public bool TimerShowTimerTime { get; set; } = true;
+    public bool TimerShowStatistics { get; set; } = true;
+    public bool TimerShowHistory { get; set; } = false;
+    public bool TimerShowLootDrops { get; set; } = false;
+    public bool TimerShowAccountInfo { get; set; } = true;
+    public int TimerAverageRunCount { get; set; } = 0;
+
+    [YamlIgnore]
+    public int VisibleModuleCount
+    {
+        get
+        {
+            int count = 1; // 基础值
+            if (TimerShowStatistics) count++;
+            if (TimerShowHistory) count++;
+            if (TimerShowLootDrops) count++;
+            if (TimerShowAccountInfo) count++;
+            return count;
+        }
+    }
+
+    public bool TimerShowPomodoro { get; set; } = true;
+    public bool TimerSyncStartPomodoro { get; set; } = false;
+    public bool TimerSyncPausePomodoro { get; set; } = false;
     public bool ScreenshotOnLoot { get; set; } = false;
     public bool HideWindowOnScreenshot { get; set; } = false;
-    public int PomodoroWarningLongTime { get; set; } = 60; // 番茄钟长时间提示（实际值）
-    public int PomodoroWarningShortTime { get; set; } = 3; // 番茄钟短时间提示（实际值）
-    public bool GenerateRoomName { get; set; } = true; // 是否生成房间名称
-    public bool ShowNavigation { get; set; } = true; // 是否显示导航栏
+    public int PomodoroWarningLongTime { get; set; } = 60;
+    public int PomodoroWarningShortTime { get; set; } = 3;
+    public bool GenerateRoomName { get; set; } = true;
+    public bool ShowNavigation { get; set; } = true;
 
+    // ================== 热键设置 ==================
     public Keys HotkeyLeader { get; set; } = Keys.Space | Keys.Control;
     public Keys HotkeyStartOrNext { get; set; } = Keys.None;
     public Keys HotkeyPause { get; set; } = Keys.None;
     public Keys HotkeyDeleteHistory { get; set; } = Keys.None;
     public Keys HotkeyRecordLoot { get; set; } = Keys.None;
 
+    // ================== 音频设置 ==================
     public bool AudioEnabled { get; set; } = true;
     public int AudioVolume { get; set; } = 100;
     public string SoundTimerStart { get; set; } = "timer_start.mp3";
@@ -70,13 +95,13 @@ public class AppSettings : IAppSettings
     public bool SoundBreakStartEnabled { get; set; } = true;
     public bool SoundBreakEndEnabled { get; set; } = true;
 
-    // 保存设置
+    // ================== 方法 ==================
+
     public void Save()
     {
         var configFilePath = FolderManager.ConfigFilePath;
         try
         {
-            // 确保目录存在 - 添加null检查以修复CS8604警告
             string? directory = Path.GetDirectoryName(configFilePath);
             if (directory != null)
             {
@@ -92,13 +117,11 @@ public class AppSettings : IAppSettings
         }
     }
 
-    // 加载设置
     public static IAppSettings Load()
     {
         try
         {
             var configFilePath = FolderManager.ConfigFilePath;
-            // 确保目录存在 - 添加null检查以修复CS8604警告
             string? directory = Path.GetDirectoryName(configFilePath);
             if (directory != null)
             {
@@ -108,27 +131,27 @@ public class AppSettings : IAppSettings
             {
                 var yaml = File.ReadAllText(configFilePath);
                 var settings = deserializer.Deserialize<AppSettings>(yaml);
+
+                // 加载后手动触发一次 VisibleModuleCount 相关的逻辑可能需要，
+                // 但通常 UI 初始化时会读取属性，所以没关系。
                 return settings;
             }
         }
         catch (Exception ex)
         {
+            // 如果加载失败（比如旧配置文件不兼容严重错误），记录日志并返回默认
             LogManager.WriteErrorLog("AppSettings", $"加载设置失败", ex);
         }
 
-        // 返回默认设置
         LogManager.WriteDebugLog("AppSettings", "返回默认设置");
         return new AppSettings();
     }
 
-    // UI相关转换方法
-    // 将设置窗口的位置枚举转换为字符串
     public static string WindowPositionToString(Models.WindowPosition position)
     {
         return position.ToString();
     }
 
-    // 将字符串转换为设置窗口的位置枚举
     public static Models.WindowPosition StringToWindowPosition(string positionStr)
     {
         if (Enum.TryParse<Models.WindowPosition>(positionStr, out var position))
@@ -138,13 +161,11 @@ public class AppSettings : IAppSettings
         return Models.WindowPosition.TopLeft;
     }
 
-    // 将语言选项转换为字符串
     public static string LanguageToString(Models.LanguageOption language)
     {
         return language.ToString();
     }
 
-    // 将字符串转换为语言选项
     public static Models.LanguageOption StringToLanguage(string languageStr)
     {
         if (Enum.TryParse<Models.LanguageOption>(languageStr, out var language))

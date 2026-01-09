@@ -303,19 +303,8 @@ public partial class SettingsForm : BaseForm
         _appSettings.HotkeyDeleteHistory = hotkeySettings.DeleteHistoryHotkey;
         _appSettings.HotkeyRecordLoot = hotkeySettings.RecordLootHotkey;
 
-        _appSettings.TimerShowPomodoro = timerSettings.TimerShowPomodoro;
-        _appSettings.TimerShowLootDrops = timerSettings.TimerShowLootDrops;
-        _appSettings.TimerSyncStartPomodoro = timerSettings.TimerSyncStartPomodoro;
-        _appSettings.TimerSyncPausePomodoro = timerSettings.TimerSyncPausePomodoro;
-        _appSettings.GenerateRoomName = timerSettings.GenerateRoomName;
-        LogManager.WriteDebugLog(
-            "SettingsControl",
-            $"保存设置 timerSettings.ScreenshotOnLoot={timerSettings.ScreenshotOnLoot}"
-        );
-        _appSettings.ScreenshotOnLoot = timerSettings.ScreenshotOnLoot;
-        _appSettings.HideWindowOnScreenshot = timerSettings.HideWindowOnScreenshot;
         _appSettings.Opacity = generalSettings.SelectedOpacity;
-
+        timerSettings.SaveSettings(_appSettings);
         if (tabPagePomodoro.Controls.Count > 0 &&
             tabPagePomodoro.Controls[0] is UI.Settings.PomodoroSettingsControl pomodoroSettings)
         {
@@ -337,15 +326,7 @@ public partial class SettingsForm : BaseForm
         string langCode = (generalSettings.SelectedLanguage == LanguageOption.Chinese) ? "zh-CN" : "en-US";
         _messenger.Publish(new OpacityChangedMessage());
         _messenger.Publish(new LanguageChangedMessage(langCode));
-        _messenger.Publish(
-            new TimerSettingsChangedMessage(
-                timerSettings.TimerShowPomodoro,
-                timerSettings.TimerShowLootDrops,
-                timerSettings.TimerSyncStartPomodoro,
-                timerSettings.TimerSyncPausePomodoro,
-                timerSettings.GenerateRoomName
-            )
-        );
+        _messenger.Publish(new TimerSettingsChangedMessage());
         _messenger.Publish(new WindowPositionChangedMessage());
         _messenger.Publish(new AlwaysOnTopChangedMessage());
         _messenger.Publish(new HotkeysChangedMessage());

@@ -2,100 +2,36 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using DiabloTwoMFTimer.Interfaces;
+using DiabloTwoMFTimer.Models;
 using DiabloTwoMFTimer.Utils;
 
 namespace DiabloTwoMFTimer.UI.Settings;
 
 public partial class TimerSettingsControl : UserControl
 {
-    // 属性定义
-    public bool TimerShowPomodoro { get; private set; }
-    public bool TimerShowLootDrops { get; private set; }
-    public bool TimerSyncStartPomodoro { get; private set; }
-    public bool TimerSyncPausePomodoro { get; private set; }
-    public bool GenerateRoomName { get; private set; }
-    public bool ScreenshotOnLoot { get; private set; }
-    public bool HideWindowOnScreenshot { get; private set; }
-
     public TimerSettingsControl()
     {
         InitializeComponent();
     }
 
-    // 事件处理
-    private void OnShowPomodoroChanged(object? sender, EventArgs e)
-    {
-        if (sender is CheckBox checkBox)
-        {
-            TimerShowPomodoro = checkBox.Checked;
-        }
-    }
-
-    private void OnShowLootDropsChanged(object? sender, EventArgs e)
-    {
-        if (sender is CheckBox checkBox)
-        {
-            TimerShowLootDrops = checkBox.Checked;
-        }
-    }
-
-    private void OnSyncStartPomodoroChanged(object? sender, EventArgs e)
-    {
-        if (sender is CheckBox checkBox)
-        {
-            TimerSyncStartPomodoro = checkBox.Checked;
-        }
-    }
-
-    private void OnSyncPausePomodoroChanged(object? sender, EventArgs e)
-    {
-        if (sender is CheckBox checkBox)
-        {
-            TimerSyncPausePomodoro = checkBox.Checked;
-        }
-    }
-
-    private void OnGenerateRoomNameChanged(object? sender, EventArgs e)
-    {
-        if (sender is CheckBox checkBox)
-        {
-            GenerateRoomName = checkBox.Checked;
-        }
-    }
-
-    private void OnScreenshotOnLootChanged(object? sender, EventArgs e)
-    {
-        if (sender is CheckBox checkBox)
-            ScreenshotOnLoot = checkBox.Checked;
-    }
-
-    private void OnHideWindowOnScreenshotChanged(object? sender, EventArgs e)
-    {
-        if (sender is CheckBox checkBox)
-            HideWindowOnScreenshot = checkBox.Checked;
-    }
-
     // 加载设置
     public void LoadSettings(IAppSettings settings)
     {
-        TimerShowPomodoro = settings.TimerShowPomodoro;
-        TimerShowLootDrops = settings.TimerShowLootDrops;
-        TimerSyncStartPomodoro = settings.TimerSyncStartPomodoro;
-        TimerSyncPausePomodoro = settings.TimerSyncPausePomodoro;
-        GenerateRoomName = settings.GenerateRoomName;
-
-        chkShowPomodoro.Checked = TimerShowPomodoro;
-        chkShowLootDrops.Checked = TimerShowLootDrops;
-        chkSyncStartPomodoro.Checked = TimerSyncStartPomodoro;
-        chkSyncPausePomodoro.Checked = TimerSyncPausePomodoro;
-        chkGenerateRoomName.Checked = GenerateRoomName;
+        chkShowPomodoro.Checked = settings.TimerShowPomodoro;
+        chkSyncStartPomodoro.Checked = settings.TimerSyncStartPomodoro;
+        chkSyncPausePomodoro.Checked = settings.TimerSyncPausePomodoro;
+        chkGenerateRoomName.Checked = settings.GenerateRoomName;
 
         // 加载截图相关设置
-        ScreenshotOnLoot = settings.ScreenshotOnLoot;
-        HideWindowOnScreenshot = settings.HideWindowOnScreenshot;
+        chkScreenshotOnLoot.Checked = settings.ScreenshotOnLoot;
+        chkHideWindowOnScreenshot.Checked = settings.HideWindowOnScreenshot;
 
-        chkScreenshotOnLoot.Checked = ScreenshotOnLoot;
-        chkHideWindowOnScreenshot.Checked = HideWindowOnScreenshot;
+        chkShowTime.Checked = settings.TimerShowTimerTime;
+        chkShowStats.Checked = settings.TimerShowStatistics;
+        chkShowHistory.Checked = settings.TimerShowHistory;
+        chkShowLoot.Checked = settings.TimerShowLootDrops;
+        chkShowAccount.Checked = settings.TimerShowAccountInfo;
+        numAvgCount.Value = settings.TimerAverageRunCount;
     }
 
     // 刷新UI（支持国际化）
@@ -103,16 +39,38 @@ public partial class TimerSettingsControl : UserControl
     {
         this.SafeInvoke(() =>
         {
-            if (grpTimerSettings == null)
-                return;
-            grpTimerSettings.Text = LanguageManager.GetString("TimerSettingsGroup");
-            chkShowPomodoro.Text = LanguageManager.GetString("TimerShowPomodoro");
-            chkShowLootDrops.Text = LanguageManager.GetString("TimerShowLootDrops");
-            chkSyncStartPomodoro.Text = LanguageManager.GetString("TimerSyncStartPomodoro");
-            chkSyncPausePomodoro.Text = LanguageManager.GetString("TimerSyncPausePomodoro");
-            chkGenerateRoomName.Text = LanguageManager.GetString("TimerGenerateRoomName");
-            chkScreenshotOnLoot.Text = LanguageManager.GetString("TimerScreenshotOnLoot");
-            chkHideWindowOnScreenshot.Text = LanguageManager.GetString("TimerHideWindowOnScreenshot");
+            grpTimerSettings!.Text = LanguageManager.GetString("TimerSettingsGroup");
+            chkShowPomodoro!.Text = LanguageManager.GetString("TimerShowPomodoro");
+            chkSyncStartPomodoro!.Text = LanguageManager.GetString("TimerSyncStartPomodoro");
+            chkSyncPausePomodoro!.Text = LanguageManager.GetString("TimerSyncPausePomodoro");
+            chkGenerateRoomName!.Text = LanguageManager.GetString("TimerGenerateRoomName");
+            chkScreenshotOnLoot!.Text = LanguageManager.GetString("TimerScreenshotOnLoot");
+            chkHideWindowOnScreenshot!.Text = LanguageManager.GetString("TimerHideWindowOnScreenshot");
+            grpDisplay!.Text = LanguageManager.GetString("Settings_DisplayGroup") ?? "Display Settings";
+            chkShowTime!.Text = LanguageManager.GetString("Settings_ShowTime") ?? "Show Timer";
+            chkShowStats!.Text = LanguageManager.GetString("Settings_ShowStats") ?? "Show Statistics";
+            chkShowHistory!.Text = LanguageManager.GetString("Settings_ShowHistory") ?? "Show History";
+            chkShowLoot!.Text = LanguageManager.GetString("Settings_ShowLoot") ?? "Show Loot Records";
+            chkShowAccount!.Text = LanguageManager.GetString("Settings_ShowAccount") ?? "Show Account Info";
+            lblAvgCount!.Text = LanguageManager.GetString("Settings_AvgCount") ?? "Average Run Sample (0=All):";
         });
+    }
+
+    public bool SaveSettings(IAppSettings settings)
+    {
+        // settings.TimerShowLootDrops = TimerShowLootDrops;
+        settings.TimerSyncStartPomodoro = chkSyncStartPomodoro.Checked;
+        settings.TimerSyncPausePomodoro = chkSyncPausePomodoro.Checked;
+        settings.GenerateRoomName = chkGenerateRoomName.Checked;
+        settings.ScreenshotOnLoot = chkScreenshotOnLoot.Checked;
+        settings.HideWindowOnScreenshot = chkHideWindowOnScreenshot.Checked;
+        settings.TimerShowPomodoro = chkShowPomodoro.Checked;
+        settings.TimerShowTimerTime = chkShowTime.Checked;
+        settings.TimerShowStatistics = chkShowStats.Checked;
+        settings.TimerShowHistory = chkShowHistory.Checked;
+        settings.TimerShowLootDrops = chkShowLoot.Checked;
+        settings.TimerShowAccountInfo = chkShowAccount.Checked;
+        settings.TimerAverageRunCount = (int)numAvgCount.Value;
+        return true;
     }
 }

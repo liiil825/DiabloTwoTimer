@@ -178,12 +178,14 @@ public partial class CreateCharacterForm : BaseForm
                 {
                     var scene = _sceneService.FarmingScenes[cmbScene.SelectedIndex];
                     profile.LastRunScene = scene.EnUS;
+                    _profileService.CurrentScene = scene.EnUS;
                 }
             }
 
             if (cmbDifficulty != null && cmbDifficulty.SelectedIndex >= 0)
             {
                 profile.LastRunDifficulty = _sceneService.GetDifficultyByIndex(cmbDifficulty.SelectedIndex);
+                _profileService.CurrentDifficulty = profile.LastRunDifficulty;
             }
 
             // 3. 立即切换到该角色并保存

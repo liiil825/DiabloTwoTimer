@@ -93,6 +93,7 @@ public partial class TimerControl : UserControl
                     ClearAllSelections();
                 })
             );
+            UpdateAllModulesVisibility();
 
             UpdateUI();
         }
@@ -143,16 +144,76 @@ public partial class TimerControl : UserControl
         this.SafeInvoke(() =>
         {
             // 响应 ShowLootDrops 变化
-            SetLootRecordsVisible(message.ShowLootDrops);
-
-            // 响应 ShowPomodoro 变化
-            if (pomodoroTime != null)
-            {
-                pomodoroTime.Visible = message.ShowPomodoro;
-            }
-
-            // 其他设置如果需要立即响应 UI 变化也可以在这里处理
+            // SetLootRecordsVisible(_appSettings.TimerShowLootDrops);
+            UpdateAllModulesVisibility();
+            UpdateUI();
+            _messenger.Publish(new AdjustWindowHeightMessage());
         });
+    }
+
+    private void UpdateAllModulesVisibility()
+    {
+        if (tlpMain == null) return;
+
+        bool showTime = _appSettings.TimerShowTimerTime;
+        bool showStats = _appSettings.TimerShowStatistics;
+        bool showHistory = _appSettings.TimerShowHistory;
+        bool showLoot = _appSettings.TimerShowLootDrops;
+        bool showAccount = _appSettings.TimerShowAccountInfo;
+        bool showPomodoro = _appSettings.TimerShowPomodoro;
+
+        if (lblTimeDisplay != null) lblTimeDisplay.Visible = showTime;
+        if (pomodoroTime != null) pomodoroTime.Visible = showPomodoro;
+
+        void SetRowVisible(int rowIndex, bool visible, SizeType sizeType = SizeType.AutoSize, float height = 0)
+        {
+            if (rowIndex >= tlpMain.RowCount) return;
+            if (visible)
+            {
+                if (sizeType == SizeType.Percent)
+                    tlpMain.RowStyles[rowIndex] = new RowStyle(SizeType.Percent, height > 0 ? height : 100F);
+                else
+                    tlpMain.RowStyles[rowIndex] = new RowStyle(SizeType.AutoSize);
+                var ctrl = tlpMain.GetControlFromPosition(0, rowIndex);
+                if (ctrl != null) ctrl.Visible = true;
+            }
+            else
+            {
+                tlpMain.RowStyles[rowIndex] = new RowStyle(SizeType.Absolute, 0F);
+                var ctrl = tlpMain.GetControlFromPosition(0, rowIndex);
+                if (ctrl != null) ctrl.Visible = false;
+            }
+        }
+
+        SetRowVisible(2, showStats, SizeType.AutoSize);
+
+        if (showHistory && showLoot)
+        {
+            SetRowVisible(3, true, SizeType.Percent, 40F);
+            SetRowVisible(4, true, SizeType.Percent, 60F);
+        }
+        else if (showHistory)
+        {
+            SetRowVisible(3, true, SizeType.Percent, 100F);
+            SetRowVisible(4, false);
+        }
+        else if (showLoot)
+        {
+            SetRowVisible(3, false);
+            SetRowVisible(4, true, SizeType.Percent, 100F);
+        }
+        else
+        {
+            SetRowVisible(3, false);
+            SetRowVisible(4, false);
+        }
+
+        SetRowVisible(5, showAccount, SizeType.AutoSize);
+
+        if (toggleLootButton != null)
+        {
+            toggleLootButton.Text = showLoot ? "\uE70E" : "\uE70D";
+        }
     }
 
     // 处理切换掉落记录可见性消息
@@ -595,15 +656,7 @@ public partial class TimerControl : UserControl
             _appSettings.TimerShowLootDrops = isVisible;
             _appSettings.Save();
             _messenger.Publish(new TimerShowLootDropsChangedMessage());
-            _messenger.Publish(
-                new TimerSettingsChangedMessage(
-                    _appSettings.TimerShowPomodoro,
-                    isVisible, // 当前最新的 Loot 状态
-                    _appSettings.TimerSyncStartPomodoro,
-                    _appSettings.TimerSyncPausePomodoro,
-                    _appSettings.GenerateRoomName
-                )
-            );
+            _messenger.Publish(new TimerSettingsChangedMessage());
         }
     }
 }

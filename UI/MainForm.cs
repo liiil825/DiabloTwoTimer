@@ -359,7 +359,7 @@ public partial class MainForm : System.Windows.Forms.Form
         _messenger.Subscribe<OpacityChangedMessage>(_ => this.SafeInvoke(() => this.Opacity = _appSettings.Opacity));
         _messenger.Subscribe<HideMainWindowMessage>(_ => this.SafeInvoke(() => this.Opacity = 0));
         _messenger.Subscribe<ShowMainWindowMessage>(_ => this.SafeInvoke(() => this.Opacity = _appSettings.Opacity));
-        _messenger.Subscribe<TimerSettingsChangedMessage>(msg => this.SafeInvoke(() => AdjustWindowHeight()));
+        _messenger.Subscribe<AdjustWindowHeightMessage>(msg => this.SafeInvoke(() => AdjustWindowHeight()));
         _messenger.Subscribe<ScreenshotRequestedMessage>(OnScreenshotRequested);
         _messenger.Subscribe<ShowLeaderKeyFormMessage>(_ =>
             this.SafeInvoke(() =>
@@ -437,6 +437,7 @@ public partial class MainForm : System.Windows.Forms.Form
             {
                 Utils.Toast.Success($"角色 '{form.CharacterName}' 创建成功并已选中！");
                 _mainService.SetActiveTabPage(Models.TabPage.Timer);
+                _messenger.Publish(new TimerSettingsChangedMessage());
             }
         });
     }
@@ -459,6 +460,7 @@ public partial class MainForm : System.Windows.Forms.Form
                     _profileService.CurrentDifficulty = selectedProfile.LastRunDifficulty;
 
                     _mainService.SetActiveTabPage(Models.TabPage.Timer);
+                    _messenger.Publish(new TimerSettingsChangedMessage());
                     Utils.Toast.Success($"已切换到角色 '{selectedProfile.Name}'");
                 }
             }
@@ -488,6 +490,7 @@ public partial class MainForm : System.Windows.Forms.Form
                     Utils.Toast.Success($"已成功删除角色");
                     // 核心逻辑：删除后检查是否为空，是则触发创建
                     CheckAndCreateInitialProfile();
+                    _messenger.Publish(new TimerSettingsChangedMessage());
                 }
             }
         });
@@ -649,11 +652,19 @@ public partial class MainForm : System.Windows.Forms.Form
 
     private void AdjustWindowHeight()
     {
-        bool showLoot = _appSettings.TimerShowLootDrops;
-        int targetHeight = showLoot
-            ? Theme.UISizeConstants.ClientHeightWithLoot
-            : Theme.UISizeConstants.ClientHeightWithoutLoot;
+        int baseHeight = 150;
+        int navHeight = 50;
+        int targetHeight = baseHeight;
 
+        if (_appSettings.TimerShowStatistics) targetHeight += 120;
+        if (_appSettings.TimerShowHistory) targetHeight += 150;
+        if (_appSettings.TimerShowLootDrops) targetHeight += 150;
+        if (_appSettings.TimerShowAccountInfo) targetHeight += 100;
+
+        if (_appSettings.ShowNavigation)
+        {
+            targetHeight += navHeight;
+        }
         if (this.ClientSize.Height != targetHeight)
         {
             this.ClientSize = new Size(Theme.UISizeConstants.ClientWidth, targetHeight);

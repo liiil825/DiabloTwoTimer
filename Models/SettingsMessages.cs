@@ -97,3 +97,7 @@ public class PomodoroSettingsChangedMessage
 public class NavigationVisibilityChangedMessage { }
 
 public class RequestSelectDifficultyMessage { }
+
+public class AdjustWindowHeightMessage { }
+
+public class TimerSettingsChangedMessage { }

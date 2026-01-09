@@ -222,5 +222,12 @@
   "Settings.Audio.TimerPause": "Timer Pause Sound",
   "Settings.Audio.BreakStart": "Break Start Sound",
   "Settings.Audio.BreakEnd": "Break End Sound",
+  "Settings_DisplayGroup": "Display",
+  "Settings_ShowTime": "Show Timer",
+  "Settings_ShowStats": "Show Statistics",
+  "Settings_ShowHistory": "Show History",
+  "Settings_ShowLoot": "Show Loot Records",
+  "Settings_ShowAccount": "Show Account Info",
+  "Settings_AvgCount": "Average Run Sample (0=All):",
   "Audio.FileNotFound": "File Not Found"
 }

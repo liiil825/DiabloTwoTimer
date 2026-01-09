@@ -226,5 +226,12 @@
   "Settings.Audio.TimerPause": "计时暂停",
   "Settings.Audio.BreakStart": "休息开始",
   "Settings.Audio.BreakEnd": "休息结束",
+  "Settings_DisplayGroup": "显示",
+  "Settings_ShowTime": "显示计时器",
+  "Settings_ShowStats": "显示统计",
+  "Settings_ShowHistory": "显示历史",
+  "Settings_ShowLoot": "显示掉落",
+  "Settings_ShowAccount": "显示账号",
+  "Settings_AvgCount": "平均运行样本 (0=所有):",
   "Audio.FileNotFound": "文件未找到"
 }

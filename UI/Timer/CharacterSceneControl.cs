@@ -75,9 +75,10 @@ public partial class CharacterSceneControl : UserControl
 
         // 更新场景显示
         string currentScene = _profileService.CurrentScene;
-        if (string.IsNullOrEmpty(currentScene))
+        if (string.IsNullOrEmpty(currentScene) || profile == null)
         {
             this.lblSceneDisplay.Text = "";
+            _profileService.CurrentScene = "";
         }
         else
         {
